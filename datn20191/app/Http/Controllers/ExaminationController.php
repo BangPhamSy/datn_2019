@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Examination;
 use Validator;
+use DB;
 
 class ExaminationController extends Controller
 {
@@ -165,6 +166,18 @@ class ExaminationController extends Controller
                 $edit = Examination::editExam($id);
                 return response()->json(['code'=>1,'data' => $edit]);
             }
+    }
+     /**
+     * edit kì thi 
+     *
+     * @param  array  $Request
+     * @return edit
+     */
+    public function getEditExam(Request $request)
+    {
+        $exam_id = $request->id;
+        $result = DB::table('exams')->select('*')->where('id',$exam_id)->get();
+        return response()->json(['code'=>1,'data'=>$result],200);
     }
     /**
      * Danh sách tên lớp 

@@ -147,6 +147,10 @@ class Classes extends Model
     {
          StudentClass::where('student_id',$idStudent)->delete();
     }
+    public static function deleteClassRegisted($idStudent,$idClass)
+    {
+         StudentClass::where('class_id',$idClass)->where('student_id',$idStudent)->delete();
+    }
 
     /**
      * Tìm học sinh của lớp

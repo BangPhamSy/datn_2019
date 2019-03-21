@@ -40,6 +40,50 @@ class ClassController extends Controller
         }
 
     }
+    public function getListRegistrationClass(Request $request)
+    {
+        $student_id = $request->student_id;
+        $listRegistrationClass = DB::table('classes')
+                                ->where('status',0)
+                                ->whereNotIn('id',
+                                DB::table('student_classes')->select('class_id')
+                                ->from('student_classes')
+                                ->where('student_id',$student_id)
+                                )
+                                ->get();
+        // $quatityStudentInClass = DB::table('student_classes')
+        //                         ->select(array('student_classes.class_id',DB::raw('COUNT(student_classes.student_id)')))
+        //                         ->groupBy('class_id')
+        //                         ->get();
+                                // return $quatityStudentInClass;
+        // return count($quatityStudentInClass);
+        return response()->json(['code'=>1,'data'=>$listRegistrationClass],200);
+    }
+
+    public function getListClassOfStudent(Request $request)
+    {
+        $listClassOfStudent = DB::table('classes')
+                                ->join('student_classes','student_classes.class_id','=','classes.id')
+                                ->where('status',0)
+                                ->where('student_id',$request->student_id)
+                                ->select('classes.*')
+                                ->get();
+        return response()->json(['code'=>1,'data'=>$listClassOfStudent],200);
+    }
+
+    public function getTimeTableOfStudent(Request $request)
+    {
+        $student_id =$request->student_id;
+        $tkb_student = DB::table('students')->join('student_classes','student_classes.student_id','=','students.id')
+        ->join('classes','classes.id','=','student_classes.class_id')
+        ->join('timetables','timetables.class_id','=','classes.id')
+        // ->select('classes.start_date',DB::raw('max(timetables.date) as end_date'))
+        ->where('students.id',$student_id)
+        ->select('classes.schedule as class_schedule','classes.time_start as class_time_start','classes.start_date as classes_start_date')
+        ->get();
+        // ->groupBy('classes.start_date')->get();
+        return $tkb_student;
+    }
     /**
      * Xóa lớp học.
      *
@@ -233,6 +277,20 @@ class ClassController extends Controller
             return response()->json($message,200);
         }
     }
+     /**
+     * Xóa học sinh của lớp.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteClassRegisted(Request $request)
+    {
+        $class_id = $request->class_id;
+        $student_id = $request->student_id;
+        $result = Classes::deleteClassRegisted($student_id,$class_id);
+        $message = [ "code"=>1,"message"=>"Xóa lớp thành công! "];
+        return response()->json($message,200);
+    }
     /**
      * Lấy tên của giáo viên.
      *
@@ -400,5 +458,38 @@ class ClassController extends Controller
         }
 
         return response()->json(['code' => 1, 'message' => 'update thanh cong']);
+    }
+    /**
+     * Danh sách lớp đang giảng dạy của giáo viên.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getClassListOfTeacher(Request $request)
+    {
+        $teacher_id =  $request->input('teacher_id');
+        // return $teacher_id;
+        $result = DB::table('classes')
+                    ->where('teacher_id','=',$teacher_id)
+                    ->where('status','=',1)
+                    ->select('*')
+                    ->get();
+        return response()->json(['code' => 1, 'data' => $result]);
+    }
+    /**
+     * Lay ten giao vien sau khi dang nhap.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getTeacherNameByUser(Request $request)
+    {
+        $user_id = $request->user_id;
+        $teacher_id = DB::table('teachers')
+                    ->join('users','users.id','=','teachers.user_id')
+                    ->where('user_id','=',$user_id)
+                    ->select('teachers.id as teacher_id')
+                    ->first();
+        return response()->json(['code' => 1, 'data' => $teacher_id]);
     }
 }

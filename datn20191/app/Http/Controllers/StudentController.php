@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Student;
 use App\StudentClass;
 use DB;
+use Hash;
 use App\Http\Requests;
 
 class StudentController extends Controller
@@ -59,16 +60,32 @@ class StudentController extends Controller
      */
     public function addStudent(Request $request){
         $data = array(
-            'name' => $request->name,
-            'email' => $request->email,
-            'student_code' => $request->student_code,
-            'address' => $request->address,
-            'mobile' => $request->mobile,
-            'birthday' => $request->birthday,
-            'gender' => $request->gender,
-            'created_at' => date("Y-m-d"),
-            'updated_at' => date("Y-m-d"),
+                'name' => $request->name,
+                'email' => $request->email,
+                'student_code' => $request->student_code,
+                'address' => $request->address,
+                'mobile' => $request->mobile,
+                'birthday' => $request->birthday,
+                'password'  =>Hash::make($request->student_code),
+                'role_id'   =>3,
+                'gender' => $request->gender,
+                'created_at' => date("Y-m-d"),
+                'updated_at' => date("Y-m-d"),
         );
+        $newAccountStudent = DB::table('users')->insert(
+                    [
+                        'name'      =>$request->name,
+                        'email'     =>$request->email,
+                        'password'  =>Hash::make($request->student_code),
+                        'role_id'   =>3,
+                        'created_at' => $data['created_at'],
+            			'updated_at' => $data['updated_at'],
+        
+                    ]
+        );
+        $idAccountStudent = DB::table('users')
+                            ->where('email',$request->email)
+                            ->pluck('id')->first();
         $request->validate([
             'email' => 'required|email|unique:students',
             'name' => 'required',
@@ -78,7 +95,7 @@ class StudentController extends Controller
             'birthday' => 'required|date',
             'gender' => 'required|numeric',
         ]);
-        $dataStudent = Student::store1($data);
+        $dataStudent = Student::store1($data,$idAccountStudent);
         return response()->json(['code' => 1,'message' => 'Them thanh cong'],200);
     }
 

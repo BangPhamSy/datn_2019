@@ -9,10 +9,14 @@
 	<li class="active">danh sách kì thi</li>
 @endsection
 @section('content')
+	@if(Auth::User()->role_id==2)
+		<input type="hidden" id="teacher_id-by-log_in" value="{{$teacher_id = DB::table('teachers')->join('users','users.id','=','teachers.user_id')
+						->where('user_id',Auth::User()->id)->value('teachers.id')}}" >
+		{{-- button thêm kì thi --}}
+	@elseif(Auth::User()->role_id==1)
+		<div><button class="button-add btn btn-info add-exam">Thêm kì thi</button></div><br>
 	
-	{{-- button thêm kì thi --}}
-	<div><button class="button-add btn btn-info add-exam">Thêm kì thi</button></div><br>
-
+	@endif
 	{{-- bảng danh sách kì thi --}}
 	<div class="card-body table-reponsive">
 		<table class="table table-bordered table-striped" id="list-exam">
@@ -22,7 +26,7 @@
 					<th>Tên kì thi</th>
 					<th>Tên lớp</th>
 					<th>Thời gian thi</th>
-					<th>Thời lượng</th>
+					<th>Thời lượng(phút)</th>
 					<th>Ghi chú</th>
 					<th>Action</th>
 				</tr>
@@ -34,7 +38,7 @@
 					<th>Tên kì thi</th>
 					<th>Tên lớp</th>
 					<th>Thời gian thi</th>
-					<th>Thời lượng</th>
+					<th>Thời lượng(phút)</th>
 					<th>Ghi chú</th>
 					<th>Action</th>
 				</tr>
@@ -66,7 +70,7 @@
 							<input name="start_day"  type="text" readonly  class="form-control" id='start_day'>
 						</div>
 						<div class="form-group">
-							<label for="">Thời lượng</label>
+							<label for="">Thời lượng(phút)</label>
 							<input name="duration"  type="text" class="form-control" id='duration'>
 						</div>
 						<div class="form-group">
@@ -100,11 +104,7 @@
 							<label for="">Tên kì thi</label>
 							<input name="name" type="text" class="form-control" id="ename">
 						</div>
-						<div class="form-group">
-							<label for="">Chọn lớp</label>
-							<select class="form-control" name="class" id="ename_class">
-							</select>
-						</div>
+						<input type = "hidden" id="ename_class"/>
 						<div class="form-group">
 							<label for="">Thời gian thi</label>
 							<input name="start_day" type="text" readonly class="form-control" id="estart_day">

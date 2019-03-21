@@ -13,18 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 //Login
 Route::post('register','UserController@createAccount');
-Route::post('login','UserController@Login');
+// Route::post('login','UserController@Login');
 // Exam
 Route::get('/get-list-exam','ExaminationController@index');
 Route::post('/create-exam','ExaminationController@createExam');
 Route::post('/delete-exam','ExaminationController@deleteExam');
 Route::post('/update-exam','ExaminationController@updateExam');
-Route::post('/edit-exam','ExaminationController@editExam'); 
+Route::get('/edit_exam'  ,  'ExaminationController@getEditExam'); 
+Route::post('/edit-exam','  ExaminationController@editExam'); 
 Route::get('get-nameclass','ExaminationController@getNameClass');
 // Student
 Route::get('/get-list-student', 'StudentController@index');
@@ -40,6 +41,10 @@ Route::get('/edit-course','CourseController@getEditCourse');
 Route::post('/edit-course','CourseController@editCourse');
  //Class
 Route::get('/get-list-class','ClassController@getListClass');
+Route::get('/get-list-registration-class','ClassController@getListRegistrationClass');
+Route::get('/get-list-timetable-student','ClassController@getTimeTableOfStudent');
+Route::get('/get-list-class-registed','ClassController@getListClassOfStudent');
+Route::get('/delete-class-registed','ClassController@deleteClassRegisted');
 Route::get('/delete-class','ClassController@deleteClass');
 Route::post('/create-class','ClassController@createClass');
 Route::get('/edit-class','ClassController@getEditClass');
@@ -52,6 +57,8 @@ Route::post('/add-student-to-class','ClassController@addStudentToClass');
 Route::post('/update-status-class','ClassController@updateClassStatus');
 Route::get('get-list-enroll-class','ClassController@getListClassByStatus');
 Route::get('get-student-not-in-class','ClassController@getListStudentNotInClass');
+Route::get('get-class-list-of-teacher','ClassController@getClassListOfTeacher');
+Route::get('get-teacher-name-by-user','ClassController@getTeacherNameByUser');
 // Route::get('auto-update-status','ClassController@autoUpdateStatus');
 // Teacher
 Route::get('/get-list-teacher','TeacherController@index');

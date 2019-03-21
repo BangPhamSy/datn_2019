@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-	Dashboard Page
+	Hệ thống trung tâm đào tạo
 @endsection
 @section('content')
     <div class="container">
@@ -8,7 +8,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <i>Chúc mừng bạn đã đăng nhập</i>
+                        <i>Chúc mừng bạn <span>{{Auth::User()->name}}</span> đã đăng nhập</i>
                     </div>
                 </div>
             </div>

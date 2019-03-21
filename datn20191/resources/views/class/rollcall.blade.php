@@ -109,7 +109,7 @@
                 </div>
                 <div class="modal-body">
                     <input id="rollID" type="hidden">
-                    <form action="" method="POST" role="form">
+                    <form  role="form">
                         @csrf
                         <div class="form-group">
                             <input class="form-control" id="note1" type="text">

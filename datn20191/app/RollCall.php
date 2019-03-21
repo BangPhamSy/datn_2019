@@ -38,7 +38,7 @@ class RollCall extends Model
      */
     public static function store1($data){
         $roll_call = DB::table('roll_calls')->insert([
-            ['status' => $data['status'],
+            [   'status' => $data['status'],
                 'student_id' => $data['student_id'],
                 'timetable_id' => $data['timetable_id'],
                 'time_call' => $data['time_call'],

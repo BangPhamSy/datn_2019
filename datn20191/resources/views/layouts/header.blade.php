@@ -21,24 +21,23 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{{ asset('admin/image/user.jpg') }}" class="user-image" alt="User Image">
-            @if(Auth::check())
-            <span class="hidden-xs">{{Auth::User()->id}}</span>
-            @endif
+            <span class="hidden-xs">{{Auth::User()->name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
                 <img src="{{ asset('admin/image/user.jpg') }}" class="img-circle" alt="User Image">
                 <p>
-                  Alexander Pierce - Web Developer
+                  {{Auth::User()->name}}
                 </p>
+                
               </li>
               <li class="user-footer">
                 <div class="pull-left">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                <a href="{{asset('/logout')}}" class="btn btn-default btn-flat">Đămg xuất</a>
                 </div>
               </li>
             </ul>

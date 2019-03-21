@@ -5,12 +5,15 @@
 @endsection
 @section('content')
   <div class=" content-class row">
+      <input type="hidden" name="" value="{{Auth::User()->role_id}}" id="get_role">
       <div class="col-xs-12">
+        @if(Auth::User()->role_id==3)
             <div class="box-header">
             <button type="button" id="button-create-class" class="btn btn-success">
                 Thêm lớp
             </button>
             </div>
+        @endif
             <!-- /.box-header -->
             <div class="box-body">
 

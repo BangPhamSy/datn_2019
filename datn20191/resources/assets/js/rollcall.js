@@ -18,7 +18,7 @@ $(function(){
             { data: 'name',name:'name'},
             {
                 'render': function (data, type, row) {
-                	let tmp = (row.status == 0) ? 'checked': "";
+                	let tmp = (row.status == 0)  ? 'checked': "";
                 	let tmp1 = (row.status == 1) ? 'checked': "";
                 	let tmp2 = (row.status == 2) ? 'checked': "";
                 	let tmp3 = (row.status == 3) ? 'checked': "";
@@ -83,12 +83,16 @@ $(function(){
         $('#enter-note').modal('show');
         var id = $(this).attr('rolID');
         $('#rollID').val(id);
+        console.log(id);
+        
+        
     });
 
     $('#update-note').click(function(e){
         e.preventDefault();
         var note = $('#note1').val();
         var id = $('#rollID').val();
+        console.log(note);
         $.ajax({
             type: "POST",
             url: "api/update-note",

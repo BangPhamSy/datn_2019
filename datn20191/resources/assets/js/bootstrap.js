@@ -22,6 +22,7 @@ $.ajaxSetup({
 
 require('./student.js');
 require('./timetable.js');
+require('./registration_class.js');
 require('./rollcall.js');
 require('./holiday.js');
 require('./course.js');
@@ -29,6 +30,8 @@ require('./classes.js');
 require('./examination.js');
 require('./staff.js');
 require('./teacher.js');
+
+// require('./teacher_class.js');
 
 try {
     window.$ = window.jQuery = require('jquery');

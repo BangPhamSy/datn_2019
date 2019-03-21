@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Hash;
 
 class Student extends Model
 {
@@ -47,21 +48,37 @@ class Student extends Model
      * @param  array $data
      * @return void
      */
-	public static function store1($data){
+	public static function store1($data,$idAccountStudent){
 		$student = DB::table('students')->insert([
-    		['name' => $data['name'],
-                'email' => $data['email'],
-    			'student_code' => $data['student_code'],
-    			'address' => $data['address'],
-    			'mobile' => $data['mobile'],
-    			'birthday' => $data['birthday'],
-    			'gender' => $data['gender'],
-    			'created_at' => $data['created_at'],
-    			'updated_at' => $data['updated_at'],
+    		[   'name'          => $data['name'],
+                'email'         => $data['email'],
+    			'student_code'  => $data['student_code'],
+    			'address'       => $data['address'],
+    			'mobile'        => $data['mobile'],
+    			'birthday'      => $data['birthday'],
+                'gender'        => $data['gender'],
+                'user_id'       => $idAccountStudent,
+    			'created_at'    => $data['created_at'],
+    			'updated_at'    => $data['updated_at'],
     		],
 		]);
 		return $student;
-	}
+    }
+    // public function createAccountStudent($data)
+    // {
+    //     $createAccountStudent = DB::table('users')->insert(
+    //         [
+    //             'name'      =>$data['name'],
+    //             'email'     =>$data['email'],
+    //             'password'  =>Hash::make($data['student_code']),
+    //             'role_id'   =>3,
+    //             'created_at' => $data['created_at'],
+    // 			'updated_at' => $data['updated_at'],
+
+    //         ]
+    //     );
+    //     return $createAccountStudent->id;
+    // }
 
     /**
      * Hiển thị danh sách các bản ghi.

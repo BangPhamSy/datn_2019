@@ -17,7 +17,19 @@
 //   ]);
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
+});
+Route::get('login','UserController@getLogin')->name('login');
+Route::get('logout','UserController@logOut');
+Route::post('login','UserController@postLogin');
+// Route::get('/dashboard','HomeController@getIndex');
+//Teacher_Class
+Route::get('/teacher_class',function(){
+    return view('class/teacher_class');
+});
+//registration_class
+Route::get('/registration_class',function(){
+    return view('class/registration_class');
 });
 // exam
 Route::get('/exam', function(){

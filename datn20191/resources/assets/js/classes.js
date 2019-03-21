@@ -8,6 +8,8 @@ $(function () {
     //     })
     // }
     // window.onload = updateStatus;
+    var role_id = $('#get_role').val();
+    console.log(role_id);
     var tableClass = $('#list_class').DataTable({
         "columnDefs": [ {
             "searchable": false,
@@ -107,10 +109,16 @@ $(function () {
                     }
                     
                 }
+          
             },
             {
               "render":function(data, type, row) 
                 {
+                    if(role_id==2) {
+                        return '<button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                        <button type="button" class_id="'+row.id+'" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                        ' 
+                    }
                   
                     return '<button type="button" class_id1="'+row.id+'" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
                     <button type="button" class_id="'+row.id+'" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\

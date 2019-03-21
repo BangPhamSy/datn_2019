@@ -330,7 +330,7 @@ $(function () {
 
     $(document).on('click','.addStudentToClass', function(){
     	var student_id = $('#get_student_id').val();
-    	var class_id = $(this).attr('classID');
+		var class_id = $(this).attr('classID');
     	$.ajax({
             type: 'post',
             url: 'api/add-student-to-class',

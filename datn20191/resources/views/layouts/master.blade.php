@@ -29,7 +29,9 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
+@if(Auth::check())
 <div class="wrapper">
+  
   @include('layouts.header')
   
   <!-- =============================================== -->
@@ -66,6 +68,9 @@
        immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
 </div>
+@else 
+  @include('layouts.403')
+@endif
 <!-- ./wrapper -->
 <!-- jQuery 3 -->
 <script src="{{asset('admin/js/jquery.min.js')}}"></script>
@@ -77,6 +82,8 @@
 <script src="{{ asset('admin/js/moment.js') }}"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="{{ asset('js/bootstrap.js') }}"></script>
+<script src="{{ asset('js/teacher_class.js') }}"></script>
+{{-- <script src="{{ asset('js/registration_class.js') }}"></script> --}}
 <script src="{{asset('admin/bootstrap/js/bootstrap.min.js')}}"></script>
 <!-- Datatable -->
 <script src="{{ asset('admin/datetimepicker/build/jquery.datetimepicker.full.min.js') }}"></script>
