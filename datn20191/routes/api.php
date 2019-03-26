@@ -39,6 +39,9 @@ Route::get('/delete-course','CourseController@deleteCourse');
 Route::post('/create-course','CourseController@createCourse');
 Route::get('/edit-course','CourseController@getEditCourse');
 Route::post('/edit-course','CourseController@editCourse');
+//ClassRoom
+Route::get('/get-list-name-room','ClassRoomController@getNameRoom');
+Route::get('/test','ClassController@getListClassByClassRoom');
  //Class
 Route::get('/get-list-class','ClassController@getListClass');
 Route::get('/get-list-registration-class','ClassController@getListRegistrationClass');
@@ -59,7 +62,7 @@ Route::get('get-list-enroll-class','ClassController@getListClassByStatus');
 Route::get('get-student-not-in-class','ClassController@getListStudentNotInClass');
 Route::get('get-class-list-of-teacher','ClassController@getClassListOfTeacher');
 Route::get('get-teacher-name-by-user','ClassController@getTeacherNameByUser');
-// Route::get('auto-update-status','ClassController@autoUpdateStatus');
+Route::get('auto-update-status','ClassController@autoUpdateStatus');
 // Teacher
 Route::get('/get-list-teacher','TeacherController@index');
 Route::post('/create-teacher','TeacherController@store');

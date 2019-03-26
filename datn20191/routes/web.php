@@ -31,6 +31,10 @@ Route::get('/teacher_class',function(){
 Route::get('/registration_class',function(){
     return view('class/registration_class');
 });
+//Time_table of student
+Route::get('timetable_student',function(){
+    return view('student/timetable');
+});
 // exam
 Route::get('/exam', function(){
 		return view('examination/list');

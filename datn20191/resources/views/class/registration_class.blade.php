@@ -14,7 +14,7 @@
         <div class="col-xs-12">
               <!-- /.box-header -->
               <div class="box-body">
-                <div><button class=" btn btn-success show-list-class-registed">Danh sách các lớp đã đăng kí</button></div><br>
+                <div><button class=" btn btn-success show-list-class-registed"><i class="fa fa-th-list"></i> Các lớp đã đăng kí</button></div><br>
               <div  class="table-responsive " style="margin-top: 10px"> 
                 <table id="list_registration_class" class="table table-bordered table-striped">
                   <thead>
@@ -22,10 +22,11 @@
                        <th data-field="id">STT</th>
                        <th data-field="name">Tên Lớp </th>
                        <th data-field="class_code">Mã lớp</th>
-                       <th data-field="teacher_id">Tên giảng viên</th>
+                       <th data-field="teacher_name">Tên giảng viên</th>
                        <th data-field="class_size">Sỉ số</th>
                        <th data-field="start_date">Ngày bắt đầu</th>
                        <th data-field="schedule">Lịch học</th>
+                       <th data-field="room_name">Phòng học</th>
                         <th data-field="time_start">Băt đầu</th>
                         <th data-field="time_end">Kết thúc</th>
                         <th data-field="status">Trạng thái</th>
@@ -45,7 +46,7 @@
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
-                  <button type="button" class=" close close-modal-add-student-class" data-dismiss="modal" aria-hidden="true">×</button>
+                  <button type="button" class=" close close-modal-add-student-registed-class" data-dismiss="modal" aria-hidden="true">×</button>
                   <h4 class="modal-title">Danh sách các lớp đã đăng kí</h4>
               </div>
               <div class="modal-body">
@@ -53,15 +54,15 @@
                  <table id="table_list_registration_class" class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                        <th data-field="id">STT</th>
-                        <th data-field="name">Tên lớp </th>
-                        <th data-field="class_code">Mã lớp</th>
-                        <th data-field="class_size">Sỉ số</th>
-                        <th data-field="start_date">Ngày bắt đầu</th>
-                        <th data-field="schedule">Lịch học</th>
-                        <th data-field="time_start">Bắt đầu</th>
-                        <th data-field="time_end">Kết thúc</th>
-                        <th data-field="action">Hủy lớp</th>
+                        <th>STT</th>
+                        <th>Tên lớp </th>
+                        <th>Mã lớp</th>
+                        <th>Sỉ số</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Lịch học</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Hủy lớp</th>
                     </tr>
                     </thead>
                     <tbody>     
@@ -69,7 +70,7 @@
                 </table>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="close-modal-add-student-class btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="close-modal-add-student-registed-class btn btn-default" data-dismiss="modal">Close</button>
               </div>
           </div>
       </div>

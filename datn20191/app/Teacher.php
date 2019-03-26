@@ -57,15 +57,17 @@ public static function checkStatusTeacher($teacher_id){
  * @param  array $data
  * @return void
  */
-public static function store1($data){
+public static function store1($data,$idAccountTeacher){
     $teacher = DB::table('teachers')->insert(
         [
             'name'          => $data['name'],
+            'email'         => $data['email'],
             'experience'    => $data['experience'],
             'description'   => $data['description'],
             'address'       => $data['address'],
             'mobile'        => $data['mobile'],
             'birthdate'     => $data['birthdate'],
+            'user_id'       =>$idAccountTeacher,
             'certificate'   => $data['certificate'],
             'created_at'    => $data['created_at'],
             'gender'        => $data['gender'],

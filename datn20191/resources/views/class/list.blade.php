@@ -5,15 +5,17 @@
 @endsection
 @section('content')
   <div class=" content-class row">
+    @if(Auth::check())
       <input type="hidden" name="" value="{{Auth::User()->role_id}}" id="get_role">
       <div class="col-xs-12">
-        @if(Auth::User()->role_id==3)
+        @if(Auth::User()->role_id==1)
             <div class="box-header">
             <button type="button" id="button-create-class" class="btn btn-success">
                 Thêm lớp
             </button>
             </div>
         @endif
+    @endif
             <!-- /.box-header -->
             <div class="box-body">
 
@@ -21,14 +23,15 @@
               <table id="list_class" class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                     <th data-field="id">STT</th>
-                     <th data-field="name">Tên Lớp </th>
-                     <th data-field="class_code">Mã lớp</th>
-                     <th data-field="teacher_name">Tên giảng viên</th>
-                     <th data-field="class_size">Sỉ số</th>
-                     <th data-field="start_date">Ngày bắt đầu</th>
-                     <th data-field="schedule">Lịch học</th>
+                      <th data-field="id">STT</th>
+                      <th data-field="name">Tên Lớp </th>
+                      <th data-field="class_code">Mã lớp</th>
+                      <th data-field="teacher_name">Tên giảng viên</th>
+                      <th data-field="class_size">Sỉ số</th>
+                      <th data-field="start_date">Ngày bắt đầu</th>
+                      <th data-field="schedule">Lịch học</th>
                       <th data-field="time_start">Thời gian học</th>
+                      <th data-field="room_name">Phòng học</th>
                       <th data-field="status">Trạng thái</th>
                       <th data-field="action">Action</th>
                   </tr>
@@ -93,12 +96,18 @@
                   <input type="time" class="form-control" name="time_start" id="time_start">
                 </div>
               <div class="form-group">
-                <label for="exampleInputText">Thời lượng</label>
+                <label for="exampleInputText">Thời lượng(h)</label>
                 <input type="text" class="form-control" name="duration" id="duration" placeholder="Nhập thời lượng">
               </div>
               <div class="form-group">
                 <label for="exampleInputText">Sĩ số</label>
                 <input type="text" class="form-control" id="class_size" name="class_size"  placeholder="Nhập sĩ số">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputText">Phòng học</label>
+                <select class="form-control form-control-sm" id="name_room">
+                    
+                </select>
               </div>
               <div class="form-group">
                 <label for="exampleInputText">Tên khóa học</label>
@@ -144,8 +153,16 @@
                   <input type="time" class="form-control" name="time_start_edit" id="time_start_edit" disabled>
                 </div>
               <div class="form-group">
-                <label for="exampleInputText">Thời lượng</label>
+                <label for="exampleInputText">Thời lượng(h)</label>
                 <input type="text" class="form-control" name="duration_edit" id="duration_edit" placeholder="Nhập thời lượng" disabled>
+              </div>
+              <div class="form-group">
+                  <label for="exampleInputText">Giảng viên</label>
+                  <input type="text" class="form-control" name="name_teacher_edit" id="name_teacher_edit" disabled>
+              </div>
+              <div class="form-group">
+                  <label for="exampleInputText">Phòng học</label>
+                  <input type="text" class="form-control" name="name_room_edit" id="name_room_edit" disabled>
               </div>
               <div class="form-group">
                 <label for="exampleInputText">Sĩ số</label>

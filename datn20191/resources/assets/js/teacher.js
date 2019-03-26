@@ -6,11 +6,15 @@ $(function(){
             "targets": 0
         } ],
         "order": [[ 1, 'asc' ]],
-        "ajax":"api/get-list-teacher",
-      
+        ajax:{
+            method : 'get',
+            url:'api/get-list-teacher',
+            
+        },
         "columns": [
             {"data":  "id"},
             { "data": "name" },
+            {"data" :"email"},
             { "data": "address" },
             { "data": "mobile"},
             { "data": "birthdate" },
@@ -59,7 +63,10 @@ $(function(){
         rules: {
 			"name": {
 				required: true,
-			},
+            },
+            "email":{
+                required:true,
+            },
 			"address": {
 				required: true,
 			},
@@ -86,7 +93,10 @@ $(function(){
 		messages: {
 			"name": {
 				required: "Bắt buộc nhập tên",
-			},
+            },
+            "email":{
+                required: "Bắt buộc nhập email",
+            },
 			"address": {
 				required: "Bắt buộc nhập địa chỉ",
 				
@@ -207,6 +217,7 @@ $(function(){
     $('#create-teacher').click(function(e){
         e.preventDefault();
         var name = $('#teacher_name').val();
+        var email = $('#teacher_email').val();
         var address = $('#teacher_address').val();
         var mobile = $('#teacher_mobile').val();
         var birthdate = $('#teacher_birthdate').val();
@@ -220,6 +231,7 @@ $(function(){
                 url : "api/create-teacher",
                 data : {
                     name        : name,
+                    email       : email,
                     address     : address,
                     mobile      : mobile,
                     birthdate    : birthdate,
@@ -254,6 +266,7 @@ $(function(){
             success : function(response){
                 $('#modal-edit-teacher').modal('show');
                 $('#edit_teacher_name').val(response['data'][0].name);
+                $('#edit_teacher_email').val(response['data'][0].email);
                 $('#edit_teacher_address').val(response['data'][0].address);
                 $('#edit_teacher_mobile').val(response['data'][0].mobile);
                 $('#edit_teacher_birthdate').val(response['data'][0].birthdate);
@@ -273,6 +286,7 @@ $(function(){
     $('.button-edit-teacher').click(function(e){
         e.preventDefault();
         var name = $('#edit_teacher_name').val();
+        var email = $('#edit_teacher_email').val();
         var address = $('#edit_teacher_address').val();
         var mobile = $('#edit_teacher_mobile').val();
         var birthdate = $('#edit_teacher_birthdate').val();
@@ -289,6 +303,7 @@ $(function(){
                 data : {
                     id : teacher_id,
                     name: name,
+                    email : email,
                     address : address,
                     mobile : mobile,
                     birthdate : birthdate,

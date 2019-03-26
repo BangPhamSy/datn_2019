@@ -23,7 +23,7 @@ $(function(){
             {data:null},
             { data: "name" , name:"name"},
             { data: "class_code", name:"class_code" },
-            { data: "teacher_id", name:"teacher_id" },
+            { data: "teacher_name", name:"teacher_name" },
             { data: "class_size", name:"class_size" },
             { data:  "start_date", name:"start_date"},
             { 
@@ -62,6 +62,9 @@ $(function(){
                     
                 }
             },
+            {
+                data:"room_name",name:"room_name"
+            },
             { data: "time_start" , name:"time_start"},
             {data:getTimeEnd},
             {
@@ -82,7 +85,7 @@ $(function(){
                     //     ' 
                     // }
                   
-                    return '<button type="button" class_id_registration="'+row.id+'" class="registration-class btn btn-primary"><i title="Đăng kí lớp" class="fa fa-plus" aria-hidden="true"></i></button>\
+                    return '<button type="button" class_id_registration="'+row.id+'" class="registration-class btn btn-primary"><i class="fa fa-key" title="Đăng kí lớp"></i></button>\
                     '
                     
                 }
@@ -124,6 +127,8 @@ $(function(){
                 "targets": 0,
             } ],
             "order": [[ 1, 'asc' ]],
+            paging: false,
+            "bDestroy": true,
             ajax: {
                 method : 'get',
                 url: 'api/get-list-class-registed',

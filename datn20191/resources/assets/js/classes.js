@@ -65,46 +65,50 @@ $(function () {
                 }
             },
             { data: "time_start" , name:"time_start"},
+            {data:"room_name",name : "room_name"},
             {
                 "render":function(data, type, row) 
                 {
                     switch(row.status){
                         case 0:   
-
-                            return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                                        <option value="0" selected>Đang tuyển sinh</option>\
-                                        <option value="1">Đang học</option>\
-                                        <option value="2">Đã kết thúc</option>\
-                                        <option value="3">Tạm dừng</option>\
-                                    </select>'+
-                                    '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+                            return "Đang tuyển sinh";
+                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                            //             <option value="0" selected>Đang tuyển sinh</option>\
+                            //             <option value="1">Đang học</option>\
+                            //             <option value="2">Đã kết thúc</option>\
+                            //             <option value="3">Tạm dừng</option>\
+                            //         </select>'+
+                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                             break;
                         case 1:
-                            return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                                        <option value="0" >Đang tuyển sinh</option>\
-                                        <option value="1" selected>Đang học</option>\
-                                        <option value="2">Đã kết thúc</option>\
-                                        <option value="3">Tạm dừng</option>\
-                                    </select>'+
-                                    '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+                            return "Đang học"
+                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                            //             <option value="0" >Đang tuyển sinh</option>\
+                            //             <option value="1" selected>Đang học</option>\
+                            //             <option value="2">Đã kết thúc</option>\
+                            //             <option value="3">Tạm dừng</option>\
+                            //         </select>'+
+                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                             break;
                         case 2:
-                            return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                                        <option value="0" selected>Đang tuyển sinh</option>\
-                                        <option value="1">Đang học</option>\
-                                        <option value="2" selected>Đã kết thúc</option>\
-                                        <option value="3">Tạm dừng</option>\
-                                    </select>'+
-                                    '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+                            return "Đã kết thúc"
+                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                            //             <option value="0" selected>Đang tuyển sinh</option>\
+                            //             <option value="1">Đang học</option>\
+                            //             <option value="2" selected>Đã kết thúc</option>\
+                            //             <option value="3">Tạm dừng</option>\
+                            //         </select>'+
+                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                             break;
                         case 3:
-                            return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                                        <option value="0" selected>Đang tuyển sinh</option>\
-                                        <option value="1">Đang học</option>\
-                                        <option value="2">Đã kết thúc</option>\
-                                        <option value="3" selected>Tạm dừng</option>\
-                                    </select>'+
-                                    '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+                            return "Tạm dừng";
+                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                            //             <option value="0" selected>Đang tuyển sinh</option>\
+                            //             <option value="1">Đang học</option>\
+                            //             <option value="2">Đã kết thúc</option>\
+                            //             <option value="3" selected>Tạm dừng</option>\
+                            //         </select>'+
+                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                             break;
                     }
                     
@@ -123,7 +127,7 @@ $(function () {
                     return '<button type="button" class_id1="'+row.id+'" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
                     <button type="button" class_id="'+row.id+'" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\
                     <button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
-                    <button type="button" class_id="'+row.id+'" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                    <button type="button" class_id="'+row.id+'" class=" show-list-exams btn btn-info"><i title="Xem danh sách kì thi" class="fa fa-graduation-cap" aria-hidden="true"></i>\
                     <button class_id="'+row.id+'" type="button" class="edit-class btn btn-warning"><i title="Sửa thông tin lớp" class="fa fa-pencil-square-o" aria-hidden="true"></i></button>\
                     <button class_id="'+row.id+'" type="button" class=" delete-class1 btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>' 
                     
@@ -263,6 +267,17 @@ $(function () {
     );
     $("#button-create-class").click(function(){
         $('#modal-create-class').modal('show');
+        $('#name_room').empty();
+        $.ajax({
+            dataType : 'json',
+            type : 'get',
+            url : 'api/get-list-name-room',
+            success:function(response){
+                $.each(response.data, function () {
+                    $("#name_room").append("<option  value="+this.id+">"+this.name+"</option>")
+                });
+            }
+        });
         $("#name_teacher").empty();
          $.ajax({
             dataType : 'json',
@@ -270,7 +285,7 @@ $(function () {
             url : 'api/get-name-teacher',
             success:function(response){
                 $.each(response.data, function () {
-                    $("#name_teacher").append("<option id='course_id' value="+this.id+">"+this.name+"</option>")
+                    $("#name_teacher").append("<option  value="+this.id+">"+this.name+"</option>")
                 });
             }
         });
@@ -281,7 +296,7 @@ $(function () {
             url : 'api/get-name-course',
             success:function(response){
                 $.each(response.data, function () {
-                    $("#name_course").append("<option id='teacher_id' value="+this.id+">"+this.name+"</option>")
+                    $("#name_course").append("<option  value="+this.id+">"+this.name+"</option>")
                 });
             }
         })
@@ -310,15 +325,20 @@ $(function () {
         var start_date  = $('#start_date').val();
         var duration    = $('#duration').val();
         var time_start  = $('#time_start').val();
-        var teacher_id  = $('#teacher_id').val();
-        var course_id   = $('#course_id').val();
+        var teacher_id  = $('#name_teacher').val();
+        var course_id   = $('#name_course').val();
         var class_size  = $('#class_size').val();
+        var classroom_id = $('#name_room').val();
         var val = [];
         var schedule = "";
         $(':checkbox:checked').each(function(i){
             val[i] = $(this).val();
             schedule =schedule+val[i]+",";
         });
+        // console.log(schedule);
+        // console.log(classroom_id);
+        // console.log(course_id);
+        // console.log(teacher_id);
 
         if($('#form-create-class').valid()){
             
@@ -335,7 +355,8 @@ $(function () {
                     course_id:course_id,
                     schedule:schedule,
                     start_date:start_date,
-                    class_size:class_size
+                    class_size:class_size,
+                    classroom_id : classroom_id
                 },
                 success:function(response){
                     if(response.code==0){
@@ -394,13 +415,16 @@ $(function () {
             url : 'api/edit-class',
             data : {id:class_id},
             success: function(response){
-                    $('#class_code_edit').val(response['class_code']);
-                    $('#name_edit').val(response['name']);
-                    $('#start_date_edit').val(response['start_date']);
-                    $('#time_start_edit').val(response['time_start']);
-                    $('#duration_edit').val(response['duration']);
-                    $('#class_size_edit').val(response['class_size']);
-                    $('.button-edit-class').attr('data-id',response['id']);
+                // console.log(response[0].class_code);
+                    $('#class_code_edit').val(response[0].class_code);
+                    $('#name_edit').val(response[0].class_name);
+                    $('#start_date_edit').val(response[0].start_date);
+                    $('#time_start_edit').val(response[0].time_start);
+                    $('#duration_edit').val(response[0].duration);
+                    $('#name_room_edit').val(response[0].name_room);
+                    $('#name_teacher_edit').val(response[0].teacher_name);
+                    $('#class_size_edit').val(response[0].class_size);
+                    $('.button-edit-class').attr('data-id',response[0].id);
             }
         });
         

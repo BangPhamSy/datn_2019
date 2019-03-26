@@ -82,7 +82,7 @@
 <script src="{{ asset('admin/js/moment.js') }}"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="{{ asset('js/bootstrap.js') }}"></script>
-<script src="{{ asset('js/teacher_class.js') }}"></script>
+{{-- <script src="{{ asset('js/teacher_class.js') }}"></script> --}}
 {{-- <script src="{{ asset('js/registration_class.js') }}"></script> --}}
 <script src="{{asset('admin/bootstrap/js/bootstrap.min.js')}}"></script>
 <!-- Datatable -->

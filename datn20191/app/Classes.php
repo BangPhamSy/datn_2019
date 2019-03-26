@@ -10,7 +10,7 @@ use Course;
 class Classes extends Model
 {
     protected $table = 'classes';
-    protected $fillable = ['name', 'status', 'schedule','time','teacher_id','course_id','class_size','created_at','updated_at'];
+    protected $fillable = ['name', 'status', 'schedule','time','teacher_id','course_id','classroom_id','class_size','created_at','updated_at'];
 
      /**
      * Lấy danh sách lớp học.
@@ -18,21 +18,22 @@ class Classes extends Model
      * @param  integer|  $keyword,$record,$page
      * @return void
      */
-    public static function getListClass($keyword,$record,$page = 1)
+    public static function getListClass()
     {
-        $start = ($page - 1) * $record;
+        // $start = ($page - 1) * $record;
         $listClass = Classes::join('courses','courses.id','=','classes.course_id')
                     ->join('teachers','teachers.id','=','classes.teacher_id')
-                    ->select('classes.*','teachers.name as teacher_name','courses.name as course_name')
-                    ->where('classes.name','like','%'.$keyword.'%')
-                    ->orwhere('classes.status','like','%'.$keyword.'%')
-                    ->orwhere('classes.schedule','like','%'.$keyword.'%')
-                    ->orwhere('classes.time_start','like','%'.$keyword.'%')
-                    ->orwhere('classes.start_date','like','%'.$keyword.'%')
-                    ->orwhere('classes.class_size','like','%'.$keyword.'%')
-                    ->orwhere('teachers.name','like','%'.$keyword.'%')
-                    ->orwhere('courses.name','like','%'.$keyword.'%')
-                    ->offset($start)->limit($record)
+                    ->join('classrooms','classrooms.id','=','classes.classroom_id')
+                    ->select('classes.*','classrooms.name as room_name','teachers.name as teacher_name','courses.name as course_name')
+                    // ->where('classes.name','like','%'.$keyword.'%')
+                    // ->orwhere('classes.status','like','%'.$keyword.'%')
+                    // ->orwhere('classes.schedule','like','%'.$keyword.'%')
+                    // ->orwhere('classes.time_start','like','%'.$keyword.'%')
+                    // ->orwhere('classes.start_date','like','%'.$keyword.'%')
+                    // ->orwhere('classes.class_size','like','%'.$keyword.'%')
+                    // ->orwhere('teachers.name','like','%'.$keyword.'%')
+                    // ->orwhere('courses.name','like','%'.$keyword.'%')
+                    // ->offset($start)->limit($record)
                     ->get();
 		                             
 		return $listClass;
@@ -71,6 +72,7 @@ class Classes extends Model
                 'duration'      =>  $infoClass['duration'],
                 'course_id'     =>  $infoClass['course_id'],
                 'class_size'    =>  $infoClass['class_size'],
+                'classroom_id'  =>  $infoClass['classroom_id'],
                 'status'        =>  0,
                 'created_at'    =>  date('Y-m-d H:i:s')
             ]
@@ -115,7 +117,12 @@ class Classes extends Model
      */
 
     public static function getEditClass($idClass){
-        $infoClass = Classes::where('id',$idClass)->select("*")->first();
+        $infoClass = DB::table("classes")
+        ->join('teachers','teachers.id','=','classes.teacher_id')
+        ->join('classrooms','classrooms.id','=','classes.classroom_id')
+        ->where('classes.id',$idClass)
+        ->select("*",'teachers.name as teacher_name','classrooms.name as name_room','classes.name as class_name')
+        ->get();
         return $infoClass;
     }
 
@@ -193,11 +200,11 @@ class Classes extends Model
      * @return  $durationCourse->duration
      */
 
-    public static function getDurationOfCourse($classCode){
-        $idCourse = Classes::where('class_code',$classCode)->select('course_id')->first();
-        $durationCourse = DB::table('courses')->where('id',$idCourse->course_id)->select('duration')
-                            ->first();
-        return $durationCourse->duration;
+    public static function getDurationOfCourse($course_id){
+        $durationCourse = DB::table('courses')
+                            ->where('courses.id',$course_id)
+                            ->value('courses.duration');
+        return $durationCourse;
 
     }
 
@@ -206,9 +213,19 @@ class Classes extends Model
      * @return $nameTeacher
      */
 
-    public static function getNameTeacher(){
-        $nameTeacher = DB::table('teachers')->select('name','id')->get();
-        return $nameTeacher;
+    public static function getNameTeacher($teacher_id = null){
+        if($teacher_id!=null){
+            $nameTeacher = DB::table('teachers')
+            ->where('teachers.id',$teacher_id)
+            ->select('teachers.name as teacher_name')->get();
+            return $nameTeacher;
+        }
+        else 
+        {
+             $name_teacher = DB::table('teachers')->select('name','id')->get();
+            return $name_teacher;
+        }
+       
     }
 
     /**

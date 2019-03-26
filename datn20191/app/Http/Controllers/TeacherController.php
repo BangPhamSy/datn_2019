@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Teacher;
+use Hash, DB, Validator;
 class TeacherController extends Controller
 {
     /**
@@ -45,6 +46,7 @@ public function store(Request $request)
 {  
     $data = array(
         'name'          => $request->name,
+        'email'         => $request->email,
         'description'   => $request->description,
         'experience'    => $request->experience,
         'address'       => $request->address,
@@ -52,10 +54,54 @@ public function store(Request $request)
         'birthdate'     => $request->birthdate,
         'certificate'   => $request->certificate,
         'created_at'    => date("Y-m-d"),
-        'gender'        => $request->gender,
+        'gender'        => $request->gender
     );
-    $dataTeacher = Teacher::store1($data);
-    return response()->json(['code' => 1,'message' => 'Them thanh cong'],200);
+    $newAccountTeacher = DB::table('users')->insert(
+        [
+            'name'      =>$request->name,
+            'email'     =>$request->email,
+            'password'  =>Hash::make($request->email),
+            'role_id'   =>2,
+            'created_at' => $data['created_at'],
+
+        ]
+    );
+    $idAccountTeacher = DB::table('users')
+        ->where('email',$request->email)
+        ->pluck('id')->first();
+    $errors = Validator::make($request->all(),
+                [
+                    'email' => 'required|unique:teachers',
+                    'name' => 'required',
+                    'experience' => 'required',
+                    'address' => 'required',
+                    'mobile' => 'required|numeric',
+                    'description'=>'required',
+                    'birthdate' => 'required|date',
+                    'gender' => 'required|numeric',
+                ],
+                [
+                    'email.required'        =>"Tên khóa học không được trống!",
+                    'email.uniqued'         =>'Email đã tồn tại!',
+                    'experience.required'   =>"Kinh nghiệm không được trống!",
+                    'address.required'      =>"Địa chỉ không được trống!",
+                    'mobile.required'       =>"Số điện thoại không được trống!",
+                    'description.required'  =>"Mô tảkhông được trống!",
+                    'birthdate.required'    =>"Ngày sinh không được trống!",
+                    'mobile.numeric'        =>"Điện thoại phải là kiểu số",
+                    'gender.numeric'        =>"Giới tính phải là kiểu số"
+                ]
+    );
+    if($errors->fails()){
+        $arrayErrors = $errors->errors()->all();
+        $message = [ "code"=>0,"message" => $arrayErrors];
+        return response()->json($message,200);
+    }
+    else{
+        $dataTeacher = Teacher::store1($data,$idAccountTeacher);
+        return response()->json(['code' => 1,'message' => 'Them thanh cong'],200);
+    }
+    
 }
 /**
  * Display the specified resource.

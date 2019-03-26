@@ -4,7 +4,7 @@ $(function () {
 	var classid = url.searchParams.get("classid");
 	// var teacher_id_after_log_in = "";
 	var teacher_id_after_log_in = $('#teacher_id-by-log_in').val();
-	console.log(teacher_id_after_log_in);
+	// console.log(teacher_id_after_log_in);
 	var Table  = $('#list-exam').DataTable({
 		"columnDefs": [ {
             "searchable": false,

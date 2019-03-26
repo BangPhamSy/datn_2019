@@ -68,9 +68,21 @@
                     </a>
                   </li>
                   <li class="">
+                      <a href="{{ asset('holiday') }}">
+                      <i class="fa fa-table" aria-hidden="true"></i>
+                      <span>Quản lý phòng học</span>
+                    </a>
+                  </li>
+                  <li class="">
                     <a href="{{ asset('holiday') }}">
                       <i class="fa fa-calendar" aria-hidden="true"></i>
                       <span>Danh sách ngày nghỉ lễ</span>
+                    </a>
+                  </li>
+                  <li class="">
+                    <a href="{{ asset('holiday') }}">
+                      <i class="fa fa-comments" aria-hidden="true"></i>
+                      <span>Phản hồi</span>
                     </a>
                   </li>
             @elseif(Auth::User()->role_id==2)
@@ -81,10 +93,27 @@
               </li>
             @elseif(Auth::User()->role_id==3)
               <li class="">
-              <a href="{{asset('registration_class')}}">
-                  <i class="fa fa-dashboard"></i> <span>Đăng kí các lớp học</span>
+                <a href="{{asset('registration_class')}}">
+                  <i class="fa fa-tag"></i> <span>Đăng kí các lớp học</span>
                 </a>
               </li>
+              <li class="">
+                <a href="{{asset('timetable_student')}}">
+                  <i class="fa fa-list-alt"></i> <span>Xem thời khóa biểu</span>
+                </a>
+              </li>
+              <li class="">
+                <a href="{{asset('timetable_student')}}">
+                  <i class="fa fa-trophy" aria-hidden="true"></i><span> Xem thành tích học tập</span>
+                </a>
+              </li>
+              <li class="">
+                <a href="{{asset('timetable_student')}}">
+                  <i class="fa fa-envelope" aria-hidden="true"></i> <span> Ý kiến phản hồi</span>
+                </a>
+              </li>
+             
+              
             @endif
           </ul>
         </section>

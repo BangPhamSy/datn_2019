@@ -17,6 +17,7 @@
 				<tr>
 					<th>STT</th>
 					<th>Tên giáo viên</th>
+					<th>Email</th>
 					<th>Địa chỉ</th>
 					<th>Số điện thoại</th>
 					<th>Ngày sinh</th>
@@ -31,11 +32,12 @@
 				<tr>
 					<th>STT</th>
 					<th>Tên giáo viên</th>
+					<th>Email</th>
 					<th>Địa chỉ</th>
 					<th>Số điện thoại</th>
 					<th>Ngày sinh</th>
 					<th>Giới tính</th>
-					<th>Kinh nghiệm</th>
+					<th>Kinh nghiệm(năm)</th>
 					<th>Chứng chỉ</th>
 					<th>Thông tin thêm</th>
 					<th>Action</th>
@@ -55,10 +57,14 @@
 			<div class="contain-form">
 					<form  role="form" id="form-edit-teacher">
 							<input type="hidden" name="" value="" id="get_edit_teacher_id">
-						<div class="form-group">
-							<label for="">Tên giáo viên</label>
-							<input name="name" type="text" class="form-control" id="edit_teacher_name">
-						</div>
+							<div class="form-group">
+								<label for="">Tên giáo viên</label>
+								<input name="name" type="text" class="form-control" id="edit_teacher_name">
+							</div>
+							<div class="form-group">
+								<label for="">Email</label>
+								<input name="email" type="text" class="form-control" id="edit_teacher_email">
+							</div>
 						  <div class="form-group">
 							<label for="">Địa chỉ</label>
 							<input name="address" type="text" class="form-control" id="edit_teacher_address">
@@ -117,10 +123,14 @@
 			<div class="contain-form">
 				<form role="form"  id="form-create-teacher">
 						
-					<div class="form-group">
-						<label for="">Tên giáo viên</label>
-						<input name="name" type="text" class="form-control" id="teacher_name">
-					</div>
+						<div class="form-group">
+							<label for="">Tên giáo viên</label>
+							<input name="name" type="text" class="form-control" id="teacher_name">
+						</div>
+						<div class="form-group">
+							<label for="">Email</label>
+							<input name="email" type="text" class="form-control" id="teacher_email">
+						</div>
 				  	<div class="form-group">
 						<label for="">Địa chỉ</label>
 						<input name="address" type="text" class="form-control" id="teacher_address">
