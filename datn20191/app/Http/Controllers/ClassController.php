@@ -633,9 +633,10 @@ class ClassController extends Controller
         $teacher_id =  $request->input('teacher_id');
         // return $teacher_id;
         $result = DB::table('classes')
+                    ->join('classrooms','classrooms.id','=','classes.classroom_id')
                     ->where('teacher_id','=',$teacher_id)
-                    ->where('status','=',1)
-                    ->select('*')
+                    // ->where('status','=',1)
+                    ->select('classes.*','classrooms.name as room_name')
                     ->get();
         return response()->json(['code' => 1, 'data' => $result]);
     }

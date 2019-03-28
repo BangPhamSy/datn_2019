@@ -23,6 +23,10 @@ Route::get('login','UserController@getLogin')->name('login');
 Route::get('logout','UserController@logOut');
 Route::post('login','UserController@postLogin');
 // Route::get('/dashboard','HomeController@getIndex');
+//Revenue
+Route::get('/revenue',function(){
+    return view('revenue/revenue');
+});
 //Teacher_Class
 Route::get('/teacher_class',function(){
     return view('class/teacher_class');
@@ -30,6 +34,10 @@ Route::get('/teacher_class',function(){
 //registration_class
 Route::get('/registration_class',function(){
     return view('class/registration_class');
+});
+//ClassRoom
+Route::get('/classroom',function(){
+    return view('classroom/manage_room');
 });
 //Time_table of student
 Route::get('timetable_student',function(){

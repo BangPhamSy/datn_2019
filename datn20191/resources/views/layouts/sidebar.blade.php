@@ -34,6 +34,12 @@
                     </ul>
                   </li>
                   <li class="">
+                      <a href="{{ asset('revenue') }}">
+                      <i class="fa fa-money" aria-hidden="true"></i>
+                      <span>Quản lý doanh thu</span>
+                    </a>
+                  </li>
+                  <li class="">
                     <a href="{{asset('teacher')}}">
                       <i class="fa fa-female" aria-hidden="true"></i>
                       <span>Quản lý giáo viên</span>
@@ -68,7 +74,7 @@
                     </a>
                   </li>
                   <li class="">
-                      <a href="{{ asset('holiday') }}">
+                      <a href="{{ asset('classroom') }}">
                       <i class="fa fa-table" aria-hidden="true"></i>
                       <span>Quản lý phòng học</span>
                     </a>

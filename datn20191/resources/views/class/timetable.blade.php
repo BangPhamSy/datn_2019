@@ -13,7 +13,7 @@
                     <th>Ngày</th>
                     <th>Thời gian từ</th>
                     <th>Đến</th>
-                    <th>Action</th>
+                    <th>Điểm danh</th>
                 </tr>
             </thead>
             <tfoot>
@@ -22,7 +22,7 @@
                     <th>Ngày</th>
                     <th>Thời gian từ</th>
                     <th>Đến</th>
-                    <th>Action</th>
+                    <th>Điểm danh</th>
                 </tr>
             </tfoot>
         </table>

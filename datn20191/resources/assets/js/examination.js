@@ -3,7 +3,7 @@ $(function () {
 	var url = new URL(url_string);
 	var classid = url.searchParams.get("classid");
 	// var teacher_id_after_log_in = "";
-	var teacher_id_after_log_in = $('#teacher_id-by-log_in').val();
+	var teacher_id_after_log_in = $('#get_teacher_id113').val();
 	// console.log(teacher_id_after_log_in);
 	var Table  = $('#list-exam').DataTable({
 		"columnDefs": [ {
@@ -227,36 +227,36 @@ $(document).on('click','.button-edit-exam',function(e){
 		format:'Y-m-d H:i',
         minDate: '-1970-01-1',
 	});
-			// $.ajax({
-			// 	dataType : 'json',
-			// 	type : 'post',
-			// 	url : 'api/edit-exam',
-			// 	data : {id:id},
-			// 	resetForm: true,
-			// 	success: function(response){
-			// 		$('#update-exam-hd').val(id);
-			// 		var classid = response.data['class_id'];
-			// 			$('#ename').val(response.data['name']);
-			// 			$('#estart_day').val(response.data['start_day']);
-			// 			$('#eduration').val(response.data['duration']);
-			// 			$('#enote').val(response.data['note']);
-			// 			$.ajax({
-			// 				dataType : 'json',
-			// 				type : 'get',
-			// 				url : 'api/get-nameclass',
-			// 				success:function(response){
-			// 					$.each(response.data, function () {
-			// 						if(this.id == classid ){
-			// 							$("#ename_class").append("<option id='class_id' value="+this.id+" selected>"+this.name+"</option>")
-			// 						}else{
-			// 							$("#ename_class").append("<option id='class_id' value="+this.id+">"+this.name+"</option>")
-			// 						}
-			// 					});
+			$.ajax({
+				dataType : 'json',
+				type : 'post',
+				url : 'api/edit-exam',
+				data : {id:id},
+				resetForm: true,
+				success: function(response){
+					$('#update-exam-hd').val(id);
+					var classid = response.data['class_id'];
+						$('#ename').val(response.data['name']);
+						$('#estart_day').val(response.data['start_day']);
+						$('#eduration').val(response.data['duration']);
+						$('#enote').val(response.data['note']);
+						$.ajax({
+							dataType : 'json',
+							type : 'get',
+							url : 'api/get-nameclass',
+							success:function(response){
+								$.each(response.data, function () {
+									if(this.id == classid ){
+										$("#ename_class").append("<option id='class_id' value="+this.id+" selected>"+this.name+"</option>")
+									}else{
+										$("#ename_class").append("<option id='class_id' value="+this.id+">"+this.name+"</option>")
+									}
+								});
 								
-			// 				},
-			// 			})
-			// 	}
-			// })
+							},
+						})
+				}
+			})
 			//validate form exam
 			$('#form-edit-exam').validate(
 				{
@@ -321,36 +321,36 @@ $(document).on('click','.button-edit-exam',function(e){
 
 //update exam   
 			// Update      
-			$('#update-exam').click(function(event){
-			event.preventDefault();
-			var id = $('#update-exam-hd').val();
-			var name  = $('#ename').val();
-			var start_day = $('#estart_day').val();
-			var duration = $('#eduration').val();
-			var note = $('#enote').val();
-			var class_id = $('#ename_class').val();
-			if($('#form-edit-exam').valid()){
-				$.ajax({
-					url :"api/update-exam",
-					type: "POST",
-					data : {id:id,name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
-					dataType:"json",
-					success:function(response){ 
-						$("#edit-exam").modal("hide");
-						$('#list-exam').DataTable().ajax.reload();
-						if(response.code == 1){
-						toastr.success('Sửa thành công!');
-						$('#form-edit-exam').trigger("reset");
+		// 	$('#update-exam').click(function(event){
+		// 	event.preventDefault();
+		// 	var id = $('#update-exam-hd').val();
+		// 	var name  = $('#ename').val();
+		// 	var start_day = $('#estart_day').val();
+		// 	var duration = $('#eduration').val();
+		// 	var note = $('#enote').val();
+		// 	var class_id = $('#ename_class').val();
+		// 	if($('#form-edit-exam').valid()){
+		// 		$.ajax({
+		// 			url :"api/update-exam",
+		// 			type: "POST",
+		// 			data : {id:id,name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
+		// 			dataType:"json",
+		// 			success:function(response){ 
+		// 				$("#edit-exam").modal("hide");
+		// 				$('#list-exam').DataTable().ajax.reload();
+		// 				if(response.code == 1){
+		// 				toastr.success('Sửa thành công!');
+		// 				$('#form-edit-exam').trigger("reset");
 
-					}else{
-							toastr.error('Lỗi không thể sửa bản ghi!');
-						}
-			document.getElementById("form-edit-exam").reset();
-					}
-					})
-				}  
+		// 			}else{
+		// 					toastr.error('Lỗi không thể sửa bản ghi!');
+		// 				}
+		// 	document.getElementById("form-edit-exam").reset();
+		// 			}
+		// 			})
+		// 		}  
 				
-  		})          
+  		// })          
 //set-Point
 	$(document).on('click','.button-set-point',function(){
 	$('#model-add-setPoint').modal('show');
@@ -389,7 +389,7 @@ $(document).on('click','.button-edit-exam',function(e){
     } ).draw();
 });
 
-// Thêm điểm
+//Thêm điểm
 
 $('#setPoint').on('click', function() {
 	var student_id = [];
@@ -430,10 +430,7 @@ $('#setPoint').on('click', function() {
 	
 })
 
-
-
-
-// Xem Điểm
+//Xem Điểm
 $(document).on('click','.button-get-point',function(){
 	$('#model-get-Point').modal('show');
 	var examid = $(this).attr("examid");	
@@ -461,8 +458,8 @@ $(document).on('click','.button-get-point',function(){
 		]
 	});
 })
-//update điểm
-if(teacher_id_after_log_in){
+// //update điểm
+// if(teacher_id_after_log_in){
 	$(document).on('click','.button-update-point',function(){
 		var student_id = $(this).attr("student_id");
 		var examination_id = $('#get_examid').val();
@@ -496,23 +493,25 @@ if(teacher_id_after_log_in){
 							error.insertAfter(element);
 				}
 			})
-		if($('#form-edit-exam').valid()){
+		})
+// 		if($('#form-edit-exam').valid()){
 	
-		$.ajax({
-			url :"api/update-point",
-			type: "POST",
-			data : {examination_id: examination_id,student_id: student_id,point: point},
-			dataType:"json",
-			success:function(response){ 
-				$('#get-point').DataTable().ajax.reload();
-				if(response.code == 1){
-				toastr.success('Sửa thành công!');
-			}else{
-					toastr.error('Lỗi không thể sửa bản ghi!');
-				}
-			}
-			})
-		}
-	
-	})
-}
+// 			$.ajax({
+// 				url :"api/update-point",
+// 				type: "POST",
+// 				data : {examination_id: examination_id,student_id: student_id,point: point},
+// 				dataType:"json",
+// 				success:function(response){ 
+// 					$('#get-point').DataTable().ajax.reload();
+// 					if(response.code == 1){
+// 					toastr.success('Sửa thành công!');
+// 				}else{
+// 						toastr.error('Lỗi không thể sửa bản ghi!');
+// 					}
+// 				}
+// 			})
+// 		}
+// 	}
+// 	}
+// })
+

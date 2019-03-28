@@ -41,7 +41,13 @@ Route::get('/edit-course','CourseController@getEditCourse');
 Route::post('/edit-course','CourseController@editCourse');
 //ClassRoom
 Route::get('/get-list-name-room','ClassRoomController@getNameRoom');
-Route::get('/test','ClassController@getListClassByClassRoom');
+Route::get('/get-class-room-by-date','ClassRoomController@getClassRoomByDate');
+Route::post('/add-room','ClassRoomController@addRoom');
+//Revenue
+Route::get('/get-list-revenue','RevenueController@getRevenueByCourse');
+Route::get('/get-list-revenue-class','RevenueController@getRevenueByClass');
+Route::get('/get-list-total-revenue','RevenueController@getTotalRevenue');
+
  //Class
 Route::get('/get-list-class','ClassController@getListClass');
 Route::get('/get-list-registration-class','ClassController@getListRegistrationClass');
@@ -69,7 +75,7 @@ Route::post('/create-teacher','TeacherController@store');
 Route::post('/delete-teacher','TeacherController@deleteTeacher');
 Route::post('/update-teacher','TeacherController@update');
 Route::get('/edit-teacher','TeacherController@edit');
-// Route::get('/test','TeacherController@deleteTeacher');
+Route::get('/test','ClassRoomController@getClassRoomByDate');
 // Time table
 Route::get('/get-list-timetable','TimeTableController@index');
 Route::get('/edit-timetable','TimeTableController@edit');

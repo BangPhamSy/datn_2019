@@ -36621,8 +36621,13 @@ __webpack_require__(/*! ./teacher.js */ "./resources/assets/js/teacher.js");
 
 __webpack_require__(/*! ./examination.js */ "./resources/assets/js/examination.js");
 
-__webpack_require__(/*! ./staff.js */ "./resources/assets/js/staff.js"); // require('./teacher_class.js');
+__webpack_require__(/*! ./staff.js */ "./resources/assets/js/staff.js");
 
+__webpack_require__(/*! ./teacher_class.js */ "./resources/assets/js/teacher_class.js");
+
+__webpack_require__(/*! ./classroom.js */ "./resources/assets/js/classroom.js");
+
+__webpack_require__(/*! ./revenue.js */ "./resources/assets/js/revenue.js");
 
 try {
   window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -37338,6 +37343,201 @@ $(function () {
 
 /***/ }),
 
+/***/ "./resources/assets/js/classroom.js":
+/*!******************************************!*\
+  !*** ./resources/assets/js/classroom.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  $('.list-room').click(function () {
+    $('#list-room').modal('show');
+  });
+  var tableClassRoom = $('#table-class-room').DataTable({
+    "columnDefs": [{
+      "searchable": true,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    "paging": true,
+    "ajax": "api/get-list-name-room",
+    "columns": [{
+      "data": null
+    }, {
+      "data": "name"
+    }]
+  });
+  tableClassRoom.on('order.dt search.dt', function () {
+    tableClassRoom.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+  $(document).on('click', '.add-list-room', function () {
+    $('#modal-add-room').modal('show');
+    $('#add-room').click(function (e) {
+      e.preventDefault();
+      $name_room = $('#name_room').val();
+      $.ajax({
+        method: 'post',
+        url: 'api/add-room',
+        data: {
+          name: $name_room
+        },
+        success: function success(response) {
+          if (response.code == 1) {
+            tableClassRoom.ajax.reload();
+            toastr.success(response.message);
+            $('#form-add-classroom')[0].reset();
+            $('#modal-add-room').modal('hide');
+          } else {
+            toastr.error(response.message);
+          }
+        }
+      });
+    });
+  }); //Tra cuu
+
+  $('.search-room-by-day').click(function () {
+    $('.press-day-search').removeClass('hidden');
+    $('.press-room-search').addClass('hidden');
+    $('.table-list-class-room-by-room').addClass('hidden');
+  });
+  $('.search-room-by-room').click(function () {
+    $('.press-room-search').removeClass('hidden');
+    $('.press-day-search').addClass('hidden');
+    $('.table-list-class-room').addClass('hidden');
+    $('#select_name_room').empty();
+    $.ajax({
+      dataType: 'json',
+      type: 'get',
+      url: 'api/get-list-name-room',
+      success: function success(response) {
+        $.each(response.data, function () {
+          $("#select_name_room").append("<option  value=" + this.id + ">" + this.name + "</option>");
+        });
+      }
+    });
+  });
+  $(document).on('change', '#select_name_room', function (e) {
+    var classroom_id = $('#select_name_room').val();
+    console.log(classroom_id);
+    $('.table-list-class-room-by-room').removeClass('hidden');
+
+    function getTimeEnd1(data, type, row) {
+      var d = moment(data.time, 'HH:mm:ss').add(data.duration, 'hour').format('HH:mm:ss');
+      return d;
+    }
+
+    var tableClassRoomAfterSearch = $('#list-class-room-by-room').DataTable({
+      "columnDefs": [{
+        "searchable": true,
+        "orderable": false,
+        "targets": 0
+      }],
+      // "order": [[ 1, 'asc' ]],
+      paging: true,
+      showing: false,
+      searching: false,
+      info: false,
+      "bDestroy": true,
+      ajax: {
+        url: "api/get-class-room-by-date",
+        data: {
+          classroom_id: classroom_id
+        }
+      },
+      "columns": [{
+        "data": null
+      }, {
+        "data": "class_name"
+      }, {
+        "data": "date"
+      }, {
+        "data": "time"
+      }, {
+        "data": getTimeEnd1
+      }]
+    });
+    tableClassRoomAfterSearch.on('order.dt search.dt', function () {
+      tableClassRoomAfterSearch.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw(); // tableClassRoomAfterSearch.ajax.reload();
+  });
+  $(document).on('change', '#time_search', function () {
+    var date = $('#time_search').val();
+    var splitDate = date.split("-");
+    var convertDate = splitDate[2] + "/" + splitDate[1] + "/" + splitDate[0]; // var convertDate = date("d-m-y", strtotime(date));
+
+    console.log(convertDate); // $.ajax({
+    //     url: "api/get-class-room-by-date",
+    //     data: {
+    //         date : date
+    //     },
+    //     success: function(response){
+
+    $('.table-list-class-room').removeClass('hidden'); // $('.add-text-date').append(convertDate);
+    //         console.log(response[0]['name']);
+
+    function getTimeEnd1(data, type, row) {
+      var d = moment(data.time, 'HH:mm:ss').add(data.duration, 'hour').format('HH:mm:ss');
+      return d;
+    }
+
+    var tableClassRoomAfterSearch = $('#list-class-room').DataTable({
+      "columnDefs": [{
+        "searchable": true,
+        "orderable": false,
+        "targets": 0
+      }],
+      // "order": [[ 1, 'asc' ]],
+      paging: false,
+      showing: false,
+      searching: false,
+      info: false,
+      "bDestroy": true,
+      ajax: {
+        url: "api/get-class-room-by-date",
+        data: {
+          date: date
+        }
+      },
+      "columns": [{
+        "data": null
+      }, {
+        "data": "name"
+      }, {
+        "data": "time"
+      }, {
+        "data": getTimeEnd1
+      }]
+    });
+    tableClassRoomAfterSearch.on('order.dt search.dt', function () {
+      tableClassRoomAfterSearch.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw(); // console.log(response);
+    // }
+    // });
+  }); // $(document).on('click','.delete-class1',function(){
+  // $('#add-list-room').click(function(){
+  //    console.log('ssss');
+  // })
+});
+
+/***/ }),
+
 /***/ "./resources/assets/js/course.js":
 /*!***************************************!*\
   !*** ./resources/assets/js/course.js ***!
@@ -37631,7 +37831,7 @@ $(function () {
   var url = new URL(url_string);
   var classid = url.searchParams.get("classid"); // var teacher_id_after_log_in = "";
 
-  var teacher_id_after_log_in = $('#teacher_id-by-log_in').val(); // console.log(teacher_id_after_log_in);
+  var teacher_id_after_log_in = $('#get_teacher_id113').val(); // console.log(teacher_id_after_log_in);
 
   var Table = $('#list-exam').DataTable({
     "columnDefs": [{
@@ -37861,36 +38061,38 @@ $(document).on('click', '.button-edit-exam', function (e) {
   $('#estart_day').datetimepicker({
     format: 'Y-m-d H:i',
     minDate: '-1970-01-1'
-  }); // $.ajax({
-  // 	dataType : 'json',
-  // 	type : 'post',
-  // 	url : 'api/edit-exam',
-  // 	data : {id:id},
-  // 	resetForm: true,
-  // 	success: function(response){
-  // 		$('#update-exam-hd').val(id);
-  // 		var classid = response.data['class_id'];
-  // 			$('#ename').val(response.data['name']);
-  // 			$('#estart_day').val(response.data['start_day']);
-  // 			$('#eduration').val(response.data['duration']);
-  // 			$('#enote').val(response.data['note']);
-  // 			$.ajax({
-  // 				dataType : 'json',
-  // 				type : 'get',
-  // 				url : 'api/get-nameclass',
-  // 				success:function(response){
-  // 					$.each(response.data, function () {
-  // 						if(this.id == classid ){
-  // 							$("#ename_class").append("<option id='class_id' value="+this.id+" selected>"+this.name+"</option>")
-  // 						}else{
-  // 							$("#ename_class").append("<option id='class_id' value="+this.id+">"+this.name+"</option>")
-  // 						}
-  // 					});
-  // 				},
-  // 			})
-  // 	}
-  // })
-  //validate form exam
+  });
+  $.ajax({
+    dataType: 'json',
+    type: 'post',
+    url: 'api/edit-exam',
+    data: {
+      id: id
+    },
+    resetForm: true,
+    success: function success(response) {
+      $('#update-exam-hd').val(id);
+      var classid = response.data['class_id'];
+      $('#ename').val(response.data['name']);
+      $('#estart_day').val(response.data['start_day']);
+      $('#eduration').val(response.data['duration']);
+      $('#enote').val(response.data['note']);
+      $.ajax({
+        dataType: 'json',
+        type: 'get',
+        url: 'api/get-nameclass',
+        success: function success(response) {
+          $.each(response.data, function () {
+            if (this.id == classid) {
+              $("#ename_class").append("<option id='class_id' value=" + this.id + " selected>" + this.name + "</option>");
+            } else {
+              $("#ename_class").append("<option id='class_id' value=" + this.id + ">" + this.name + "</option>");
+            }
+          });
+        }
+      });
+    }
+  }); //validate form exam
 
   $('#form-edit-exam').validate(_defineProperty({
     rules: {
@@ -37945,45 +38147,35 @@ $(document).on('click', '.button-edit-exam', function (e) {
   }));
 }); //update exam   
 // Update      
-
-$('#update-exam').click(function (event) {
-  event.preventDefault();
-  var id = $('#update-exam-hd').val();
-  var name = $('#ename').val();
-  var start_day = $('#estart_day').val();
-  var duration = $('#eduration').val();
-  var note = $('#enote').val();
-  var class_id = $('#ename_class').val();
-
-  if ($('#form-edit-exam').valid()) {
-    $.ajax({
-      url: "api/update-exam",
-      type: "POST",
-      data: {
-        id: id,
-        name: name,
-        start_day: start_day,
-        duration: duration,
-        note: note,
-        class_id: class_id
-      },
-      dataType: "json",
-      success: function success(response) {
-        $("#edit-exam").modal("hide");
-        $('#list-exam').DataTable().ajax.reload();
-
-        if (response.code == 1) {
-          toastr.success('Sửa thành công!');
-          $('#form-edit-exam').trigger("reset");
-        } else {
-          toastr.error('Lỗi không thể sửa bản ghi!');
-        }
-
-        document.getElementById("form-edit-exam").reset();
-      }
-    });
-  }
-}); //set-Point
+// 	$('#update-exam').click(function(event){
+// 	event.preventDefault();
+// 	var id = $('#update-exam-hd').val();
+// 	var name  = $('#ename').val();
+// 	var start_day = $('#estart_day').val();
+// 	var duration = $('#eduration').val();
+// 	var note = $('#enote').val();
+// 	var class_id = $('#ename_class').val();
+// 	if($('#form-edit-exam').valid()){
+// 		$.ajax({
+// 			url :"api/update-exam",
+// 			type: "POST",
+// 			data : {id:id,name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
+// 			dataType:"json",
+// 			success:function(response){ 
+// 				$("#edit-exam").modal("hide");
+// 				$('#list-exam').DataTable().ajax.reload();
+// 				if(response.code == 1){
+// 				toastr.success('Sửa thành công!');
+// 				$('#form-edit-exam').trigger("reset");
+// 			}else{
+// 					toastr.error('Lỗi không thể sửa bản ghi!');
+// 				}
+// 	document.getElementById("form-edit-exam").reset();
+// 			}
+// 			})
+// 		}  
+// })          
+//set-Point
 
 $(document).on('click', '.button-set-point', function () {
   $('#model-add-setPoint').modal('show');
@@ -38027,7 +38219,7 @@ $(document).on('click', '.button-set-point', function () {
       cell.innerHTML = i + 1;
     });
   }).draw();
-}); // Thêm điểm
+}); //Thêm điểm
 
 $('#setPoint').on('click', function () {
   var student_id = [];
@@ -38069,7 +38261,7 @@ $('#setPoint').on('click', function () {
   } else {
     toastr.error('Lỗi chưa nhập đủ điểm cho học sinh!');
   }
-}); // Xem Điểm
+}); //Xem Điểm
 
 $(document).on('click', '.button-get-point', function () {
   $('#model-get-Point').modal('show');
@@ -38102,62 +38294,57 @@ $(document).on('click', '.button-get-point', function () {
       }
     }]
   });
-}); //update điểm
+}); // //update điểm
+// if(teacher_id_after_log_in){
 
-if (teacher_id_after_log_in) {
-  $(document).on('click', '.button-update-point', function () {
-    var student_id = $(this).attr("student_id");
-    var examination_id = $('#get_examid').val();
-    var point = $('#' + student_id).val();
-    $('#form-add-exam').validate(_defineProperty({
-      rules: {
-        point: {
-          required: true
-        }
-      },
-      messages: {
-        point: {
-          required: "Không được đế trống"
-        }
-      },
-      highlight: function highlight(element, errorClass) {
-        $(element).closest(".form-group").addClass("has-error");
-      },
-      unhighlight: function unhighlight(element, errorClass) {
-        $(element).closest(".form-group").removeClass("has-error");
-      },
-      errorPlacement: function errorPlacement(error, element) {
-        error.appendTo(element.parent().next());
+$(document).on('click', '.button-update-point', function () {
+  var student_id = $(this).attr("student_id");
+  var examination_id = $('#get_examid').val();
+  var point = $('#' + student_id).val();
+  $('#form-add-exam').validate(_defineProperty({
+    rules: {
+      point: {
+        required: true
       }
-    }, "errorPlacement", function errorPlacement(error, element) {
-      if (element.attr("type") == "checkbox") {
-        element.closest(".form-group").children(0).prepend(error);
-      } else error.insertAfter(element);
-    }));
-
-    if ($('#form-edit-exam').valid()) {
-      $.ajax({
-        url: "api/update-point",
-        type: "POST",
-        data: {
-          examination_id: examination_id,
-          student_id: student_id,
-          point: point
-        },
-        dataType: "json",
-        success: function success(response) {
-          $('#get-point').DataTable().ajax.reload();
-
-          if (response.code == 1) {
-            toastr.success('Sửa thành công!');
-          } else {
-            toastr.error('Lỗi không thể sửa bản ghi!');
-          }
-        }
-      });
+    },
+    messages: {
+      point: {
+        required: "Không được đế trống"
+      }
+    },
+    highlight: function highlight(element, errorClass) {
+      $(element).closest(".form-group").addClass("has-error");
+    },
+    unhighlight: function unhighlight(element, errorClass) {
+      $(element).closest(".form-group").removeClass("has-error");
+    },
+    errorPlacement: function errorPlacement(error, element) {
+      error.appendTo(element.parent().next());
     }
-  });
-}
+  }, "errorPlacement", function errorPlacement(error, element) {
+    if (element.attr("type") == "checkbox") {
+      element.closest(".form-group").children(0).prepend(error);
+    } else error.insertAfter(element);
+  }));
+}); // 		if($('#form-edit-exam').valid()){
+// 			$.ajax({
+// 				url :"api/update-point",
+// 				type: "POST",
+// 				data : {examination_id: examination_id,student_id: student_id,point: point},
+// 				dataType:"json",
+// 				success:function(response){ 
+// 					$('#get-point').DataTable().ajax.reload();
+// 					if(response.code == 1){
+// 					toastr.success('Sửa thành công!');
+// 				}else{
+// 						toastr.error('Lỗi không thể sửa bản ghi!');
+// 					}
+// 				}
+// 			})
+// 		}
+// 	}
+// 	}
+// })
 
 /***/ }),
 
@@ -38554,6 +38741,138 @@ $(function () {
         }
       });
     });
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/assets/js/revenue.js":
+/*!****************************************!*\
+  !*** ./resources/assets/js/revenue.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 2
+  }); // function getTimeEnd1(data, type, row) {
+  //     var d = moment(data.class_time_start,'HH:mm:ss').add(data.class_duration,'hour').format('HH:mm:ss');
+  //     return d;
+  // }
+
+  function convertCurrency(data, type, row) {
+    var currency = formatter.format(data.fee);
+    return currency;
+  }
+
+  var tableCourse = $('#show-list-course').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    "ajax": "api/get-list-course",
+    "bDestroy": true,
+    "columns": [{
+      "data": "id"
+    }, {
+      "data": "code"
+    }, {
+      "data": "name"
+    }, {
+      "data": function data(_data, type, full) {
+        if (_data.level == 0) {
+          return "Cơ bản";
+        } else return "Nâng cao";
+      }
+    }, {
+      "data": "curriculum"
+    }, {
+      "data": "duration"
+    }, {
+      "data": convertCurrency
+    }, {
+      "data": function data(_data2, type, full) {
+        return '<button type="button" class="show-revenue btn btn-success" course_id="' + _data2.id + '"><i title="Xem doanh thu" class="fa fa-usd" aria-hidden="true"></i></button>\
+                <button course_id="' + _data2.id + '" type="button"   class="detail-revenue btn btn-info"><i class="fa fa-info" aria-hidden="true"></i></button>';
+      }
+    }]
+  });
+  tableCourse.on('order.dt search.dt', function () {
+    tableCourse.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+  $(document).on('click', '.show-revenue', function () {
+    var course_id = $(this).attr('course_id');
+    $.ajax({
+      url: 'api/get-list-revenue',
+      data: {
+        course_id: course_id
+      },
+      success: function success(response) {
+        var currency = formatter.format(response);
+        toastr.info("Doanh thu của khóa học hiện tại là : " + currency);
+      }
+    });
+  });
+  $(document).on('click', '.detail-revenue', function () {
+    $('.table-list-course').addClass('hidden');
+    $('.back').removeClass('hidden');
+
+    function totalFeeClass(data, type, row) {
+      var total_money = data.class_size * data.fee;
+      var convertCurrency = formatter.format(total_money);
+      return convertCurrency;
+    }
+
+    var course_id = $(this).attr('course_id');
+    var tableRevenueClass = $('#show-revenue-class').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      "order": [[1, 'asc']],
+      ajax: {
+        url: 'api/get-list-revenue-class',
+        data: {
+          course_id: course_id
+        }
+      },
+      "bDestroy": true,
+      "columns": [{
+        "data": "id"
+      }, {
+        "data": "class_name"
+      }, {
+        "data": "class_size"
+      }, {
+        "data": "start_date"
+      }, {
+        "data": totalFeeClass
+      }]
+    });
+    tableCourse.on('order.dt search.dt', function () {
+      tableCourse.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
+    $('.table-revenue-class').removeClass('hidden');
+  });
+  $(document).on('click', '.back', function () {
+    $('.table-list-course').removeClass('hidden');
+    $('.back').addClass('hidden');
   });
 });
 
@@ -39751,6 +40070,149 @@ $(function () {
 
 /***/ }),
 
+/***/ "./resources/assets/js/teacher_class.js":
+/*!**********************************************!*\
+  !*** ./resources/assets/js/teacher_class.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var teacher_id = $('#get_teacher_id').val(); // console.log(user_id);
+
+  var tableTeacherClass = $('#list_class_of_teacher').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    ajax: {
+      method: "get",
+      url: 'api/get-class-list-of-teacher',
+      data: {
+        teacher_id: teacher_id
+      },
+      dataSrc: 'data'
+    },
+    columns: [{
+      data: null
+    }, {
+      data: "name",
+      name: "name"
+    }, {
+      data: "class_code",
+      name: "class_code"
+    }, {
+      data: "class_size",
+      name: "class_size"
+    }, {
+      data: "start_date",
+      name: "start_date"
+    }, {
+      data: "room_name",
+      name: "room_name"
+    }, {
+      render: function render(data, type, row) {
+        var arr_date = row.schedule.split(",");
+        var days = "";
+
+        for (var i = 0; i < arr_date.length - 1; i++) {
+          switch (Number(arr_date[i])) {
+            case 0:
+              day = "Chủ nhật";
+              break;
+
+            case 1:
+              day = "Thứ hai";
+              break;
+
+            case 2:
+              day = "Thứ ba";
+              break;
+
+            case 3:
+              day = "Thứ tư";
+              break;
+
+            case 4:
+              day = "Thứ năm";
+              break;
+
+            case 5:
+              day = "Thứ sáu";
+              break;
+
+            case 6:
+              day = "Thứ bảy";
+              break;
+          }
+
+          days += day + " ";
+        }
+
+        return days;
+      }
+    }, {
+      data: "time_start",
+      name: "time_start"
+    }, // { data:  "status",       name:"status"},
+    // { data: "action",        name:"class_size" },
+    {
+      render: function render(data, type, row) {
+        switch (row.status) {
+          case 0:
+            return '<span>Đang tuyển sinh</span>';
+
+          case 1:
+            return '<span>Đang học</span>';
+
+          case 2:
+            return '<span>Đã kết thúc</span>';
+        }
+      }
+    }, // },
+    {
+      "render": function render(data, type, row) {
+        // if(role_id==2) {
+        return '<button type="button" class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                        <button type="button" class_id="' + row.id + '" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                        '; // }
+      }
+    }]
+  });
+  tableTeacherClass.on('order.dt search.dt', function () {
+    tableTeacherClass.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw(); // $.ajax({
+  //     method : "get",
+  //     url : 'api/get-teacher-name-by-user',
+  //     data : { 
+  //         user_id : user_id
+  //     },
+  //     success : function(response){
+  //         // var teachers_id;
+  //         teachers_id = response.data.teacher_id;
+  //         console.log(response);
+  //         // $('#get_teacher_id2').val(teachers_id);
+  //     }
+  // });
+  // var abc = $('#get_teacher_id2').val();
+  // console.log(abc);
+  // function getTeacherID(id){
+  //     return id;
+  // };
+  // teachers_id =getData();
+  // console.log(teachers_id);
+  // console.log(teacher_role_id);
+});
+
+/***/ }),
+
 /***/ "./resources/assets/js/timetable.js":
 /*!******************************************!*\
   !*** ./resources/assets/js/timetable.js ***!
@@ -39832,7 +40294,10 @@ $(function () {
     }, {
       'data': null,
       'render': function render(data, type, row) {
-        return '<button timetableID=\"' + row.id + '\" title=\"Sửa thời khóa biểu\"' + 'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" ' + 'aria-hidden=\"true\"></i>' + '</button> <button classID=\"' + row.class_id + '\" timetableID=\"' + row.id + '\" ' + 'class="rollCallPage btn btn-success" ' + 'title="Điểm danh"><i class="fa fa-sticky-note" ' + 'aria-hidden="true"></i></button>';
+        // return '<button timetableID=\"'+row.id+'\" title=\"Sửa thời khóa biểu\"'+
+        // 'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" '+
+        // 'aria-hidden=\"true\"></i>'+
+        return '</button> <button classID=\"' + row.class_id + '\" timetableID=\"' + row.id + '\" ' + 'class="rollCallPage btn btn-success" ' + 'title="Điểm danh"><i class="fa fa-sticky-note" ' + 'aria-hidden="true"></i></button>';
       }
     }]
   });

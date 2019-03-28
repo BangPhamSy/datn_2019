@@ -56,10 +56,10 @@ $(function(){
             {
                 'data': null,
                 'render': function (data, type, row) {
-                    return '<button timetableID=\"'+row.id+'\" title=\"Sửa thời khóa biểu\"'+
-                    'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" '+
-                    'aria-hidden=\"true\"></i>'+
-                    '</button> <button classID=\"'+row.class_id+'\" timetableID=\"'+row.id+'\" '+
+                    // return '<button timetableID=\"'+row.id+'\" title=\"Sửa thời khóa biểu\"'+
+                    // 'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" '+
+                    // 'aria-hidden=\"true\"></i>'+
+                    return '</button> <button classID=\"'+row.class_id+'\" timetableID=\"'+row.id+'\" '+
                     'class="rollCallPage btn btn-success" '+
                     'title="Điểm danh"><i class="fa fa-sticky-note" '+
                     'aria-hidden="true"></i></button>'

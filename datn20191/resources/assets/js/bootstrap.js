@@ -31,9 +31,9 @@ require('./classes.js');
 require('./teacher.js');
 require('./examination.js');
 require('./staff.js');
-
-
-// require('./teacher_class.js');
+require('./teacher_class.js');
+require('./classroom.js');
+require('./revenue.js');
 
 try {
     window.$ = window.jQuery = require('jquery');
