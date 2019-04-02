@@ -35,6 +35,10 @@ Route::get('/teacher_class',function(){
 Route::get('/registration_class',function(){
     return view('class/registration_class');
 });
+//Statistic
+Route::get('/statistic',function(){
+    return view('statistic/statistic');
+});
 //ClassRoom
 Route::get('/classroom',function(){
     return view('classroom/manage_room');

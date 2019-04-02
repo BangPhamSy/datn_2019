@@ -10,7 +10,7 @@ $(function(){
     //     return d;
     // }
     function convertCurrency(data, type ,row){
-        var currency = formatter.format(data.fee);
+        var currency = formatter.format(data.total_revenue);
         return currency;
     }
       var tableCourse = $('#show-list-course').DataTable({
@@ -20,7 +20,7 @@ $(function(){
             "targets": 0
         } ],
         "order": [[ 1, 'asc' ]],
-        "ajax":"api/get-list-course",
+        "ajax":"api/get-list-total-revenue",
         "bDestroy": true,
         "columns": [
             {"data":"id"},
@@ -37,12 +37,12 @@ $(function(){
             },
             { "data": "curriculum" },
             { "data": "duration" },
+            { "data":"students"},
             { "data": convertCurrency },
             {
               "data":function(data, type, full) 
               {
-                return '<button type="button" class="show-revenue btn btn-success" course_id="'+data.id+'"><i title="Xem doanh thu" class="fa fa-usd" aria-hidden="true"></i></button>\
-                <button course_id="'+data.id+'" type="button"   class="detail-revenue btn btn-info"><i class="fa fa-info" aria-hidden="true"></i></button>' 
+                 return '<button course_id="'+data.id+'" type="button"   class="detail-revenue btn btn-info"><i class="fa fa-info" aria-hidden="true"></i></button>' 
               }
             }
         ]
@@ -66,11 +66,13 @@ $(function(){
     });
     $(document).on('click','.detail-revenue',function(){
         $('.table-list-course').addClass('hidden');
-        $('.back').removeClass('hidden');
         function totalFeeClass(data, type, row){
-            var total_money = data.class_size*data.fee;
-            var convertCurrency = formatter.format(total_money);
+            var convertCurrency = formatter.format(data.total_revenue_class);
             return convertCurrency;
+        }
+        function showClassSize(data,type,row){
+            var students = data.students;
+            return students+"/"+data.class_size;
         }
         var course_id =$(this).attr('course_id');
         var tableRevenueClass = $('#show-revenue-class').DataTable({
@@ -86,9 +88,9 @@ $(function(){
             },
             "bDestroy": true,
             "columns": [
-                {"data":"id"},
+                // { "data":null},
                 { "data": "class_name" },
-                { "data": "class_size" },
+                { "data": showClassSize },
                 { "data": "start_date" },
                 { "data":totalFeeClass },
             ]
@@ -99,6 +101,12 @@ $(function(){
                 } );
         } ).draw();
         $('.table-revenue-class').removeClass('hidden');
+        $('.back').removeClass('hidden');
+        $('.back').click(function(){
+            $('.table-revenue-class').addClass('hidden');
+        })
+        
+        
         
     });
     $(document).on('click','.back',function(){

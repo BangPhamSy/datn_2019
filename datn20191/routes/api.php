@@ -94,6 +94,11 @@ Route::get('get-listpointexam','PointExamController@getListPointExam');
 Route::get('get-liststudent','PointExamController@getListStudent');
 Route::get('get-pointexam','PointExamController@getPointExam');
 Route::post('update-point','PointExamController@updatePoint');
+//Achievement
+Route::get('/get-achievement-student','AchievementController@getAchievementStudent');
+
+
+//Staff
 
 Route::post('/add-staff', 'StaffController@addStaff');
 Route::get('/get-list-staff',  'StaffController@getListStaff')->name('getListStaff');

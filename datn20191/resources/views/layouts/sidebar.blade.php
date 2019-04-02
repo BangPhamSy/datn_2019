@@ -13,11 +13,11 @@
           </div>
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">MAIN NAVIGATION</li>
+            <li class="header">Danh mục</li>
             @if(Auth::User()->role_id==1)
-                  <li class="treeview">
-                    <a href="#">
-                      <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                  <li class="">
+                  <a href="{{asset('statistic')}}">
+                      <i class="fa fa-dashboard"></i> <span>Thống kê</span>
                     </a>
                   </li>
                   <li class="treeview">
@@ -64,7 +64,7 @@
                   <li class="">
                     <a href="{{ asset('student') }}">
                       <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-                      <span>Quản lý tuyển sinh</span>
+                      <span>Quản lý học viên</span>
                     </a>
                   </li>
                   <li class="">
@@ -93,7 +93,7 @@
                   </li>
             @elseif(Auth::User()->role_id==2)
               <li class="">
-                <a href="{{ asset('teacher_class') }}">
+                <a href="{{ asset('class') }}">
                   <i class="fa fa-dashboard"></i> <span>Danh sách các lớp</span>
                 </a>
               </li>

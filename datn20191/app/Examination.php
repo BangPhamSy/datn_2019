@@ -46,14 +46,17 @@ class Examination extends Model
      * @return createExam
      */
         public static function createExam($createEx){
-        $createExam = Examination::insert(['name'=> $createEx['name'],
-                                        'start_day'=>$createEx['start_day'],
-                                        'duration'=> $createEx['duration'],
-                                        'note'=>$createEx['note'],
-                                        'class_id'=>$createEx['class_id'],
-                                        'created_at'=>  date('Y-m-d H:i:s'),
-                                        'updated_at' =>  date('Y-m-d H:i:s')
-                                        ]);
+        $createExam = Examination::insert(
+            [   
+                'name'=> $createEx['name'],
+                'start_day'=>$createEx['start_day'],
+                'duration'=> $createEx['duration'],
+                'note'=>$createEx['note'],
+                'class_id'=>$createEx['class_id'],
+                'created_at'=>  date('Y-m-d H:i:s'),
+                'updated_at' =>  date('Y-m-d H:i:s')
+            ]
+        );
         return $createExam;
     }
     /**

@@ -36601,15 +36601,13 @@ $.ajaxSetup({
   }
 });
 
-__webpack_require__(/*! ./student.js */ "./resources/assets/js/student.js");
+__webpack_require__(/*! ./student.js */ "./resources/assets/js/student.js"); // require('./timetable.js');
 
-__webpack_require__(/*! ./timetable.js */ "./resources/assets/js/timetable.js");
 
 __webpack_require__(/*! ./registration_class.js */ "./resources/assets/js/registration_class.js");
 
-__webpack_require__(/*! ./timetable_student.js */ "./resources/assets/js/timetable_student.js");
+__webpack_require__(/*! ./timetable_student.js */ "./resources/assets/js/timetable_student.js"); // require('./rollcall.js');
 
-__webpack_require__(/*! ./rollcall.js */ "./resources/assets/js/rollcall.js");
 
 __webpack_require__(/*! ./holiday.js */ "./resources/assets/js/holiday.js");
 
@@ -36677,7 +36675,7 @@ if (token) {
   !*** ./resources/assets/js/classes.js ***!
   \****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -36692,155 +36690,289 @@ $(function () {
   // }
   // window.onload = updateStatus;
   var role_id = $('#get_role').val();
-  console.log(role_id);
-  var tableClass = $('#list_class').DataTable({
-    "columnDefs": [{
-      "searchable": false,
-      "orderable": false,
-      "targets": 0
-    }],
-    "order": [[1, 'asc']],
-    ajax: {
-      url: 'api/get-list-class',
-      dataSrc: 'data'
-    },
-    columns: [{
-      data: null
-    }, {
-      data: "name",
-      name: "name"
-    }, {
-      data: "class_code",
-      name: "class_code"
-    }, {
-      data: "teacher_name",
-      name: "teacher_name"
-    }, {
-      data: "class_size",
-      name: "class_size"
-    }, {
-      data: "start_date",
-      name: "start_date"
-    }, {
-      render: function render(data, type, row) {
-        var arr_date = row.schedule.split(",");
-        var days = "";
+  var teacher_id = $('#get_teacher_id').val();
 
-        for (var i = 0; i < arr_date.length - 1; i++) {
-          switch (Number(arr_date[i])) {
+  if (teacher_id) {
+    var tableClass = $('#list_class').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      "order": [[1, 'asc']],
+      ajax: {
+        method: "get",
+        url: 'api/get-class-list-of-teacher',
+        data: {
+          teacher_id: teacher_id
+        },
+        dataSrc: 'data'
+      },
+      "bDestroy": true,
+      columns: [{
+        data: null
+      }, {
+        data: "name",
+        name: "name"
+      }, {
+        data: "class_code",
+        name: "class_code"
+      }, {
+        data: "teacher_name",
+        name: "teacher_name"
+      }, {
+        data: "class_size",
+        name: "class_size"
+      }, {
+        data: "start_date",
+        name: "start_date"
+      }, {
+        data: "room_name",
+        name: "room_name"
+      }, {
+        render: function render(data, type, row) {
+          var arr_date = row.schedule.split(",");
+          var days = "";
+
+          for (var i = 0; i < arr_date.length - 1; i++) {
+            switch (Number(arr_date[i])) {
+              case 0:
+                day = "Chủ nhật";
+                break;
+
+              case 1:
+                day = "Thứ hai";
+                break;
+
+              case 2:
+                day = "Thứ ba";
+                break;
+
+              case 3:
+                day = "Thứ tư";
+                break;
+
+              case 4:
+                day = "Thứ năm";
+                break;
+
+              case 5:
+                day = "Thứ sáu";
+                break;
+
+              case 6:
+                day = "Thứ bảy";
+                break;
+            }
+
+            days += day + " ";
+          }
+
+          return days;
+        }
+      }, {
+        data: "time_start",
+        name: "time_start"
+      }, // { data:  "status",       name:"status"},
+      // { data: "action",        name:"class_size" },
+      {
+        render: function render(data, type, row) {
+          switch (row.status) {
             case 0:
-              day = "Chủ nhật";
+              return '<span>Đang tuyển sinh</span>';
+
+            case 1:
+              return '<span>Đang học</span>';
+
+            case 2:
+              return '<span>Đã kết thúc</span>';
+          }
+        }
+      }, // },
+      {
+        "render": function render(data, type, row) {
+          // if(role_id==2) {
+          return '<button type="button" class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                            <button type="button" class_id="' + row.id + '" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                            '; // }
+        }
+      }]
+    });
+    tableClass.on('order.dt search.dt', function () {
+      tableClass.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
+  } else {
+    var tableClass = $('#list_class').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      "order": [[1, 'asc']],
+      ajax: {
+        url: 'api/get-list-class',
+        dataSrc: 'data'
+      },
+      columns: [{
+        data: null
+      }, {
+        data: "name",
+        name: "name"
+      }, {
+        data: "class_code",
+        name: "class_code"
+      }, {
+        data: "teacher_name",
+        name: "teacher_name"
+      }, {
+        data: "class_size",
+        name: "class_size"
+      }, {
+        data: "start_date",
+        name: "start_date"
+      }, {
+        render: function render(data, type, row) {
+          var arr_date = row.schedule.split(",");
+          var days = "";
+
+          for (var i = 0; i < arr_date.length - 1; i++) {
+            switch (Number(arr_date[i])) {
+              case 0:
+                day = "Chủ nhật";
+                break;
+
+              case 1:
+                day = "Thứ hai";
+                break;
+
+              case 2:
+                day = "Thứ ba";
+                break;
+
+              case 3:
+                day = "Thứ tư";
+                break;
+
+              case 4:
+                day = "Thứ năm";
+                break;
+
+              case 5:
+                day = "Thứ sáu";
+                break;
+
+              case 6:
+                day = "Thứ bảy";
+                break;
+            }
+
+            days += day + " ";
+          }
+
+          return days;
+        }
+      }, {
+        data: "time_start",
+        name: "time_start"
+      }, {
+        data: "room_name",
+        name: "room_name"
+      }, {
+        "render": function render(data, type, row) {
+          switch (row.status) {
+            case 0:
+              return "Đang tuyển sinh"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+              //             <option value="0" selected>Đang tuyển sinh</option>\
+              //             <option value="1">Đang học</option>\
+              //             <option value="2">Đã kết thúc</option>\
+              //             <option value="3">Tạm dừng</option>\
+              //         </select>'+
+              //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+
               break;
 
             case 1:
-              day = "Thứ hai";
+              return "Đang học"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+              //             <option value="0" >Đang tuyển sinh</option>\
+              //             <option value="1" selected>Đang học</option>\
+              //             <option value="2">Đã kết thúc</option>\
+              //             <option value="3">Tạm dừng</option>\
+              //         </select>'+
+              //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+
               break;
 
             case 2:
-              day = "Thứ ba";
+              return "Đã kết thúc"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+              //             <option value="0" selected>Đang tuyển sinh</option>\
+              //             <option value="1">Đang học</option>\
+              //             <option value="2" selected>Đã kết thúc</option>\
+              //             <option value="3">Tạm dừng</option>\
+              //         </select>'+
+              //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
+
               break;
 
             case 3:
-              day = "Thứ tư";
-              break;
+              return "Tạm dừng"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+              //             <option value="0" selected>Đang tuyển sinh</option>\
+              //             <option value="1">Đang học</option>\
+              //             <option value="2">Đã kết thúc</option>\
+              //             <option value="3" selected>Tạm dừng</option>\
+              //         </select>'+
+              //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
 
-            case 4:
-              day = "Thứ năm";
-              break;
-
-            case 5:
-              day = "Thứ sáu";
-              break;
-
-            case 6:
-              day = "Thứ bảy";
               break;
           }
-
-          days += day + " ";
         }
+      }, {
+        "render": function render(data, type, row) {
+          if (role_id == 2) {
+            return '<button type="button" class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                            <button type="button" class_id="' + row.id + '" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                            ';
+          } // return '<button class_id1=\"'+row.id+'\" title=\"thêm học sinh vào lớp\"'+
+          //     'class=\"btn btn-primary add-student-class\"><i class=\"fa fa-plus-square\" aria-hidden=\"true\"></i>'+
+          //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem danh sách\"'+
+          //     'class=\"btn btn-danger list-student-class\"><i class=\"fa fa-address-book-o\"aria-hidden=\"true\"></i>'+
+          //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem danh sách kì thi\" '+
+          //     'class=\"show-list-exams btn btn-info\"><i class=\"fa fa-graduation-cap\" aria-hidden=\"true\"></i>'+
+          //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem Thời Khóa Biểu\"'+
+          //     'class=\"show-timetable btn btn-success\"><i class=\"fa fa-book\" aria-hidden=\"true\"></i>'+
+          //     '</button> <button class_id=\"'+row.id+'\" title=\"Xóa lớp\" '+
+          //     'class=\" delete-class1 btn btn-danger\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>'+
+          //     '</button> <button class_id=\"'+row.id+'\" title=\"Sửa thông tin lớp\" '+
+          //     'class=\"edit-class btn btn-warning\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>'
 
-        return days;
-      }
-    }, {
-      data: "time_start",
-      name: "time_start"
-    }, {
-      data: "room_name",
-      name: "room_name"
-    }, {
-      "render": function render(data, type, row) {
-        switch (row.status) {
-          case 0:
-            return "Đang tuyển sinh"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-            //             <option value="0" selected>Đang tuyển sinh</option>\
-            //             <option value="1">Đang học</option>\
-            //             <option value="2">Đã kết thúc</option>\
-            //             <option value="3">Tạm dừng</option>\
-            //         </select>'+
-            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
 
-            break;
-
-          case 1:
-            return "Đang học"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-            //             <option value="0" >Đang tuyển sinh</option>\
-            //             <option value="1" selected>Đang học</option>\
-            //             <option value="2">Đã kết thúc</option>\
-            //             <option value="3">Tạm dừng</option>\
-            //         </select>'+
-            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-
-            break;
-
-          case 2:
-            return "Đã kết thúc"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-            //             <option value="0" selected>Đang tuyển sinh</option>\
-            //             <option value="1">Đang học</option>\
-            //             <option value="2" selected>Đã kết thúc</option>\
-            //             <option value="3">Tạm dừng</option>\
-            //         </select>'+
-            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-
-            break;
-
-          case 3:
-            return "Tạm dừng"; // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-            //             <option value="0" selected>Đang tuyển sinh</option>\
-            //             <option value="1">Đang học</option>\
-            //             <option value="2">Đã kết thúc</option>\
-            //             <option value="3" selected>Tạm dừng</option>\
-            //         </select>'+
-            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-
-            break;
+          return '<button class_id1="' + row.id + '" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
+                        <button  class_id="' + row.id + '" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\
+                        <button  class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                        <button  style="margin-top:5px" style="margin-top:5px" class_id="' + row.id + '" class=" show-list-exams btn btn-info"><i title="Xem danh sách kì thi" class="fa fa-graduation-cap" aria-hidden="true"></i>\
+                        <button style="margin-top:5px" class_id="' + row.id + '" type="button" class="edit-class btn btn-warning"><i title="Sửa thông tin lớp" class="fa fa-pencil-square-o" aria-hidden="true"></i></button>\
+                        <button style="margin-top:5px" class_id="' + row.id + '" type="button" class=" delete-class1 btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
         }
-      }
-    }, {
-      "render": function render(data, type, row) {
-        if (role_id == 2) {
-          return '<button type="button" class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
-                        <button type="button" class_id="' + row.id + '" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
-                        ';
-        }
-
-        return '<button type="button" class_id1="' + row.id + '" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
-                    <button type="button" class_id="' + row.id + '" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\
-                    <button type="button" class_id="' + row.id + '" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
-                    <button type="button" class_id="' + row.id + '" class=" show-list-exams btn btn-info"><i title="Xem danh sách kì thi" class="fa fa-graduation-cap" aria-hidden="true"></i>\
-                    <button class_id="' + row.id + '" type="button" class="edit-class btn btn-warning"><i title="Sửa thông tin lớp" class="fa fa-pencil-square-o" aria-hidden="true"></i></button>\
-                    <button class_id="' + row.id + '" type="button" class=" delete-class1 btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
-      }
-    }]
-  });
-  tableClass.on('order.dt search.dt', function () {
-    tableClass.column(0, {
-      search: 'applied',
-      order: 'applied'
-    }).nodes().each(function (cell, i) {
-      cell.innerHTML = i + 1;
+      }]
     });
-  }).draw();
+    tableClass.on('order.dt search.dt', function () {
+      tableClass.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
+  }
+
+  $('.button-add').addClass('hidden'); // $('#timetable').addClass('hidden');
+  // console.log(role_id);
+  // if(role)
+
   $('#form-create-class').validate(_defineProperty({
     rules: {
       "name": {
@@ -37291,37 +37423,131 @@ $(function () {
         });
       }
     });
+  }); // $(document).on('click','.show-timetable',function(){
+  //     var class_id = $(this).attr('class_id');
+  //     $('.table-class').addClass('hidden');
+  //     $('#button-create-class').addClass('hidden');
+  //     $('#timetable').removeClass('hidden');
+  //     function getTimeEnd(data, type, row) {
+  //         var d = moment(data.time,'HH:mm:ss').add(data.duration,'hour').format('HH:mm:ss');
+  //         return d;
+  //    }
+  //    function getDayAndDate(data, type, dataToSet) {
+  //        return data.date + "<br>" + data.week_days;
+  //    }
+  //    var id = class_id;
+  //    var tableTimetable = $('#timeTableClass').DataTable({
+  //        "columnDefs": [ {
+  //            "searchable": false,
+  //            "orderable": false,
+  //            "targets": 0
+  //        } ],
+  //        "order": [[ 1, 'asc' ]],
+  //        ajax: {
+  //            url: 'api/get-list-timetable',
+  //            data: {id:id},
+  //            dataSrc: 'data',
+  //        },
+  //        "bDestroy" :true,
+  //        columns: [
+  //            { data: null},
+  //            { data: getDayAndDate,
+  //                render : function(data, type, row) {
+  //                    var day;
+  //                    switch (row.week_days) {
+  //                        case 0:
+  //                            day = "Chủ nhật";
+  //                            break;
+  //                        case 1:
+  //                            day = "Thứ hai";
+  //                            break;
+  //                        case 2:
+  //                            day = "Thứ ba";
+  //                            break;
+  //                        case 3:
+  //                            day = "Thứ tư";
+  //                            break;
+  //                        case 4:
+  //                            day = "Thứ năm";
+  //                            break;
+  //                        case 5:
+  //                            day = "Thứ sáu";
+  //                            break;
+  //                        case  6:
+  //                            day = "Thứ bảy";
+  //                    }
+  //                    return row.date + "<br>" + day;
+  //                },
+  //            },
+  //            { data: 'time', name: 'time'},
+  //            { data: getTimeEnd},
+  //            {
+  //                'data': null,
+  //                'render': function (data, type, row) {
+  //                    return '</button> <button classID=\"'+row.class_id+'\" timetableID=\"'+row.id+'\" '+
+  //                    'class="rollCallPage btn btn-success" '+
+  //                    'title="Điểm danh"><i class="fa fa-sticky-note" '+
+  //                    'aria-hidden="true"></i></button>'
+  //                }
+  //            },
+  //        ]
+  //    });
+  //    tableTimetable.on( 'order.dt search.dt', function () {
+  //        tableTimetable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+  //            cell.innerHTML = i+1;
+  //        } );
+  //    } ).draw();
+  // });
+
+  __webpack_require__(/*! ./timetable.js */ "./resources/assets/js/timetable.js");
+
+  __webpack_require__(/*! ./examination.js */ "./resources/assets/js/examination.js"); // $(document).on('click','.show-list-exams',function(){
+  //     var class_id = $(this).attr('class_id');
+  //     $('.table-class').addClass('hidden');
+  //     $('#button-create-class').addClass('hidden');
+  //     $('.table-exam').removeClass('hidden');
+  //     window.location.href= asset+ "exam?classid="+class_id+""
+  // });
+
+
+  $(document).on('click', '.back-class', function () {
+    $('.table-class').removeClass('hidden');
+    $('#button-create-class').removeClass('hidden');
+    $('.timetable').addClass('hidden');
+    $('.table-exam').addClass('hidden'); // $('.button-add').addClass('hidden');
   });
-  $(document).on('click', '.show-timetable', function () {
-    var class_id = $(this).attr('class_id');
-    window.location.href = asset + "timetable?classid=" + class_id + "";
-  });
-  $(document).on('click', '.show-list-exams', function () {
-    var class_id = $(this).attr('class_id');
-    window.location.href = asset + "exam?classid=" + class_id + "";
-  }); // function ChangeStatus(){
-  //     var cars = [];
-  //     $(".statuschange").each(function() {
-  //         cars.push($(this).val());
-  //     });
-  //     for(var i = 0; i <= cars.length; i++){
-  //         let car = cars[i];
-  //         $(document).on('change','#status_class'+car+'',function(e){
-  //             e.preventDefault();
-  //             var id = $(this).attr('class_id');
-  //             let status = $('select[id=status_class'+car+']').val()
-  //             $.ajax({
-  //                 type: 'post',
-  //                 url: "api/update-status-class",
-  //                 data: {id:id,status:status},
-  //                 success: function(response){
-  //                     toastr.success('Cập nhật thành công');
-  //                 }
-  //             })
-  //         })
-  //     }
-  // }
-  // window.onload = ChangeStatus;
+
+  function ChangeStatus() {
+    var cars = [];
+    $(".statuschange").each(function () {
+      cars.push($(this).val());
+    });
+
+    var _loop = function _loop() {
+      var car = cars[i];
+      $(document).on('change', '#status_class' + car + '', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('class_id');
+        var status = $('select[id=status_class' + car + ']').val();
+        $.ajax({
+          type: 'post',
+          url: "api/update-status-class",
+          data: {
+            id: id,
+            status: status
+          },
+          success: function success(response) {
+            toastr.success('Cập nhật thành công');
+          }
+        });
+      });
+    };
+
+    for (var i = 0; i <= cars.length; i++) {
+      _loop();
+    }
+  } // window.onload = ChangeStatus;
+
 
   $(document).on('change', '.change-s', function (e) {
     e.preventDefault();
@@ -37826,13 +38052,13 @@ $(function () {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-$(function () {
-  var url_string = window.location.href;
-  var url = new URL(url_string);
-  var classid = url.searchParams.get("classid"); // var teacher_id_after_log_in = "";
-
-  var teacher_id_after_log_in = $('#get_teacher_id113').val(); // console.log(teacher_id_after_log_in);
-
+$(document).on('click', '.show-list-exams', function () {
+  var class_id = $(this).attr('class_id');
+  var teacher_id = $('#get_teacher_id').val();
+  $('.table-class').addClass('hidden');
+  $('#button-create-class').addClass('hidden');
+  $('.table-exam').removeClass('hidden');
+  $('.button-add').removeClass('hidden');
   var Table = $('#list-exam').DataTable({
     "columnDefs": [{
       "searchable": false,
@@ -37846,7 +38072,7 @@ $(function () {
     ajax: {
       url: 'api/get-list-exam',
       data: {
-        classid: classid
+        classid: class_id
       },
       dataSrc: 'data'
     },
@@ -37864,19 +38090,21 @@ $(function () {
       "data": "note"
     }, {
       "data": function data(_data, type, full) {
-        if (teacher_id_after_log_in) {
+        if (teacher_id) {
           return ' <button type="button" examid="' + _data.id + '"  class="button-set-point btn btn-success">\
-						<i class="fa fa-tasks"  aria-hidden="true" title="Thêm điểm kỳ thi"></i></button>\
-						<button type="button" examid="' + _data.id + '"  class="button-get-point btn btn-info">\
-						<i class="fa fa-eye"  aria-hidden="true" title="Xem điểm kỳ thi"></i></button>';
+								<i class="fa fa-tasks"  aria-hidden="true" title="Thêm điểm kỳ thi"></i></button>\
+								<button type="button" examid="' + _data.id + '"  class="button-get-point btn btn-info">\
+								<i class="fa fa-eye"  aria-hidden="true" title="Xem điểm kỳ thi"></i></button>';
         }
 
-        return '<button type="button" examid="' + _data.id + '"  class="button-get-point btn btn-info">\
-					<i class="fa fa-eye"  aria-hidden="true" title="Xem điểm kỳ thi"></i></button>\
-					<button id="edit" type="button" class="button-edit-exam btn btn-warning"  examid="' + _data.id + '">\
-					<i class="fa fa-pencil-square" aria-hidden="true" title="Sửa kỳ thi"></i></button>\
-					<button type="button" examid="' + _data.id + '" class="button-del-exam btn btn-danger">\
-					<i class="fa fa-trash-o"  aria-hidden="true" title="Xóa kỳ thi"></i></button>';
+        return '<button type="button" examid="' + _data.id + '"  class="button-set-point btn btn-success">\
+						 	<i class="fa fa-tasks"  aria-hidden="true" title="Thêm điểm kỳ thi"></i></button>\
+							<button type="button" examid="' + _data.id + '"  class="button-get-point btn btn-info">\
+							<i class="fa fa-eye"  aria-hidden="true" title="Xem điểm kỳ thi"></i></button>\
+							<button id="edit" type="button" class="button-edit-exam btn btn-warning"  examid="' + _data.id + '">\
+							<i class="fa fa-pencil-square" aria-hidden="true" title="Sửa kỳ thi"></i></button>\
+							<button type="button" examid="' + _data.id + '" class="button-del-exam btn btn-danger">\
+							<i class="fa fa-trash-o"  aria-hidden="true" title="Xóa kỳ thi"></i></button>';
       }
     }]
   });
@@ -37888,11 +38116,6 @@ $(function () {
       cell.innerHTML = i + 1;
     });
   }).draw();
-  jQuery.datetimepicker.setLocale('vi');
-  $('#start_day').datetimepicker({
-    format: 'Y-m-d H:i',
-    minDate: '-1970-01-1'
-  });
 });
 $(document).on('click', '.button-add', function (e) {
   e.preventDefault();
@@ -37904,7 +38127,7 @@ $(document).on('click', '.button-add', function (e) {
     url: 'api/get-nameclass',
     success: function success(response) {
       $.each(response.data, function () {
-        $("#name-class").append("<option id='class_id' value=" + this.id + ">" + this.name + "</option>");
+        $("#name-class").append("<option  value=" + this.id + ">" + this.name + "</option>");
       });
     }
   }); //validate form    
@@ -37960,8 +38183,7 @@ $(document).on('click', '.button-add', function (e) {
       element.closest(".form-group").children(0).prepend(error);
     } else error.insertAfter(element);
   }));
-}); //add exam
-//add exam      
+}); //add exam      
 
 $('#add-exam').click(function (event) {
   event.preventDefault();
@@ -37969,7 +38191,7 @@ $('#add-exam').click(function (event) {
   var start_day = $('#start_day').val();
   var duration = $('#duration').val();
   var note = $('#note').val();
-  var class_id = $('#class_id').val();
+  var class_id = $('#name-class').val();
 
   if ($('#form-add-exam').valid()) {
     $.ajax({
@@ -37998,8 +38220,7 @@ $('#add-exam').click(function (event) {
       }
     });
   }
-}); //del exam
-
+});
 $(document).on('click', '.button-del-exam', function () {
   var _this = this;
 
@@ -38056,7 +38277,154 @@ $(document).on('click', '.button-edit-exam', function (e) {
       $('#ename_class').val(response.data[0].class_id);
     }
   });
-  $("#ename_class").empty();
+}); //Xem Điểm
+
+$(document).on('click', '.button-get-point', function () {
+  $('#model-get-Point').modal('show');
+  var examid = $(this).attr("examid");
+  var tablesetpoint = $('#get-point').DataTable({
+    paging: false,
+    searching: false,
+    "bDestroy": true,
+    "autoWidth": false,
+    ajax: {
+      url: 'api/get-pointexam',
+      data: {
+        examid: examid
+      },
+      dataSrc: 'data'
+    },
+    "columns": [{
+      "data": "student_code"
+    }, {
+      "data": "student_name"
+    }, {
+      "data": function data(_data2, type, full) {
+        return "<input min='1' max='10' value='" + _data2.point + "' id='" + _data2.student_id + "' class='set-point-update'  type='number'>\
+					<input type='hidden' name='' value='" + examid + "' id='get_examid'>";
+      }
+    }, {
+      "data": function data(_data3, type, full) {
+        return '<button type="button" student_id="' + _data3.student_id + '"  class="button-update-point btn btn-info">\
+					<i class="fa fa-check-square" aria-hidden="true"></i></button>';
+      }
+    }]
+  });
+}); //set-Point
+
+$(document).on('click', '.button-set-point', function () {
+  $('#model-add-setPoint').modal('show');
+  var examid = $(this).attr("examid");
+  var aTable = $('#set-point').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    paging: false,
+    searching: false,
+    "bDestroy": true,
+    "autoWidth": false,
+    ajax: {
+      url: 'api/get-liststudent',
+      data: {
+        examid: examid
+      },
+      dataSrc: 'data'
+    },
+    "columns": [{
+      "data": "id"
+    }, {
+      "data": "student_code"
+    }, {
+      "data": "name"
+    }, {
+      "data": function data(_data4, type, full) {
+        return "<input min='1' max='10' value='' id='ip-set-point' class='set-point' type='number'>\
+					<input type='hidden' name='' value='" + _data4.exams_id + "' id='get_examid'>";
+      }
+    }]
+  });
+  aTable.on('order.dt search.dt', function () {
+    aTable.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+}); //Thêm điểm
+
+$('#setPoint').on('click', function () {
+  var student_id = [];
+  var point = [];
+  var exams_id = [];
+  var pointnull = 0;
+
+  for ($i = 0; $i < $('#set-point').DataTable().data().count(); $i++) {
+    student_id.push($('#set-point').DataTable().cell($i, 0).data());
+    point.push($('#set-point').DataTable().cell($i, 3).nodes().to$().find('input').val());
+    exams_id.push($('#get_examid').val());
+
+    if ($('#set-point').DataTable().cell($i, 3).nodes().to$().find('input').val() == "") {
+      pointnull++;
+    }
+  }
+
+  if (pointnull == 0) {
+    $.ajax({
+      url: "api/add-pointexam",
+      type: "post",
+      data: {
+        student_id: student_id,
+        point: point,
+        exams_id: exams_id
+      },
+      dataType: "json",
+      success: function success(response) {
+        $("#model-add-setPoint").modal("hide"); //		 $('#model-add-setPoint').DataTable().ajax.reload();
+
+        if (response.code == 1) {
+          toastr.success('Thêm điểm thành công');
+          $('#ip-set-point').prop('readonly', true);
+        } else {
+          toastr.error('Lỗi không thể Thêm!');
+        }
+      }
+    });
+  } else {
+    toastr.error('Lỗi chưa nhập đủ điểm cho học sinh!');
+  }
+}); //edit exam edit-exam
+
+$(document).on('click', '.button-edit-exam', function (e) {
+  e.preventDefault();
+  var id = $(this).attr("examid");
+  $('#update-exam-hd').val(id);
+  $.ajax({
+    method: "get",
+    url: 'api/edit_exam',
+    data: {
+      id: id
+    },
+    success: function success(response) {
+      // console.log(response.data[0].name);
+      $('#edit-exam').modal('show');
+      var classid = response.data['class_id'];
+      $('#ename').val(response.data[0].name);
+      $('#estart_day').val(response.data[0].start_day);
+      $('#eduration').val(response.data[0].duration);
+      $('#enote').val(response.data[0].note);
+      $('#ename_class').val(response.data[0].class_id);
+    }
+  });
+  $("#ename_class").empty(); // jQuery.datetimepicker.setLocale('vi');
+  // $('#start_day').datetimepicker({
+  // 	format:'Y-m-d H:i',
+  //     minDate: '-1970-01-1',
+  // });
+
   jQuery.datetimepicker.setLocale('vi');
   $('#estart_day').datetimepicker({
     format: 'Y-m-d H:i',
@@ -38144,189 +38512,475 @@ $(document).on('click', '.button-edit-exam', function (e) {
     if (element.attr("type") == "checkbox") {
       element.closest(".form-group").children(0).prepend(error);
     } else error.insertAfter(element);
-  }));
-}); //update exam   
-// Update      
-// 	$('#update-exam').click(function(event){
-// 	event.preventDefault();
-// 	var id = $('#update-exam-hd').val();
-// 	var name  = $('#ename').val();
-// 	var start_day = $('#estart_day').val();
-// 	var duration = $('#eduration').val();
-// 	var note = $('#enote').val();
-// 	var class_id = $('#ename_class').val();
-// 	if($('#form-edit-exam').valid()){
-// 		$.ajax({
-// 			url :"api/update-exam",
+  })); //update exam   
+  //Update      
+
+  $('#update-exam').click(function (event) {
+    event.preventDefault();
+    var id = $('#update-exam-hd').val();
+    var name = $('#ename').val();
+    var start_day = $('#estart_day').val();
+    var duration = $('#eduration').val();
+    var note = $('#enote').val();
+    var class_id = $('#ename_class').val();
+
+    if ($('#form-edit-exam').valid()) {
+      $.ajax({
+        url: "api/update-exam",
+        type: "POST",
+        data: {
+          id: id,
+          name: name,
+          start_day: start_day,
+          duration: duration,
+          note: note,
+          class_id: class_id
+        },
+        dataType: "json",
+        success: function success(response) {
+          $("#edit-exam").modal("hide");
+          $('#list-exam').DataTable().ajax.reload();
+
+          if (response.code == 1) {
+            toastr.success('Sửa thành công!');
+            $('#form-edit-exam').trigger("reset");
+          } else {
+            toastr.error('Lỗi không thể sửa bản ghi!');
+          }
+
+          document.getElementById("form-edit-exam").reset();
+        }
+      });
+    }
+  });
+}); // $(function () { 
+// 	var url_string = window.location.href;
+// 	var url = new URL(url_string);
+// 	var classid = url.searchParams.get("classid");
+// 	// var teacher_id_after_log_in = "";
+// 	var teacher_id_after_log_in = $('#teacher_id_after_log_in').val();
+// 	console.log(teacher_id_after_log_in);
+// 
+// 	jQuery.datetimepicker.setLocale('vi');
+//     $('#start_day').datetimepicker({
+// 		format:'Y-m-d H:i',
+//         minDate: '-1970-01-1',
+// 	});
+// });
+// $(document).on('click','.button-add',function(e){
+// 	e.preventDefault();
+// 	$('#model-add').modal('show');
+// 	$("#name-class").empty();
+// 	$.ajax({
+// 		dataType : 'json',
+// 		type : 'get',
+// 		url : 'api/get-nameclass',
+// 		success:function(response){
+// 			$.each(response.data, function () {
+// 				$("#name-class").append("<option  value="+this.id+">"+this.name+"</option>")
+// 			});			
+// 		}
+// 	})
+// 			//validate form    
+// 			$('#form-add-exam').validate(
+// 				{
+// 					rules : {
+// 					name : {
+// 						required : true,
+// 						minlength: 10
+// 					},
+// 					start_day : {
+// 						required : true,
+// 					//	min : "date('Y-m-d')",
+// 						},
+// 					duration : {
+// 						required : true,
+// 						number: true,
+// 						},
+// 					note : {
+// 						required : true,
+// 						minlength: 10
+// 					},
+// 					},
+// 					messages: {
+// 					name : {
+// 						required : "Không được đế trống",
+// 						minlength : "Không đủ 10 ký tự"
+// 					},
+// 					start_day : {
+// 						required : "Không được đế trống",
+// 					//	min : "Ngày phải lớn hơn ngày hiện tại"
+// 						},
+// 						duration : {
+// 						required : "Không được đế trống",
+// 						number : "Phải là số"
+// 						}, 
+// 						note : {
+// 						required : "Không được đế trống",
+// 						minlength : "Không đủ 10 ký tự"
+// 						}
+// 					},
+// 					highlight: function(element, errorClass) {
+// 					$(element).closest(".form-group").addClass("has-error");
+// 					},
+// 					unhighlight: function(element, errorClass) {
+// 						$(element).closest(".form-group").removeClass("has-error");
+// 					},
+// 					errorPlacement: function (error, element) {
+// 						error.appendTo(element.parent().next());
+// 					},
+// 					errorPlacement: function (error, element) {
+// 							if(element.attr("type") == "checkbox") {
+// 								element.closest(".form-group").children(0).prepend(error);
+// 							}
+// 							else
+// 								error.insertAfter(element);
+// 					}
+// 				})
+// });
+// //add exam
+// 		//add exam      
+// 	$('#add-exam').click(function(event){
+// 	  event.preventDefault();
+// 	  var name  = $('#name').val();
+// 	  var start_day = $('#start_day').val();
+// 	  var duration = $('#duration').val();
+// 	  var note = $('#note').val();
+// 	  var class_id = $('#name-class').val();
+// 	  if($('#form-add-exam').valid()){
+// 			$.ajax({
+// 			url :"api/create-exam",
 // 			type: "POST",
-// 			data : {id:id,name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
+// 			data : {name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
 // 			dataType:"json",
 // 			success:function(response){ 
-// 				$("#edit-exam").modal("hide");
-// 				$('#list-exam').DataTable().ajax.reload();
-// 				if(response.code == 1){
-// 				toastr.success('Sửa thành công!');
-// 				$('#form-edit-exam').trigger("reset");
-// 			}else{
-// 					toastr.error('Lỗi không thể sửa bản ghi!');
+// 					$("#model-add").modal("hide");
+// 					//$('#form-add-exam').dialog("close")
+// 					$('#list-exam').DataTable().ajax.reload();
+// 					if(response.code == 1){
+// 						toastr.success('Thêm kỳ thành công');
+// 						}else{
+// 							toastr.error('Lỗi không thể thêm!');
+// 						}
+// 					$("#form-add-exam")[0].reset();
 // 				}
-// 	document.getElementById("form-edit-exam").reset();
+// 			})
+// 		}
+// 	})
+// //del exam
+// $(document).on('click','.button-del-exam',function(){
+// 	swal({
+// 		title: "Bạn có chắc muốn xóa?",
+// 		text: "Bạn sẽ không thể khôi phục lại bản ghi này!",
+// 		icon: "warning",
+// 		buttons: true,
+// 		dangerMode: true,
+// 	})
+// 	.then((willDelete) => {
+// 		if (willDelete) {  
+// 			var id = $(this).attr("examid");
+// 			console.log(id);	
+// 				$.ajax({
+// 						dataType : 'json',
+// 						type : 'post',
+// 						url : 'api/delete-exam',
+// 						data : {id:id},
+// 						success: function(response){
+// 							if(response.code == 1){
+// 								$('#list-exam').DataTable().ajax.reload();
+// 								toastr.success('Xóa thành công!');
+// 							}else{
+// 								toastr.error(response.message)
+// 							}
+// 						}
+// 					})
+// 			}
+// 			else{
+// 				toastr.warning('Bạn đã hủy!');
+// 				  }
+// 		})
+// })
+// //edit exam edit-exam
+// $(document).on('click','.button-edit-exam',function(e){
+// 	e.preventDefault();
+// 	var id = $(this).attr("examid");
+// 	$('#update-exam-hd').val(id);
+// 	$.ajax({
+// 		method  :"get",
+// 		url : 'api/edit_exam',
+// 		data : {
+// 			id :id
+// 		},
+// 		success : function(response){
+// 			// console.log(response.data[0].name);
+// 			$('#edit-exam').modal('show');
+// 			var classid = response.data['class_id'];
+// 						$('#ename').val(response.data[0].name);
+// 						$('#estart_day').val(response.data[0].start_day);
+// 						$('#eduration').val(response.data[0].duration);
+// 						$('#enote').val(response.data[0].note);
+// 						$('#ename_class').val(response.data[0].class_id);
+// 		}
+// 	});
+// 	$("#ename_class").empty();
+// 	jQuery.datetimepicker.setLocale('vi');
+//     $('#estart_day').datetimepicker({
+// 		format:'Y-m-d H:i',
+//         minDate: '-1970-01-1',
+// 	});
+// 			$.ajax({
+// 				dataType : 'json',
+// 				type : 'post',
+// 				url : 'api/edit-exam',
+// 				data : {id:id},
+// 				resetForm: true,
+// 				success: function(response){
+// 					$('#update-exam-hd').val(id);
+// 					var classid = response.data['class_id'];
+// 						$('#ename').val(response.data['name']);
+// 						$('#estart_day').val(response.data['start_day']);
+// 						$('#eduration').val(response.data['duration']);
+// 						$('#enote').val(response.data['note']);
+// 						$.ajax({
+// 							dataType : 'json',
+// 							type : 'get',
+// 							url : 'api/get-nameclass',
+// 							success:function(response){
+// 								$.each(response.data, function () {
+// 									if(this.id == classid ){
+// 										$("#ename_class").append("<option id='class_id' value="+this.id+" selected>"+this.name+"</option>")
+// 									}else{
+// 										$("#ename_class").append("<option id='class_id' value="+this.id+">"+this.name+"</option>")
+// 									}
+// 								});
+// 							},
+// 						})
+// 				}
+// 			})
+// 			//validate form exam
+// 			$('#form-edit-exam').validate(
+// 				{
+// 					rules : {
+// 					name : {
+// 						required : true,
+// 						minlength: 10
+// 					},
+// 					start_day : {
+// 						required : true,
+// 					//	min : "date('Y-m-d')",
+// 						},
+// 					duration : {
+// 						required : true,
+// 						number: true,
+// 						},
+// 					note : {
+// 						required : true,
+// 						minlength: 10
+// 					},
+// 					},
+// 					messages: {
+// 					name : {
+// 						required : "Không được đế trống",
+// 						minlength : "Không đủ 10 ký tự"
+// 					},
+// 					start_day : {
+// 						required : "Không được đế trống",
+// 					//	min : "Ngày phải lớn hơn ngày hiện tại"
+// 						},
+// 						duration : {
+// 						required : "Không được đế trống",
+// 						number : "Phải là số"
+// 						}, 
+// 						note : {
+// 						required : "Không được đế trống",
+// 						minlength : "Không đủ 10 ký tự"
+// 						}
+// 					},
+// 					highlight: function(element, errorClass) {
+// 					$(element).closest(".form-group").addClass("has-error");
+// 					},
+// 					unhighlight: function(element, errorClass) {
+// 						$(element).closest(".form-group").removeClass("has-error");
+// 					},
+// 					errorPlacement: function (error, element) {
+// 						error.appendTo(element.parent().next());
+// 					},
+// 					errorPlacement: function (error, element) {
+// 							if(element.attr("type") == "checkbox") {
+// 								element.closest(".form-group").children(0).prepend(error);
+// 							}
+// 							else
+// 								error.insertAfter(element);
+// 					}
+// 				}
+// 				)    
+// })
+// //update exam   
+// 			// Update      
+// 		// 	$('#update-exam').click(function(event){
+// 		// 	event.preventDefault();
+// 		// 	var id = $('#update-exam-hd').val();
+// 		// 	var name  = $('#ename').val();
+// 		// 	var start_day = $('#estart_day').val();
+// 		// 	var duration = $('#eduration').val();
+// 		// 	var note = $('#enote').val();
+// 		// 	var class_id = $('#ename_class').val();
+// 		// 	if($('#form-edit-exam').valid()){
+// 		// 		$.ajax({
+// 		// 			url :"api/update-exam",
+// 		// 			type: "POST",
+// 		// 			data : {id:id,name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
+// 		// 			dataType:"json",
+// 		// 			success:function(response){ 
+// 		// 				$("#edit-exam").modal("hide");
+// 		// 				$('#list-exam').DataTable().ajax.reload();
+// 		// 				if(response.code == 1){
+// 		// 				toastr.success('Sửa thành công!');
+// 		// 				$('#form-edit-exam').trigger("reset");
+// 		// 			}else{
+// 		// 					toastr.error('Lỗi không thể sửa bản ghi!');
+// 		// 				}
+// 		// 	document.getElementById("form-edit-exam").reset();
+// 		// 			}
+// 		// 			})
+// 		// 		}  
+//   		// })          
+// //set-Point
+// 	$(document).on('click','.button-set-point',function(){
+// 	$('#model-add-setPoint').modal('show');
+// 	var examid = $(this).attr("examid");	
+// 	var aTable =	$('#set-point').DataTable({
+// 		"columnDefs": [ {
+//             "searchable": false,
+//             "orderable": false,
+//             "targets": 0
+//         } ],
+//         "order": [[ 1, 'asc' ]],
+// 		paging: false,
+// 		searching: false,
+// 		"bDestroy": true,
+// 		"autoWidth": false,
+// 		ajax: {
+// 			url: 'api/get-liststudent',
+// 			data: {examid:examid},
+// 			dataSrc: 'data',
+// 	},
+// 			"columns": [
+// 				{ "data": "id" },
+// 				{ "data": "student_code" },
+// 				{ "data": "name" },
+//                 { "data": function(data, type, full) {
+// 					return "<input min='1' max='10' value='' id='ip-set-point' class='set-point' type='number'>\
+// 					<input type='hidden' name='' value='"+data.exams_id+"' id='get_examid'>"
+//                 }},	
+// 		]
+// 	});
+// 	aTable.on( 'order.dt search.dt', function () {
+//         aTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+//             cell.innerHTML = i+1;
+//         } );
+//     } ).draw();
+// });
+// //Thêm điểm
+// $('#setPoint').on('click', function() {
+// 	var student_id = [];
+// 	var point = [];
+// 	var exams_id = [];
+// 	var pointnull = 0;
+// 	for($i=0;$i<$('#set-point').DataTable().data().count();$i++){
+// 		student_id.push($('#set-point').DataTable().cell($i,0).data());
+// 		point.push($('#set-point').DataTable().cell($i,3).nodes().to$().find('input').val());
+// 		exams_id.push($('#get_examid').val());
+// 		if($('#set-point').DataTable().cell($i,3).nodes().to$().find('input').val() == ""){
+// 			pointnull++;
+// 		}
+// 	}
+// 	if(pointnull == 0){
+// 		$.ajax({
+// 			url :"api/add-pointexam",
+// 			type: "post",
+// 			data : {student_id:student_id,point: point,exams_id: exams_id},
+// 			dataType:"json",
+// 			success:function(response){ 
+// 				 $("#model-add-setPoint").modal("hide");
+// 		//		 $('#model-add-setPoint').DataTable().ajax.reload();
+// 				 if(response.code == 1){
+// 				 toastr.success('Thêm điểm thành công');
+// 				 $('#ip-set-point').prop('readonly', true);
+// 				 }else{
+// 					 toastr.error('Lỗi không thể Thêm!');
+// 				 }
 // 			}
 // 			})
-// 		}  
-// })          
-//set-Point
-
-$(document).on('click', '.button-set-point', function () {
-  $('#model-add-setPoint').modal('show');
-  var examid = $(this).attr("examid");
-  var aTable = $('#set-point').DataTable({
-    "columnDefs": [{
-      "searchable": false,
-      "orderable": false,
-      "targets": 0
-    }],
-    "order": [[1, 'asc']],
-    paging: false,
-    searching: false,
-    "bDestroy": true,
-    "autoWidth": false,
-    ajax: {
-      url: 'api/get-liststudent',
-      data: {
-        examid: examid
-      },
-      dataSrc: 'data'
-    },
-    "columns": [{
-      "data": "id"
-    }, {
-      "data": "student_code"
-    }, {
-      "data": "name"
-    }, {
-      "data": function data(_data2, type, full) {
-        return "<input min='1' max='10' value='' id='ip-set-point' class='set-point' type='number'>\
-					<input type='hidden' name='' value='" + _data2.exams_id + "' id='get_examid'>";
-      }
-    }]
-  });
-  aTable.on('order.dt search.dt', function () {
-    aTable.column(0, {
-      search: 'applied',
-      order: 'applied'
-    }).nodes().each(function (cell, i) {
-      cell.innerHTML = i + 1;
-    });
-  }).draw();
-}); //Thêm điểm
-
-$('#setPoint').on('click', function () {
-  var student_id = [];
-  var point = [];
-  var exams_id = [];
-  var pointnull = 0;
-
-  for ($i = 0; $i < $('#set-point').DataTable().data().count(); $i++) {
-    student_id.push($('#set-point').DataTable().cell($i, 0).data());
-    point.push($('#set-point').DataTable().cell($i, 3).nodes().to$().find('input').val());
-    exams_id.push($('#get_examid').val());
-
-    if ($('#set-point').DataTable().cell($i, 3).nodes().to$().find('input').val() == "") {
-      pointnull++;
-    }
-  }
-
-  if (pointnull == 0) {
-    $.ajax({
-      url: "api/add-pointexam",
-      type: "post",
-      data: {
-        student_id: student_id,
-        point: point,
-        exams_id: exams_id
-      },
-      dataType: "json",
-      success: function success(response) {
-        $("#model-add-setPoint").modal("hide"); //		 $('#model-add-setPoint').DataTable().ajax.reload();
-
-        if (response.code == 1) {
-          toastr.success('Thêm điểm thành công');
-          $('#ip-set-point').prop('readonly', true);
-        } else {
-          toastr.error('Lỗi không thể Thêm!');
-        }
-      }
-    });
-  } else {
-    toastr.error('Lỗi chưa nhập đủ điểm cho học sinh!');
-  }
-}); //Xem Điểm
-
-$(document).on('click', '.button-get-point', function () {
-  $('#model-get-Point').modal('show');
-  var examid = $(this).attr("examid");
-  var tablesetpoint = $('#get-point').DataTable({
-    paging: false,
-    searching: false,
-    "bDestroy": true,
-    "autoWidth": false,
-    ajax: {
-      url: 'api/get-pointexam',
-      data: {
-        examid: examid
-      },
-      dataSrc: 'data'
-    },
-    "columns": [{
-      "data": "student_code"
-    }, {
-      "data": "student_name"
-    }, {
-      "data": function data(_data3, type, full) {
-        return "<input min='1' max='10' value='" + _data3.point + "' id='" + _data3.student_id + "' class='set-point-update'  type='number'>\
-					<input type='hidden' name='' value='" + examid + "' id='get_examid'>";
-      }
-    }, {
-      "data": function data(_data4, type, full) {
-        return '<button type="button" student_id="' + _data4.student_id + '"  class="button-update-point btn btn-info">\
-					<i class="fa fa-check-square" aria-hidden="true"></i></button>';
-      }
-    }]
-  });
-}); // //update điểm
-// if(teacher_id_after_log_in){
-
-$(document).on('click', '.button-update-point', function () {
-  var student_id = $(this).attr("student_id");
-  var examination_id = $('#get_examid').val();
-  var point = $('#' + student_id).val();
-  $('#form-add-exam').validate(_defineProperty({
-    rules: {
-      point: {
-        required: true
-      }
-    },
-    messages: {
-      point: {
-        required: "Không được đế trống"
-      }
-    },
-    highlight: function highlight(element, errorClass) {
-      $(element).closest(".form-group").addClass("has-error");
-    },
-    unhighlight: function unhighlight(element, errorClass) {
-      $(element).closest(".form-group").removeClass("has-error");
-    },
-    errorPlacement: function errorPlacement(error, element) {
-      error.appendTo(element.parent().next());
-    }
-  }, "errorPlacement", function errorPlacement(error, element) {
-    if (element.attr("type") == "checkbox") {
-      element.closest(".form-group").children(0).prepend(error);
-    } else error.insertAfter(element);
-  }));
-}); // 		if($('#form-edit-exam').valid()){
+// 	}else{
+// 		toastr.error('Lỗi chưa nhập đủ điểm cho học sinh!');
+// 	}	
+// })
+// //Xem Điểm
+// $(document).on('click','.button-get-point',function(){
+// 	$('#model-get-Point').modal('show');
+// 	var examid = $(this).attr("examid");	
+// 	var tablesetpoint =	$('#get-point').DataTable({
+// 		paging: false,
+// 		searching: false,
+// 		"bDestroy": true,
+// 		"autoWidth": false,
+// 		ajax: {
+// 			url: 'api/get-pointexam',
+// 			data: {examid:examid},
+// 			dataSrc: 'data',
+// 	},
+// 			"columns": [
+// 				{ "data": "student_code" },
+// 				{ "data": "student_name" },
+// 				{ "data": function(data, type, full) {
+// 					return "<input min='1' max='10' value='"+data.point+"' id='"+data.student_id+"' class='set-point-update'  type='number'>\
+// 					<input type='hidden' name='' value='"+examid+"' id='get_examid'>"
+// 				}},
+// 				{ "data": function(data, type, full) {
+// 					return 	'<button type="button" student_id="'+data.student_id+'"  class="button-update-point btn btn-info">\
+// 					<i class="fa fa-check-square" aria-hidden="true"></i></button>'
+//                 }},
+// 		]
+// 	});
+// })
+// // //update điểm
+// // if(teacher_id_after_log_in){
+// 	$(document).on('click','.button-update-point',function(){
+// 		var student_id = $(this).attr("student_id");
+// 		var examination_id = $('#get_examid').val();
+// 		var point =$('#'+student_id).val();
+// 		$('#form-add-exam').validate(
+// 			{
+// 				rules : {
+// 				point : {
+// 					required : true,
+// 				},
+// 				},
+// 				messages: {
+// 				point : {
+// 					required : "Không được đế trống",
+// 				},
+// 				},
+// 				highlight: function(element, errorClass) {
+// 				$(element).closest(".form-group").addClass("has-error");
+// 				},
+// 				unhighlight: function(element, errorClass) {
+// 					$(element).closest(".form-group").removeClass("has-error");
+// 				},
+// 				errorPlacement: function (error, element) {
+// 					error.appendTo(element.parent().next());
+// 				},
+// 				errorPlacement: function (error, element) {
+// 						if(element.attr("type") == "checkbox") {
+// 							element.closest(".form-group").children(0).prepend(error);
+// 						}
+// 						else
+// 							error.insertAfter(element);
+// 				}
+// 			})
+// 		})
+// 		if($('#form-edit-exam').valid()){
 // 			$.ajax({
 // 				url :"api/update-point",
 // 				type: "POST",
@@ -38764,7 +39418,7 @@ $(function () {
   // }
 
   function convertCurrency(data, type, row) {
-    var currency = formatter.format(data.fee);
+    var currency = formatter.format(data.total_revenue);
     return currency;
   }
 
@@ -38775,7 +39429,7 @@ $(function () {
       "targets": 0
     }],
     "order": [[1, 'asc']],
-    "ajax": "api/get-list-course",
+    "ajax": "api/get-list-total-revenue",
     "bDestroy": true,
     "columns": [{
       "data": "id"
@@ -38794,11 +39448,12 @@ $(function () {
     }, {
       "data": "duration"
     }, {
+      "data": "students"
+    }, {
       "data": convertCurrency
     }, {
       "data": function data(_data2, type, full) {
-        return '<button type="button" class="show-revenue btn btn-success" course_id="' + _data2.id + '"><i title="Xem doanh thu" class="fa fa-usd" aria-hidden="true"></i></button>\
-                <button course_id="' + _data2.id + '" type="button"   class="detail-revenue btn btn-info"><i class="fa fa-info" aria-hidden="true"></i></button>';
+        return '<button course_id="' + _data2.id + '" type="button"   class="detail-revenue btn btn-info"><i class="fa fa-info" aria-hidden="true"></i></button>';
       }
     }]
   });
@@ -38825,12 +39480,15 @@ $(function () {
   });
   $(document).on('click', '.detail-revenue', function () {
     $('.table-list-course').addClass('hidden');
-    $('.back').removeClass('hidden');
 
     function totalFeeClass(data, type, row) {
-      var total_money = data.class_size * data.fee;
-      var convertCurrency = formatter.format(total_money);
+      var convertCurrency = formatter.format(data.total_revenue_class);
       return convertCurrency;
+    }
+
+    function showClassSize(data, type, row) {
+      var students = data.students;
+      return students + "/" + data.class_size;
     }
 
     var course_id = $(this).attr('course_id');
@@ -38848,12 +39506,11 @@ $(function () {
         }
       },
       "bDestroy": true,
-      "columns": [{
-        "data": "id"
-      }, {
+      "columns": [// { "data":null},
+      {
         "data": "class_name"
       }, {
-        "data": "class_size"
+        "data": showClassSize
       }, {
         "data": "start_date"
       }, {
@@ -38869,6 +39526,10 @@ $(function () {
       });
     }).draw();
     $('.table-revenue-class').removeClass('hidden');
+    $('.back').removeClass('hidden');
+    $('.back').click(function () {
+      $('.table-revenue-class').addClass('hidden');
+    });
   });
   $(document).on('click', '.back', function () {
     $('.table-list-course').removeClass('hidden');
@@ -38885,8 +39546,12 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-$(function () {
-  var timetable_id = localStorage.getItem("idOfTimetable");
+// var timetable_id = $(this).attr('timetableID');
+$(document).on('click', '.rollCallPage', function () {
+  var timetable_id = $(this).attr('timetableID');
+  $('.table-timetable').addClass('hidden');
+  $('.back-class').addClass('hidden');
+  $('.table-rollcall').removeClass('hidden');
   var tableRollCall = $('#table-rollcall').DataTable({
     "columnDefs": [{
       "searchable": false,
@@ -38901,6 +39566,7 @@ $(function () {
       },
       dataSrc: 'data'
     },
+    "bDestroy": true,
     columns: [{
       data: null
     }, {
@@ -38939,28 +39605,18 @@ $(function () {
       cell.innerHTML = i + 1;
     });
   }).draw();
-  $(document).on('change', '.rol', function (e) {
-    e.preventDefault();
-    var student_id = $(this).attr('studentID');
-    var status = $('input[name=' + student_id + ']:checked').val();
-    $.ajax({
-      type: "POST",
-      url: "api/roll-call-student",
-      data: {
-        status: status,
-        student_id: student_id,
-        timetable_id: timetable_id
-      },
-      success: function success(response) {
-        tableRollCall.ajax.reload();
-      }
-    });
-  });
   $(document).on('click', '.show-note', function () {
     $('#enter-note').modal('show');
     var id = $(this).attr('rolID');
     $('#rollID').val(id);
     console.log(id);
+  });
+  $(document).on('click', '.back-timetable', function () {
+    $('.table-timetable').removeClass('hidden');
+    $('.back-class').removeClass('hidden'); // $('#table-rollcall').DataTable().clear();
+
+    $('.table-rollcall').addClass('hidden');
+    timetable_id = null; // window.history.go(-1);
   });
   $('#update-note').click(function (e) {
     e.preventDefault();
@@ -38988,7 +39644,136 @@ $(function () {
       }
     });
   });
-});
+  $(document).on('change', '.rol', function (e) {
+    e.preventDefault(); // var timetable_id = $(this).attr('timetableID');
+    // var timetable_id =64;
+    // console.log(timetable_id);
+
+    var student_id = $(this).attr('studentID');
+    var status = $('input[name=' + student_id + ']:checked').val();
+    $.ajax({
+      type: "POST",
+      url: "api/roll-call-student",
+      data: {
+        status: status,
+        student_id: student_id,
+        timetable_id: timetable_id
+      },
+      success: function success(response) {
+        tableRollCall.ajax.reload();
+      }
+    });
+  });
+}); // var timetable_id = $(this).attr('timetableID');
+// $(function(){
+//     var timetable_id = localStorage.getItem("idOfTimetable");
+// var tableRollCall = $('#table-rollcall').DataTable({
+// 	"columnDefs": [ {
+//         "searchable": false,
+//         "orderable": false,
+//         "targets": 0
+//     } ],
+//     "order": [[ 1, 'asc' ]],
+//     ajax: {
+//         url: 'api/get-list-roll-call-student',
+//         data: {timetable_id:timetable_id},
+//         dataSrc: 'data',
+//     },
+//     "bDestroy":true,
+//     columns: [
+//         { data: null},
+//         { data: 'student_code',name:'student_code'},
+//         { data: 'name',name:'name'},
+//         {
+//             'render': function (data, type, row) {
+//             	let tmp = (row.status == 0)  ? 'checked': "";
+//             	let tmp1 = (row.status == 1) ? 'checked': "";
+//             	let tmp2 = (row.status == 2) ? 'checked': "";
+//             	let tmp3 = (row.status == 3) ? 'checked': "";
+//                 return '<label class="container1">Đ'+
+//                     '<input class="rol" studentID=\"'+row.id+'\" '+tmp+' value="0" type="radio" name=\"'+row.id+'\">'+
+//                     '<span class="checkmark"></span>'+
+//                     '</label>'+
+//                     '<label class="container1">P'+
+//                     '<input class="rol" studentID=\"'+row.id+'\" '+tmp1+' value="1" type="radio" name=\"'+row.id+'\">'+
+//                     '<span class="checkmark"></span>'+
+//                     '</label>'+
+//                     '<label class="container1">M'+
+//                     '<input class="rol" studentID=\"'+row.id+'\" '+tmp2+' value="2" type="radio" name=\"'+row.id+'\">'+
+//                     '<span class="checkmark"></span>'+
+//                     '</label>'+
+//                     '<label class="container1">V'+
+//                     '<input class="rol" studentID=\"'+row.id+'\" '+tmp3+' value="3" type="radio" name=\"'+row.id+'\">'+
+//                     '<span class="checkmark"></span>'+
+//                     '</label>';
+//             }
+//         },
+//         {
+//             'render': function (data, type, row) {
+//                 if (row.note == null) {
+//                     return ''
+//                 }else{
+//                     return row.note
+//                 }
+//             }
+//         },
+//         {
+//             'render': function (data, type, row) {
+//             return '<button rolID="'+row.rol_id+'" class="show-note btn btn-success" '+
+//             'title="Nhập ghi chú">'+
+//             '<i class="fa fa-newspaper-o" aria-hidden="true"></i></button>'
+//             }
+//         },
+//     ]
+// });
+// tableRollCall.on( 'order.dt search.dt', function () {
+//     tableRollCall.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+//         cell.innerHTML = i+1;
+//     } );
+// } ).draw();
+// $(document).on('change','.rol',function(e){
+//     e.preventDefault();
+//     var student_id = $(this).attr('studentID');
+//     var status = $('input[name='+student_id+']:checked').val();
+//     $.ajax({
+//         type: "POST",
+//         url: "api/roll-call-student",
+//         data: {status:status,student_id:student_id,timetable_id:timetable_id},
+//         success: function(response){
+//             tableRollCall.ajax.reload();
+//         }
+//     });
+// });
+// $(document).on('click','.show-note',function(){
+//     $('#enter-note').modal('show');
+//     var id = $(this).attr('rolID');
+//     $('#rollID').val(id);
+//     console.log(id);
+// });
+// $('#update-note').click(function(e){
+//     e.preventDefault();
+//     var note = $('#note1').val();
+//     var id = $('#rollID').val();
+//     console.log(note);
+//     $.ajax({
+//         type: "POST",
+//         url: "api/update-note",
+//         data: {id:id,note:note},
+//         success: function(response){
+//             if (response.code == 0) {
+//                 toastr.error(response.message)
+//             }else{
+//                 $('#enter-note').modal('hide');
+//                 $('#enter-note').on('hidden.bs.modal', function(){
+//                     $(this).find('form')[0].reset();
+//                 });
+//                 tableRollCall.ajax.reload();
+//                 toastr.success('Thêm ghi chú thành công');
+//             }
+//         }
+//     });
+// })
+// })
 
 /***/ }),
 
@@ -39384,7 +40169,7 @@ $(function () {
     }, {
       'data': null,
       'render': function render(data, type, row) {
-        return '<button studentID=\"' + row.id + '\" title=\"thêm học sinh vào lớp\"' + 'class=\"btn btn-primary StudentAdd\"><i class=\"fa fa-plus\" aria-hidden=\"true\"></i>' + '</button> <button studentID=\"' + row.id + '\" title=\"sửa học sinh\"' + 'class=\"editStudent btn btn-warning\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>' + '</button> <button studentID=\"' + row.id + '\" title=\"xóa học sinh\" ' + 'class=\"deleteStudent btn btn-danger\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>';
+        return '<button studentID=\"' + row.id + '\" title=\"thêm học sinh vào lớp\"' + 'class=\"btn btn-primary StudentAdd\"><i class=\"fa fa-plus\" aria-hidden=\"true\"></i>' + '</button> <button studentID=\"' + row.id + '\" title=\"Xem kết quả học tập\"' + 'class=\"btn btn-success StudentShowAchieve\"><i class=\"fa fa-trophy\"aria-hidden=\"true\"></i>' + '</button> <button studentID=\"' + row.id + '\" title=\"sửa học sinh\"' + 'class=\"editStudent btn btn-warning\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>' + '</button> <button studentID=\"' + row.id + '\" title=\"xóa học sinh\" ' + 'class=\"deleteStudent btn btn-danger\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></button>';
       }
     }]
   });
@@ -39652,6 +40437,69 @@ $(function () {
     IDstudent = $(this).attr('studentID');
     $('#get_student_id').val(IDstudent);
     $('#list-class').modal('show');
+  }); //Xem kết quả học tập học viên
+
+  $(document).on('click', '.StudentShowAchieve', function () {
+    IDstudent = $(this).attr('studentID'); // var student_id = $('#get_student_id2').val(IDstudent);
+    // console.log(IDstudent);
+
+    $('#modal-show-achieve').modal('show');
+    var tableShowAchievement = $('#table-show-achieve').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      paging: false,
+      searching: false,
+      info: false,
+      "order": [[1, 'asc']],
+      "bDestroy": true,
+      ajax: {
+        url: 'api/get-achievement-student',
+        data: {
+          student_id: IDstudent
+        }
+      },
+      columns: [{
+        data: null
+      }, {
+        data: 'class_code'
+      }, {
+        data: 'class_name'
+      }, {
+        data: 'days_absent'
+      }, {
+        render: function render(data, type, row) {
+          if (row.point_class) {
+            return row.point_class;
+          } else {
+            return '<span>Chưa thi</span>';
+          }
+        }
+      }, {
+        render: function render(data, type, row) {
+          switch (row.achieve) {
+            case 0:
+              return '<i title="Chưa qua" class="fa fa-times btn btn-danger" aria-hidden="true"></i>';
+
+            case 1:
+              return '<i title="Đã qua" class="fa fa-check btn btn-success" aria-hidden="true"></i>';
+
+            case 2:
+              return '<i title="Chưa thi" class="fa fa-question-circle btn btn-warning" aria-hidden="true"></i>';
+          }
+        }
+      }]
+    });
+    tableShowAchievement.on('order.dt search.dt', function () {
+      tableShowAchievement.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
   });
 
   function getClassSize(data, type, dataToSet) {
@@ -40078,7 +40926,7 @@ $(function () {
 /***/ (function(module, exports) {
 
 $(function () {
-  var teacher_id = $('#get_teacher_id').val(); // console.log(user_id);
+  var teacher_id = $('#get_teacher_id').val(); // console.log(teacher_id);
 
   var tableTeacherClass = $('#list_class_of_teacher').DataTable({
     "columnDefs": [{
@@ -40218,12 +41066,14 @@ $(function () {
   !*** ./resources/assets/js/timetable.js ***!
   \******************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-$(function () {
-  var url_string = window.location.href;
-  var url = new URL(url_string);
-  var id = url.searchParams.get("classid");
+$(document).on('click', '.show-timetable', function () {
+  var class_id = $(this).attr('class_id');
+  $('.table-class').addClass('hidden');
+  $('#button-create-class').addClass('hidden');
+  $('.timetable').removeClass('hidden'); // $('.button-add').addClass('hidden');
+  // $('.back-timetable').addClass('hidden');
 
   function getTimeEnd(data, type, row) {
     var d = moment(data.time, 'HH:mm:ss').add(data.duration, 'hour').format('HH:mm:ss');
@@ -40234,6 +41084,7 @@ $(function () {
     return data.date + "<br>" + data.week_days;
   }
 
+  var id = class_id;
   var tableTimetable = $('#timeTableClass').DataTable({
     "columnDefs": [{
       "searchable": false,
@@ -40248,6 +41099,7 @@ $(function () {
       },
       dataSrc: 'data'
     },
+    "bDestroy": true,
     columns: [{
       data: null
     }, {
@@ -40294,10 +41146,7 @@ $(function () {
     }, {
       'data': null,
       'render': function render(data, type, row) {
-        // return '<button timetableID=\"'+row.id+'\" title=\"Sửa thời khóa biểu\"'+
-        // 'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" '+
-        // 'aria-hidden=\"true\"></i>'+
-        return '</button> <button classID=\"' + row.class_id + '\" timetableID=\"' + row.id + '\" ' + 'class="rollCallPage btn btn-success" ' + 'title="Điểm danh"><i class="fa fa-sticky-note" ' + 'aria-hidden="true"></i></button>';
+        return '<button  classID=\"' + row.class_id + '\" timetableID=\"' + row.id + '\" ' + 'class="rollCallPage btn btn-success" ' + 'title="Điểm danh"><i class="fa fa-sticky-note" ' + 'aria-hidden="true"></i></button>';
       }
     }]
   });
@@ -40309,66 +41158,150 @@ $(function () {
       cell.innerHTML = i + 1;
     });
   }).draw();
-  jQuery.datetimepicker.setLocale('vi');
-  $('#change-date').datetimepicker({
-    format: 'Y-m-d',
-    timepicker: false,
-    minDate: '-1970-01-1'
-  });
-  $('#change-time').datetimepicker({
-    format: 'H:i',
-    datepicker: false,
-    allowTimes: ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']
-  });
-  $(document).on('click', '.editTimetable', function () {
-    var id = $(this).attr('timetableID');
-    $.ajax({
-      type: 'get',
-      url: "api/edit-timetable",
-      data: {
-        id: id
-      },
-      success: function success(response) {
-        $('#edit-timetable').modal('show');
-        $('#change-date').val(response['data'][0].date);
-        $('#change-time').val(response['data'][0].time);
-        $('#getClass_id').val(response['data'][0].class_id);
-        $('#update-timetable1').attr('data-id', response['data'][0].id);
-      }
-    });
-  });
-  $('#update-timetable1').click(function (e) {
-    e.preventDefault();
-    var id = $(this).attr('data-id');
-    var time = $('#change-time').val();
-    var date = $('#change-date').val();
-    var class_id = $('#getClass_id').val();
-    $.ajax({
-      type: 'post',
-      url: "api/update-timetable",
-      data: {
-        id: id,
-        date: date,
-        time: time,
-        class_id: class_id
-      },
-      success: function success(response) {
-        if (response.code == 0) {
-          toastr.error(response.message);
-        } else {
-          tableTimetable.ajax.reload();
-          $('#edit-timetable').modal('hide');
-          toastr.success('Cập nhật thành công');
-        }
-      }
-    });
-  });
-  $(document).on('click', '.rollCallPage', function () {
-    var idOfTimetable = $(this).attr('timetableID');
-    localStorage.setItem("idOfTimetable", idOfTimetable);
-    window.location.href = asset + "rollcall";
-  });
 });
+$(document).on('click', '.back-class', function () {
+  $('.table-class').removeClass('hidden');
+  $('#button-create-class').removeClass('hidden');
+  $('.timetable').addClass('hidden');
+});
+
+__webpack_require__(/*! ./rollcall.js */ "./resources/assets/js/rollcall.js"); // $(document).on('click','.rollCallPage', function(){
+//             var timetable_id = $(this).attr('timetableID');
+//             $('.table-timetable').addClass('hidden');
+//             $('.back-class').addClass('hidden');
+//             require('./rollcall.js');
+//     		// localStorage.setItem("idOfTimetable",idOfTimetable);
+//     		// window.location.href = asset + "rollcall";
+// });
+// $(function(){
+//     var url_string = window.location.href;
+//     var url = new URL(url_string);
+//     var id = url.searchParams.get("classid");
+// 	function getTimeEnd(data, type, row) {
+// 	 	var d = moment(data.time,'HH:mm:ss').add(data.duration,'hour').format('HH:mm:ss');
+// 	 	return d;
+// 	}
+// 	function getDayAndDate(data, type, dataToSet) {
+// 	    return data.date + "<br>" + data.week_days;
+// 	}
+// 	var tableTimetable = $('#timeTableClass').DataTable({
+//     	"columnDefs": [ {
+//             "searchable": false,
+//             "orderable": false,
+//             "targets": 0
+//         } ],
+//         "order": [[ 1, 'asc' ]],
+//         ajax: {
+// 	        url: 'api/get-list-timetable',
+// 	        data: {id:id},
+// 	        dataSrc: 'data',
+// 	    },
+// 	    columns: [
+//             { data: null},
+//             { data: getDayAndDate,
+//             	render : function(data, type, row) {
+//             		var day;
+// 			        switch (row.week_days) {
+// 					    case 0:
+// 					        day = "Chủ nhật";
+// 					        break;
+// 					    case 1:
+// 					        day = "Thứ hai";
+// 					        break;
+// 					    case 2:
+// 					        day = "Thứ ba";
+// 					        break;
+// 					    case 3:
+// 					        day = "Thứ tư";
+// 					        break;
+// 					    case 4:
+// 					        day = "Thứ năm";
+// 					        break;
+// 					    case 5:
+// 					        day = "Thứ sáu";
+// 					        break;
+// 					    case  6:
+// 					        day = "Thứ bảy";
+// 					}
+// 					return row.date + "<br>" + day;
+// 			    },
+//         	},
+//             { data: 'time', name: 'time'},
+//             { data: getTimeEnd},
+//             {
+//                 'data': null,
+//                 'render': function (data, type, row) {
+//                     // return '<button timetableID=\"'+row.id+'\" title=\"Sửa thời khóa biểu\"'+
+//                     // 'class=\"btn btn-warning editTimetable\"><i class=\"fa fa-pencil\" '+
+//                     // 'aria-hidden=\"true\"></i>'+
+//                     return '</button> <button classID=\"'+row.class_id+'\" timetableID=\"'+row.id+'\" '+
+//                     'class="rollCallPage btn btn-success" '+
+//                     'title="Điểm danh"><i class="fa fa-sticky-note" '+
+//                     'aria-hidden="true"></i></button>'
+//                 }
+//             },
+//         ]
+//     });
+//     tableTimetable.on( 'order.dt search.dt', function () {
+//         tableTimetable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+//             cell.innerHTML = i+1;
+//         } );
+//     } ).draw();
+//     jQuery.datetimepicker.setLocale('vi');
+//     $('#change-date').datetimepicker({
+//         format: 'Y-m-d',
+//         timepicker: false,
+//         minDate: '-1970-01-1',
+//     });
+//     $('#change-time').datetimepicker({
+//         format: 'H:i',
+//         datepicker: false,
+//         allowTimes: ['07:30','08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00',
+//         '12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30',
+//         '18:00','18:30','19:00','19:30','20:00','20:30','21:00'],
+//     });
+//     $(document).on('click','.editTimetable', function(){
+//     	var id = $(this).attr('timetableID');
+//     	$.ajax({
+//             type: 'get',
+//             url: "api/edit-timetable",
+//             data: {id:id},
+//             success: function(response){
+//                 $('#edit-timetable').modal('show');
+//                 $('#change-date').val(response['data'][0].date);
+//                 $('#change-time').val(response['data'][0].time);
+//                 $('#getClass_id').val(response['data'][0].class_id);
+//                 $('#update-timetable1').attr('data-id', response['data'][0].id);
+//             }
+//         })
+//     });
+//     $('#update-timetable1').click(function(e){
+//     	e.preventDefault();
+//     	var id = $(this).attr('data-id');
+//     	var time = $('#change-time').val();
+//     	var date = $('#change-date').val();
+//     	var class_id = $('#getClass_id').val();
+//     	$.ajax({
+//             type: 'post',
+//             url: "api/update-timetable",
+//             data: {id:id,date:date,time:time,class_id:class_id},
+//             success: function(response){
+//                 if (response.code == 0) {
+//                 	toastr.error(response.message);
+//                 }else{
+//                 	tableTimetable.ajax.reload();
+//                 	$('#edit-timetable').modal('hide');
+//                 	toastr.success('Cập nhật thành công');
+//                 }
+//             }
+//         })
+//     });
+//     $(document).on('click','.rollCallPage', function(){
+//     	var idOfTimetable = $(this).attr('timetableID');
+// 		localStorage.setItem("idOfTimetable",idOfTimetable);
+// 		window.location.href = asset + "rollcall";
+//     });
+// })
 
 /***/ }),
 

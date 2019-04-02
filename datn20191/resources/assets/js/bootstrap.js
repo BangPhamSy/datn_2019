@@ -21,10 +21,10 @@ $.ajaxSetup({
 });
 
 require('./student.js');
-require('./timetable.js');
+// require('./timetable.js');
 require('./registration_class.js');
 require('./timetable_student.js');
-require('./rollcall.js');
+// require('./rollcall.js');
 require('./holiday.js');
 require('./course.js');
 require('./classes.js');

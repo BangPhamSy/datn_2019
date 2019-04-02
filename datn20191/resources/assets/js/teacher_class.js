@@ -1,6 +1,6 @@
 $(function(){
     var teacher_id = $('#get_teacher_id').val();
-    // console.log(user_id);
+    // console.log(teacher_id);
     var tableTeacherClass = $('#list_class_of_teacher').DataTable({
         "columnDefs": [ {
             "searchable": false,

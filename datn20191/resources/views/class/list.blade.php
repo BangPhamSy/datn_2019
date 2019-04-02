@@ -7,6 +7,9 @@
   <div class=" content-class row">
     @if(Auth::check())
       <input type="hidden" name="" value="{{Auth::User()->role_id}}" id="get_role">
+      <input type="hidden" id="get_teacher_id" 
+      value="{{$teacher_id = DB::table('teachers')->join('users','users.id','=','teachers.user_id')
+          ->where('user_id',Auth::User()->id)->value('teachers.id')}}" >
       <div class="col-xs-12">
         @if(Auth::User()->role_id==1)
             <div class="box-header">
@@ -19,7 +22,7 @@
             <!-- /.box-header -->
             <div class="box-body">
 
-            <div  class="table-responsive " style="margin-top: 10px"> 
+            <div  class="table-responsive table-class " style="margin-top: 10px"> 
               <table id="list_class" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -244,6 +247,62 @@
         </div>
     </div>
 <!--Het Form Danh sach hoc sinh cua lop -->
+<!--Thoi khoa bieu-->
+{{-- <div class="card-body table-reponsive table-timetable hidden">
+  <h4>Thời khóa biểu của lớp</h4>
+  <table class="table table-bordered table-striped" id="timeTableClass">
+      <thead>
+          <tr>
+              <th>STT</th>
+              <th>Ngày</th>
+              <th>Thời gian từ</th>
+              <th>Đến</th>
+              <th>Điểm danh</th>
+          </tr>
+      </thead>
+      <tfoot>
+          <tr>
+              <th>STT</th>
+              <th>Ngày</th>
+              <th>Thời gian từ</th>
+              <th>Đến</th>
+              <th>Điểm danh</th>
+          </tr>
+      </tfoot>
+  </table>
+</div> --}}
+
+	{{-- bảng danh sách kì thi --}}
+	{{-- <div class="card-body table-reponsive table-exam hidden">
+      <table class="table table-bordered table-striped" id="list-exam">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên kì thi</th>
+            <th>Tên lớp</th>
+            <th>Thời gian thi</th>
+            <th>Thời lượng(phút)</th>
+            <th>Ghi chú</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tfoot>
+          <tr>
+            <th>STT</th>
+            <th>Tên kì thi</th>
+            <th>Tên lớp</th>
+            <th>Thời gian thi</th>
+            <th>Thời lượng(phút)</th>
+            <th>Ghi chú</th>
+            <th>Action</th>
+          </tr>
+          </tfoot>
+      </table>
+    </div></br> --}}
+  @include('examination.list')
+  @include('class.timetable')
+  {{-- @include('class.rollcall') --}}
 @endsection
 @section('footer')
 <script type="text/javascript">

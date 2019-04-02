@@ -1,5 +1,5 @@
-@extends('layouts.master')
-@section('header')
+{{-- @extends('layouts.master')
+@section('header') --}}
 	<style>
 /* The container */
 .container1 {
@@ -61,7 +61,7 @@
 	background: white;
 }
 </style>
-@endsection
+{{-- @endsection
 @section('pagetitle')
 	Điểm danh cho lớp
 @endsection
@@ -73,8 +73,11 @@
     <li><a href="{{ asset('timetable') }}">Thời khóa biểu</a></li>
     <li class="active">Điểm danh</li>
 @endsection
-@section('content')
+@section('content') --}}
+<div class=" table-rollcall hidden">
 
+        <div><button class="back-timetable btn btn-success">Quay lại</button></div>
+        <br/>
 	{{-- bảng điểm danh --}}
 	<div class="card-body table-reponsive">
 		<table class="table table-bordered table-striped" id="table-rollcall">
@@ -123,4 +126,6 @@
             </div>
         </div>
     </div>
-@endsection
+    </div>
+</div>
+{{-- @endsection --}}

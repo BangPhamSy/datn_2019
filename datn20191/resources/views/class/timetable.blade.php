@@ -1,11 +1,16 @@
-@extends('layouts.master')
+{{-- @extends('layouts.master')
 @section('title', 'Thời khóa biểu lớp')
 @section('breadcrumb')
     <li><a href="{{ asset('class') }}">Danh sách lớp</a></li>
     <li class="active">Thời khóa biểu</li>
 @endsection
-@section('content')
-    <div class="card-body table-reponsive">
+@section('content') --}}
+<div class="timetable hidden">
+    <div><button class="back-class btn btn-success">Quay lại</button></div>
+    <br/>
+    <div class="card-body table-reponsive table-timetable">
+        <h4>Lịch học của lớp</h4>
+        <br/>
         <table class="table table-bordered table-striped" id="timeTableClass">
             <thead>
                 <tr>
@@ -56,8 +61,9 @@
             </div>
         </div>
     </div>
-
-<script>
+</div>
+@include('class.rollcall')
+{{-- <script>
     var asset = "{{ asset('') }}";
-</script>
-@endsection
+</script> --}}
+{{-- @endsection --}}

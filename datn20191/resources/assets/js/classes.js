@@ -9,138 +9,257 @@ $(function () {
     // }
     // window.onload = updateStatus;
     var role_id = $('#get_role').val();
-    console.log(role_id);
-    var tableClass = $('#list_class').DataTable({
-        "columnDefs": [ {
-            "searchable": false,
-            "orderable": false,
-            "targets": 0
-        } ],
-        "order": [[ 1, 'asc' ]],
-        ajax: {
-            url: 'api/get-list-class',
-            dataSrc: 'data',
-        },
-        columns: [
-            {data:null},
-            { data: "name" , name:"name"},
-            { data: "class_code", name:"class_code" },
-            { data: "teacher_name", name:"teacher_name" },
-            { data: "class_size", name:"class_size" },
-            { data:  "start_date", name:"start_date"},
-            { 
-                render:function(data, type, row) 
+    var teacher_id = $('#get_teacher_id').val();
+    if(teacher_id){
+        var tableClass = $('#list_class').DataTable({
+            "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            } ],
+            "order": [[ 1, 'asc' ]],
+            ajax: {
+                method : "get",
+                url: 'api/get-class-list-of-teacher',
+                data : {teacher_id :teacher_id},
+                dataSrc: 'data'
+            },
+            "bDestroy":true,
+            columns: [
+                {data:null},
+                { data: "name" ,         name:"name"},
+                { data: "class_code",    name:"class_code" },
+                { data: "teacher_name", name:"teacher_name" },
+                { data: "class_size",    name:"class_size" },
+                { data:  "start_date",   name:"start_date"},
+                {data : "room_name",name:"room_name"},
+                { 
+                    render:function(data, type, row) 
+                    {
+                        var arr_date = (row.schedule).split(",");
+                        var days = "";
+                        for(var i=0;i<arr_date.length-1;i++){
+                            switch(Number(arr_date[i])){
+                                case 0:
+                                    day = "Chủ nhật";
+                                    break;
+                                case 1:
+                                    day = "Thứ hai";
+                                    break;
+                                case 2:
+                                    day = "Thứ ba";
+                                    break;
+                                case 3:
+                                    day = "Thứ tư";
+                                    break;
+                                case 4:
+                                    day = "Thứ năm";
+                                    break;
+                                case 5:
+                                    day = "Thứ sáu";
+                                   break;
+                                case 6:
+                                    day = "Thứ bảy";
+                                    break;
+                            }
+                            days+=day+" ";
+    
+                        }
+                        return days;
+                        
+                    }
+                },
+                { data: "time_start" , name:"time_start"},
+                // { data:  "status",       name:"status"},
+                // { data: "action",        name:"class_size" },
                 {
-                    var arr_date = (row.schedule).split(",");
-                    var days = "";
-                    for(var i=0;i<arr_date.length-1;i++){
-                        switch(Number(arr_date[i])){
-                            case 0:
-                                day = "Chủ nhật";
+                    render:function(data, type, row) 
+                    {
+                        switch(row.status){
+                            case 0 :  
+                                return '<span>Đang tuyển sinh</span>';
+                            case 1 :
+                                return '<span>Đang học</span>';
+                            case 2 :
+                                return '<span>Đã kết thúc</span>';
+                        }
+                       
+                        
+                    }
+                },
+                // },
+                {
+                  "render":function(data, type, row) 
+                    {
+                        // if(role_id==2) {
+                            return '<button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                            <button type="button" class_id="'+row.id+'" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                            ' 
+                        // }
+                        
+                    }
+                }
+            ]
+         
+            });
+            tableClass.on( 'order.dt search.dt', function () {
+            tableClass.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            });
+            }).draw();
+    
+    }else{
+        var tableClass = $('#list_class').DataTable({
+            "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            } ],
+            "order": [[ 1, 'asc' ]],
+            ajax: {
+                url: 'api/get-list-class',
+                dataSrc: 'data',
+            },
+            columns: [
+                {data:null},
+                { data: "name" , name:"name"},
+                { data: "class_code", name:"class_code" },
+                { data: "teacher_name", name:"teacher_name" },
+                { data: "class_size", name:"class_size" },
+                { data:  "start_date", name:"start_date"},
+                { 
+                    render:function(data, type, row) 
+                    {
+                        var arr_date = (row.schedule).split(",");
+                        var days = "";
+                        for(var i=0;i<arr_date.length-1;i++){
+                            switch(Number(arr_date[i])){
+                                case 0:
+                                    day = "Chủ nhật";
+                                    break;
+                                case 1:
+                                    day = "Thứ hai";
+                                    break;
+                                case 2:
+                                    day = "Thứ ba";
+                                    break;
+                                case 3:
+                                    day = "Thứ tư";
+                                    break;
+                                case 4:
+                                    day = "Thứ năm";
+                                    break;
+                                case 5:
+                                    day = "Thứ sáu";
+                                   break;
+                                case 6:
+                                    day = "Thứ bảy";
+                                    break;
+                            }
+                            days+=day+" ";
+    
+                        }
+                        return days;
+                        
+                    }
+                },
+                { data: "time_start" , name:"time_start"},
+                {data:"room_name",name : "room_name"},
+                {
+                    "render":function(data, type, row) 
+                    {
+                        switch(row.status){
+                            case 0:   
+                                return "Đang tuyển sinh";
+                                // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                                //             <option value="0" selected>Đang tuyển sinh</option>\
+                                //             <option value="1">Đang học</option>\
+                                //             <option value="2">Đã kết thúc</option>\
+                                //             <option value="3">Tạm dừng</option>\
+                                //         </select>'+
+                                //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                                 break;
                             case 1:
-                                day = "Thứ hai";
+                                return "Đang học"
+                                // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                                //             <option value="0" >Đang tuyển sinh</option>\
+                                //             <option value="1" selected>Đang học</option>\
+                                //             <option value="2">Đã kết thúc</option>\
+                                //             <option value="3">Tạm dừng</option>\
+                                //         </select>'+
+                                //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                                 break;
                             case 2:
-                                day = "Thứ ba";
+                                return "Đã kết thúc"
+                                // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                                //             <option value="0" selected>Đang tuyển sinh</option>\
+                                //             <option value="1">Đang học</option>\
+                                //             <option value="2" selected>Đã kết thúc</option>\
+                                //             <option value="3">Tạm dừng</option>\
+                                //         </select>'+
+                                //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                                 break;
                             case 3:
-                                day = "Thứ tư";
-                                break;
-                            case 4:
-                                day = "Thứ năm";
-                                break;
-                            case 5:
-                                day = "Thứ sáu";
-                               break;
-                            case 6:
-                                day = "Thứ bảy";
+                                return "Tạm dừng";
+                                // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
+                                //             <option value="0" selected>Đang tuyển sinh</option>\
+                                //             <option value="1">Đang học</option>\
+                                //             <option value="2">Đã kết thúc</option>\
+                                //             <option value="3" selected>Tạm dừng</option>\
+                                //         </select>'+
+                                //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
                                 break;
                         }
-                        days+=day+" ";
-
+                        
                     }
-                    return days;
-                    
-                }
-            },
-            { data: "time_start" , name:"time_start"},
-            {data:"room_name",name : "room_name"},
-            {
-                "render":function(data, type, row) 
+              
+                },
+               
                 {
-                    switch(row.status){
-                        case 0:   
-                            return "Đang tuyển sinh";
-                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                            //             <option value="0" selected>Đang tuyển sinh</option>\
-                            //             <option value="1">Đang học</option>\
-                            //             <option value="2">Đã kết thúc</option>\
-                            //             <option value="3">Tạm dừng</option>\
-                            //         </select>'+
-                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-                            break;
-                        case 1:
-                            return "Đang học"
-                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                            //             <option value="0" >Đang tuyển sinh</option>\
-                            //             <option value="1" selected>Đang học</option>\
-                            //             <option value="2">Đã kết thúc</option>\
-                            //             <option value="3">Tạm dừng</option>\
-                            //         </select>'+
-                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-                            break;
-                        case 2:
-                            return "Đã kết thúc"
-                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                            //             <option value="0" selected>Đang tuyển sinh</option>\
-                            //             <option value="1">Đang học</option>\
-                            //             <option value="2" selected>Đã kết thúc</option>\
-                            //             <option value="3">Tạm dừng</option>\
-                            //         </select>'+
-                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-                            break;
-                        case 3:
-                            return "Tạm dừng";
-                            // return '<select class="change-s" class_id="'+row.id+'" id="'+row.id+'">\
-                            //             <option value="0" selected>Đang tuyển sinh</option>\
-                            //             <option value="1">Đang học</option>\
-                            //             <option value="2">Đã kết thúc</option>\
-                            //             <option value="3" selected>Tạm dừng</option>\
-                            //         </select>'+
-                            //         '<input name="'+row.id+'" type="hidden" class="statuschange" value="'+row.id+'">';
-                            break;
+                  "render":function(data, type, row) 
+                    {
+                        if(role_id==2) {
+                            return '<button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                            <button type="button" class_id="'+row.id+'" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
+                            ' 
+                        }
+                    // return '<button class_id1=\"'+row.id+'\" title=\"thêm học sinh vào lớp\"'+
+                    //     'class=\"btn btn-primary add-student-class\"><i class=\"fa fa-plus-square\" aria-hidden=\"true\"></i>'+
+                    //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem danh sách\"'+
+                    //     'class=\"btn btn-danger list-student-class\"><i class=\"fa fa-address-book-o\"aria-hidden=\"true\"></i>'+
+                    //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem danh sách kì thi\" '+
+                    //     'class=\"show-list-exams btn btn-info\"><i class=\"fa fa-graduation-cap\" aria-hidden=\"true\"></i>'+
+                    //     '</button> <button class_id=\"'+row.id+'\" title=\"Xem Thời Khóa Biểu\"'+
+                    //     'class=\"show-timetable btn btn-success\"><i class=\"fa fa-book\" aria-hidden=\"true\"></i>'+
+                    //     '</button> <button class_id=\"'+row.id+'\" title=\"Xóa lớp\" '+
+                    //     'class=\" delete-class1 btn btn-danger\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>'+
+                    //     '</button> <button class_id=\"'+row.id+'\" title=\"Sửa thông tin lớp\" '+
+                    //     'class=\"edit-class btn btn-warning\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>'
+                        
+                 
+                 return '<button class_id1="'+row.id+'" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
+                        <button  class_id="'+row.id+'" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\
+                        <button  class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
+                        <button  style="margin-top:5px" style="margin-top:5px" class_id="'+row.id+'" class=" show-list-exams btn btn-info"><i title="Xem danh sách kì thi" class="fa fa-graduation-cap" aria-hidden="true"></i>\
+                        <button style="margin-top:5px" class_id="'+row.id+'" type="button" class="edit-class btn btn-warning"><i title="Sửa thông tin lớp" class="fa fa-pencil-square-o" aria-hidden="true"></i></button>\
+                        <button style="margin-top:5px" class_id="'+row.id+'" type="button" class=" delete-class1 btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>' 
+                        
                     }
-                    
                 }
-          
-            },
-            {
-              "render":function(data, type, row) 
-                {
-                    if(role_id==2) {
-                        return '<button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
-                        <button type="button" class_id="'+row.id+'" title="Xem danh sách kì thi" class=" show-list-exams btn btn-info"><i class="fa fa-graduation-cap" aria-hidden="true"></i> \
-                        ' 
-                    }
-                  
-                    return '<button type="button" class_id1="'+row.id+'" class="add-student-class btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></button>\
-                    <button type="button" class_id="'+row.id+'" class="list-student-class btn btn-danger"><i class="fa fa-address-book-o" aria-hidden="true"></i></button>\
-                    <button type="button" class_id="'+row.id+'" class="show-timetable btn btn-success"><i title="Xem Thời Khóa Biểu" class="fa fa-book"  aria-hidden="true"></i></button>\
-                    <button type="button" class_id="'+row.id+'" class=" show-list-exams btn btn-info"><i title="Xem danh sách kì thi" class="fa fa-graduation-cap" aria-hidden="true"></i>\
-                    <button class_id="'+row.id+'" type="button" class="edit-class btn btn-warning"><i title="Sửa thông tin lớp" class="fa fa-pencil-square-o" aria-hidden="true"></i></button>\
-                    <button class_id="'+row.id+'" type="button" class=" delete-class1 btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>' 
-                    
-                }
-            }
-        ]
-     
-    });
-    tableClass.on( 'order.dt search.dt', function () {
-        tableClass.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            cell.innerHTML = i+1;
-        } );
-    } ).draw();
+            ]
+         
+        });
+        tableClass.on( 'order.dt search.dt', function () {
+            tableClass.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw();
+    }
+    $('.button-add').addClass('hidden');
+    // $('#timetable').addClass('hidden');
+    // console.log(role_id);
+    // if(role)
+  
 
     $('#form-create-class').validate(
             {
@@ -599,38 +718,122 @@ $(function () {
             });
          
     });
-    $(document).on('click','.show-timetable',function(){
-        var class_id = $(this).attr('class_id');
-        window.location.href= asset+ "timetable?classid="+class_id+""
+    // $(document).on('click','.show-timetable',function(){
+       
+    //     var class_id = $(this).attr('class_id');
+    //     $('.table-class').addClass('hidden');
+    //     $('#button-create-class').addClass('hidden');
+    //     $('#timetable').removeClass('hidden');
+    //     function getTimeEnd(data, type, row) {
+    //         var d = moment(data.time,'HH:mm:ss').add(data.duration,'hour').format('HH:mm:ss');
+    //         return d;
+    //    }
+    //    function getDayAndDate(data, type, dataToSet) {
+    //        return data.date + "<br>" + data.week_days;
+    //    }
+    //    var id = class_id;
+    //    var tableTimetable = $('#timeTableClass').DataTable({
+    //        "columnDefs": [ {
+    //            "searchable": false,
+    //            "orderable": false,
+    //            "targets": 0
+    //        } ],
+    //        "order": [[ 1, 'asc' ]],
+    //        ajax: {
+    //            url: 'api/get-list-timetable',
+    //            data: {id:id},
+    //            dataSrc: 'data',
+    //        },
+    //        "bDestroy" :true,
+    //        columns: [
+    //            { data: null},
+    //            { data: getDayAndDate,
+    //                render : function(data, type, row) {
+    //                    var day;
+    //                    switch (row.week_days) {
+    //                        case 0:
+    //                            day = "Chủ nhật";
+    //                            break;
+    //                        case 1:
+    //                            day = "Thứ hai";
+    //                            break;
+    //                        case 2:
+    //                            day = "Thứ ba";
+    //                            break;
+    //                        case 3:
+    //                            day = "Thứ tư";
+    //                            break;
+    //                        case 4:
+    //                            day = "Thứ năm";
+    //                            break;
+    //                        case 5:
+    //                            day = "Thứ sáu";
+    //                            break;
+    //                        case  6:
+    //                            day = "Thứ bảy";
+    //                    }
+    //                    return row.date + "<br>" + day;
+    //                },
+    //            },
+    //            { data: 'time', name: 'time'},
+    //            { data: getTimeEnd},
+    //            {
+    //                'data': null,
+    //                'render': function (data, type, row) {
+    //                    return '</button> <button classID=\"'+row.class_id+'\" timetableID=\"'+row.id+'\" '+
+    //                    'class="rollCallPage btn btn-success" '+
+    //                    'title="Điểm danh"><i class="fa fa-sticky-note" '+
+    //                    'aria-hidden="true"></i></button>'
+    //                }
+    //            },
+    //        ]
+    //    });
+       
+    //    tableTimetable.on( 'order.dt search.dt', function () {
+    //        tableTimetable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+    //            cell.innerHTML = i+1;
+    //        } );
+    //    } ).draw();
+    // });
+    require('./timetable.js');
+    require('./examination.js');
+    // $(document).on('click','.show-list-exams',function(){
+    //     var class_id = $(this).attr('class_id');
+    //     $('.table-class').addClass('hidden');
+    //     $('#button-create-class').addClass('hidden');
+    //     $('.table-exam').removeClass('hidden');
+    //     window.location.href= asset+ "exam?classid="+class_id+""
+    // });
+    $(document).on('click','.back-class',function(){
+        $('.table-class').removeClass('hidden');
+        $('#button-create-class').removeClass('hidden');
+        $('.timetable').addClass('hidden');
+        $('.table-exam').addClass('hidden');
+        // $('.button-add').addClass('hidden');
     });
-    $(document).on('click','.show-list-exams',function(){
-        var class_id = $(this).attr('class_id');
-        window.location.href= asset+ "exam?classid="+class_id+""
-    });
+    function ChangeStatus(){
+        var cars = [];
+        $(".statuschange").each(function() {
+            cars.push($(this).val());
 
-    // function ChangeStatus(){
-    //     var cars = [];
-    //     $(".statuschange").each(function() {
-    //         cars.push($(this).val());
-
-    //     });
-    //     for(var i = 0; i <= cars.length; i++){
-    //         let car = cars[i];
-    //         $(document).on('change','#status_class'+car+'',function(e){
-    //             e.preventDefault();
-    //             var id = $(this).attr('class_id');
-    //             let status = $('select[id=status_class'+car+']').val()
-    //             $.ajax({
-    //                 type: 'post',
-    //                 url: "api/update-status-class",
-    //                 data: {id:id,status:status},
-    //                 success: function(response){
-    //                     toastr.success('Cập nhật thành công');
-    //                 }
-    //             })
-    //         })
-    //     }
-    // }
+        });
+        for(var i = 0; i <= cars.length; i++){
+            let car = cars[i];
+            $(document).on('change','#status_class'+car+'',function(e){
+                e.preventDefault();
+                var id = $(this).attr('class_id');
+                let status = $('select[id=status_class'+car+']').val()
+                $.ajax({
+                    type: 'post',
+                    url: "api/update-status-class",
+                    data: {id:id,status:status},
+                    success: function(response){
+                        toastr.success('Cập nhật thành công');
+                    }
+                })
+            })
+        }
+    }
 
     // window.onload = ChangeStatus;
    

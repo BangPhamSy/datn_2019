@@ -18,14 +18,15 @@ class RollCallController extends Controller
     public function getListRollCallStudent(Request $request)
     {
         $timetable_id = request('timetable_id');
-	    $studentsOfClass = RollCall::getListRollCall($timetable_id);
-	    if($studentsOfClass->count()==0){
-	        return response()->json(['code'=>0,'message'=>'Lớp không có học sinh nào!'],200);
-	    }
-	    else{
-	        return response()->json(['code'=>1,'data'=>$studentsOfClass],200);
-	    }
-	}
+        $studentsOfClass = RollCall::getListRollCall($timetable_id);
+            if($studentsOfClass->count()==0){
+                return response()->json(['code'=>0,'message'=>'Lớp không có học sinh nào!'],200);
+            }
+            else{
+                return response()->json(['code'=>1,'data'=>$studentsOfClass],200);
+            }
+    }
+	   
 
 	/**
      * điểm danh cho học sinh.
