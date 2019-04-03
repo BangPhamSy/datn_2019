@@ -65,7 +65,7 @@
 					<form id="form-add-exam" action="" method="POST" role="form">
 						<div class="form-group">
 							<label for="">Tên kì thi</label>
-							<input name="name"  type="text" class="form-control" id='name'>
+							<input name="exam_name"  type="text" class="form-control" id="exam_name">
 						</div>
 						<div class="form-group">
 							<label for="">Chọn lớp</label>
@@ -78,7 +78,7 @@
 						</div>
 						<div class="form-group">
 							<label for="">Thời lượng(phút)</label>
-							<input name="duration"  type="text" class="form-control" id='duration'>
+							<input name="exam_duration"  type="text" class="form-control" id="exam_duration">
 						</div>
 						<div class="form-group">
 							<label for="">Ghi chú</label>

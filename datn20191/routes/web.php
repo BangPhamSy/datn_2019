@@ -49,7 +49,7 @@ Route::get('timetable_student',function(){
 });
 // exam
 Route::get('/exam', function(){
-		return view('examination/list');
+		return view('examination/list_exam');
 });
 Route::get('/checkDB', function (){
     dd(DB::connection()->getDatabaseName());

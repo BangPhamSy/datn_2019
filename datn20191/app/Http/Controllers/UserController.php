@@ -7,6 +7,7 @@ use Session;
 use Validator;
 use Illuminate\Support\MessageBag;
 use App\User;
+use DB;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -58,6 +59,26 @@ class UserController extends Controller
     		$password = $request->input('password');
 
     		if( Auth::attempt(['email' => $email, 'password' =>$password])) {
+				$date = date('Y-m-d');
+				$end = DB::table('timetables')->join('classes','classes.id','=','timetables.class_id')
+				->selectRaw("MAX(timetables.date) AS end_date, MIN(timetables.date) AS start_date, timetables.class_id")
+				->groupBy('class_id')->get();
+				$a = json_decode(json_encode($end), True);
+				// return $a;
+				for ($i=0; $i < count($a); $i++) 
+					{
+				//     if ($a[$i]['status'] != 3) {
+						if (strtotime($date) > strtotime($a[$i]['end_date'])) {
+							$status = 2;
+						}elseif(strtotime($date) < strtotime($a[$i]['start_date'])){
+							$status = 0;
+						}else{
+							$status = 1;
+						}
+						// echo $status .'--';
+						$s = DB::table('classes')->where('id',$a[$i]['class_id'])->update(['status' =>$status]);
+					// }
+				};
     			return redirect()->intended('/dashboard');
     		} else {
     			$errors = new MessageBag(['errorlogin' => 'Email hoặc mật khẩu không đúng']);

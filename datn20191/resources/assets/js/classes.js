@@ -1,13 +1,5 @@
 $(function () {
-    // function updateStatus(){
-    //     $.ajax({
-    //         type : 'get',
-    //         url : 'api/auto-update-status',
-    //         success:function(response){
-    //         }
-    //     })
-    // }
-    // window.onload = updateStatus;
+
     var role_id = $('#get_role').val();
     var teacher_id = $('#get_teacher_id').val();
     if(teacher_id){
@@ -109,6 +101,7 @@ $(function () {
             }).draw();
     
     }else{
+        
         var tableClass = $('#list_class').DataTable({
             "columnDefs": [ {
                 "searchable": false,
@@ -122,11 +115,17 @@ $(function () {
             },
             columns: [
                 {data:null},
-                { data: "name" , name:"name"},
-                { data: "class_code", name:"class_code" },
-                { data: "teacher_name", name:"teacher_name" },
-                { data: "class_size", name:"class_size" },
-                { data:  "start_date", name:"start_date"},
+                { data: "name" },
+                { data: "class_code" },
+                { data: "teacher_name" },
+                { data: "class_size" },
+                {
+                    render:function(data, type, row){
+                        return row.start_date+"/"+row.end_date;
+                    }
+                },
+                // { data:  "start_date"},
+                // { data:  "end_date"},
                 { 
                     render:function(data, type, row) 
                     {
@@ -163,8 +162,15 @@ $(function () {
                         
                     }
                 },
-                { data: "time_start" , name:"time_start"},
-                {data:"room_name",name : "room_name"},
+                {
+                    render:function(data, type, row)
+                    {
+                        return row.time_start+"-"+row.time_end;
+                    }
+                },
+                // { data: "time_start" },
+                // { data: "time_end" },
+                {data:"room_name"},
                 {
                     "render":function(data, type, row) 
                     {
@@ -484,7 +490,8 @@ $(function () {
                         $('#form-create-class')[0].reset();
                         $("#modal-create-class").modal("hide");
                         toastr.success('Thêm lớp thành công!');
-                        $('#list_class').DataTable().ajax.reload();
+                        tableClass.ajax.reload();
+                        // $('#list_class').DataTable().ajax.reload();
                     }
                 }
             });

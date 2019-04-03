@@ -36680,15 +36680,6 @@ if (token) {
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 $(function () {
-  // function updateStatus(){
-  //     $.ajax({
-  //         type : 'get',
-  //         url : 'api/auto-update-status',
-  //         success:function(response){
-  //         }
-  //     })
-  // }
-  // window.onload = updateStatus;
   var role_id = $('#get_role').val();
   var teacher_id = $('#get_teacher_id').val();
 
@@ -36821,21 +36812,20 @@ $(function () {
       columns: [{
         data: null
       }, {
-        data: "name",
-        name: "name"
+        data: "name"
       }, {
-        data: "class_code",
-        name: "class_code"
+        data: "class_code"
       }, {
-        data: "teacher_name",
-        name: "teacher_name"
+        data: "teacher_name"
       }, {
-        data: "class_size",
-        name: "class_size"
+        data: "class_size"
       }, {
-        data: "start_date",
-        name: "start_date"
-      }, {
+        render: function render(data, type, row) {
+          return row.start_date + "/" + row.end_date;
+        }
+      }, // { data:  "start_date"},
+      // { data:  "end_date"},
+      {
         render: function render(data, type, row) {
           var arr_date = row.schedule.split(",");
           var days = "";
@@ -36877,11 +36867,13 @@ $(function () {
           return days;
         }
       }, {
-        data: "time_start",
-        name: "time_start"
-      }, {
-        data: "room_name",
-        name: "room_name"
+        render: function render(data, type, row) {
+          return row.time_start + "-" + row.time_end;
+        }
+      }, // { data: "time_start" },
+      // { data: "time_end" },
+      {
+        data: "room_name"
       }, {
         "render": function render(data, type, row) {
           switch (row.status) {
@@ -37176,7 +37168,7 @@ $(function () {
             $('#form-create-class')[0].reset();
             $("#modal-create-class").modal("hide");
             toastr.success('Thêm lớp thành công!');
-            $('#list_class').DataTable().ajax.reload();
+            tableClass.ajax.reload(); // $('#list_class').DataTable().ajax.reload();
           }
         }
       });
@@ -38119,8 +38111,19 @@ $(document).on('click', '.show-list-exams', function () {
 });
 $(document).on('click', '.button-add', function (e) {
   e.preventDefault();
-  $('#model-add').modal('show');
+  $('#model-add').modal('show'); // $( "#datepicker" ).datepicker( "show" );
+  // function getEndDate(data,type,row){
+  // 	var date = '2019-04-10';
+  // 	return date;
+  // 	// return row.end_date;
+  // }
+
   $("#name-class").empty();
+  jQuery.datetimepicker.setLocale('vi');
+  $('#start_day').datetimepicker({
+    format: 'Y-m-d H:i',
+    minDate: '-1970-01-1'
+  });
   $.ajax({
     dataType: 'json',
     type: 'get',
@@ -38187,9 +38190,9 @@ $(document).on('click', '.button-add', function (e) {
 
 $('#add-exam').click(function (event) {
   event.preventDefault();
-  var name = $('#name').val();
+  var name = $('#exam_name').val();
   var start_day = $('#start_day').val();
-  var duration = $('#duration').val();
+  var duration = $('#exam_duration').val();
   var note = $('#note').val();
   var class_id = $('#name-class').val();
 
@@ -38419,12 +38422,7 @@ $(document).on('click', '.button-edit-exam', function (e) {
       $('#ename_class').val(response.data[0].class_id);
     }
   });
-  $("#ename_class").empty(); // jQuery.datetimepicker.setLocale('vi');
-  // $('#start_day').datetimepicker({
-  // 	format:'Y-m-d H:i',
-  //     minDate: '-1970-01-1',
-  // });
-
+  $("#ename_class").empty();
   jQuery.datetimepicker.setLocale('vi');
   $('#estart_day').datetimepicker({
     format: 'Y-m-d H:i',
@@ -39546,9 +39544,9 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// var timetable_id = $(this).attr('timetableID');
 $(document).on('click', '.rollCallPage', function () {
   var timetable_id = $(this).attr('timetableID');
+  $('.get_timetable_id').val(timetable_id);
   $('.table-timetable').addClass('hidden');
   $('.back-class').addClass('hidden');
   $('.table-rollcall').removeClass('hidden');
@@ -39613,10 +39611,8 @@ $(document).on('click', '.rollCallPage', function () {
   });
   $(document).on('click', '.back-timetable', function () {
     $('.table-timetable').removeClass('hidden');
-    $('.back-class').removeClass('hidden'); // $('#table-rollcall').DataTable().clear();
-
+    $('.back-class').removeClass('hidden');
     $('.table-rollcall').addClass('hidden');
-    timetable_id = null; // window.history.go(-1);
   });
   $('#update-note').click(function (e) {
     e.preventDefault();
@@ -39644,25 +39640,22 @@ $(document).on('click', '.rollCallPage', function () {
       }
     });
   });
-  $(document).on('change', '.rol', function (e) {
-    e.preventDefault(); // var timetable_id = $(this).attr('timetableID');
-    // var timetable_id =64;
-    // console.log(timetable_id);
-
-    var student_id = $(this).attr('studentID');
-    var status = $('input[name=' + student_id + ']:checked').val();
-    $.ajax({
-      type: "POST",
-      url: "api/roll-call-student",
-      data: {
-        status: status,
-        student_id: student_id,
-        timetable_id: timetable_id
-      },
-      success: function success(response) {
-        tableRollCall.ajax.reload();
-      }
-    });
+});
+$(document).on('change', '.rol', function (e) {
+  e.preventDefault();
+  var timetable_id = $('.get_timetable_id').val();
+  var student_id = $(this).attr('studentID');
+  var status = $('input[name=' + student_id + ']:checked').val();
+  $.ajax({
+    type: "POST",
+    url: "api/roll-call-student",
+    data: {
+      status: status,
+      student_id: student_id,
+      timetable_id: timetable_id
+    },
+    success: function success(response) {// $('#table-rollcall').ajax.reload();
+    }
   });
 }); // var timetable_id = $(this).attr('timetableID');
 // $(function(){

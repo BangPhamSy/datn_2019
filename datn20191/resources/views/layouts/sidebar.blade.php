@@ -70,7 +70,7 @@
                   <li class="">
                     <a href="{{ asset('exam') }}">
                       <i class="fa fa-trophy" aria-hidden="true"></i>
-                      <span>Quản lý đào tạo</span>
+                      <span>Quản lý kì thi</span>
                     </a>
                   </li>
                   <li class="">

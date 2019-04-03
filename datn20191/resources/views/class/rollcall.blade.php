@@ -80,6 +80,7 @@
         <br/>
 	{{-- bảng điểm danh --}}
 	<div class="card-body table-reponsive">
+        <input type="hidden" class="get_timetable_id">
 		<table class="table table-bordered table-striped" id="table-rollcall">
 			<thead>
 				<tr>

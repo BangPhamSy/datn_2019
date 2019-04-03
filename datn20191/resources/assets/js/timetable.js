@@ -82,6 +82,7 @@ $(document).on('click','.back-class',function(){
     $('.timetable').addClass('hidden');
 });
 require('./rollcall.js');
+
 // $(document).on('click','.rollCallPage', function(){
 //             var timetable_id = $(this).attr('timetableID');
 //             $('.table-timetable').addClass('hidden');

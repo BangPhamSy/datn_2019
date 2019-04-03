@@ -1,7 +1,6 @@
-// var timetable_id = $(this).attr('timetableID');
-
 $(document).on('click','.rollCallPage', function(){
     var timetable_id = $(this).attr('timetableID');
+    $('.get_timetable_id').val(timetable_id);
     $('.table-timetable').addClass('hidden');
     $('.back-class').addClass('hidden');
     $('.table-rollcall').removeClass('hidden');
@@ -71,7 +70,7 @@ $(document).on('click','.rollCallPage', function(){
         } );
     } ).draw();
 
-    
+
     $(document).on('click','.show-note',function(){
         $('#enter-note').modal('show');
         var id = $(this).attr('rolID');
@@ -83,10 +82,7 @@ $(document).on('click','.rollCallPage', function(){
     $(document).on('click','.back-timetable',function(){
         $('.table-timetable').removeClass('hidden');
         $('.back-class').removeClass('hidden');
-        // $('#table-rollcall').DataTable().clear();
         $('.table-rollcall').addClass('hidden');
-        timetable_id = null;
-        // window.history.go(-1);
     });
 
     $('#update-note').click(function(e){
@@ -111,22 +107,22 @@ $(document).on('click','.rollCallPage', function(){
                 }
             }
         });
-    })
-    $(document).on('change','.rol',function(e){
-        e.preventDefault();
-        // var timetable_id = $(this).attr('timetableID');
-        // var timetable_id =64;
-        // console.log(timetable_id);
-        var student_id = $(this).attr('studentID');
-        var status = $('input[name='+student_id+']:checked').val();
-        $.ajax({
-            type: "POST",
-            url: "api/roll-call-student",
-            data: {status:status,student_id:student_id,timetable_id:timetable_id},
-            success: function(response){
-                tableRollCall.ajax.reload();
-            }
-        });
+    });
+    
+   
+});
+$(document).on('change','.rol',function(e){
+    e.preventDefault();
+    var timetable_id = $('.get_timetable_id').val();
+    var student_id = $(this).attr('studentID');
+    var status = $('input[name='+student_id+']:checked').val();
+    $.ajax({
+        type: "POST",
+        url: "api/roll-call-student",
+        data: {status:status,student_id:student_id,timetable_id:timetable_id},
+        success: function(response){
+            // $('#table-rollcall').ajax.reload();
+        }
     });
 });
 // var timetable_id = $(this).attr('timetableID');

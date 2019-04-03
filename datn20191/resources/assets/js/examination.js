@@ -56,7 +56,18 @@ $(document).on('click','.show-list-exams',function(){
 	$(document).on('click','.button-add',function(e){
 			e.preventDefault();
 			$('#model-add').modal('show');
+			// $( "#datepicker" ).datepicker( "show" );
+			// function getEndDate(data,type,row){
+			// 	var date = '2019-04-10';
+			// 	return date;
+			// 	// return row.end_date;
+			// }
 			$("#name-class").empty();
+			jQuery.datetimepicker.setLocale('vi');
+			$('#start_day').datetimepicker({
+				format:'Y-m-d H:i',
+				minDate: '-1970-01-1',
+			});
 			$.ajax({
 				dataType : 'json',
 				type : 'get',
@@ -131,9 +142,9 @@ $(document).on('click','.show-list-exams',function(){
 		//add exam      
 	$('#add-exam').click(function(event){
 	  event.preventDefault();
-	  var name  = $('#name').val();
+	  var name  = $('#exam_name').val();
 	  var start_day = $('#start_day').val();
-	  var duration = $('#duration').val();
+	  var duration = $('#exam_duration').val();
 	  var note = $('#note').val();
 	  var class_id = $('#name-class').val();
 	  if($('#form-add-exam').valid()){
@@ -347,11 +358,6 @@ $(document).on('click','.button-edit-exam',function(e){
 		}
 	});
 	$("#ename_class").empty();
-	// jQuery.datetimepicker.setLocale('vi');
-    // $('#start_day').datetimepicker({
-	// 	format:'Y-m-d H:i',
-    //     minDate: '-1970-01-1',
-	// });
 	jQuery.datetimepicker.setLocale('vi');
     $('#estart_day').datetimepicker({
 		format:'Y-m-d H:i',

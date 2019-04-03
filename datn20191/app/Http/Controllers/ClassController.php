@@ -23,21 +23,43 @@ class ClassController extends Controller
 
      public function getListClass(Request $request)
     {
-        // $keyword = $request->input('keyword');
-        // $recordsPerPage = $request->input('rec');
-        // $page = $request->input('page');
+       
+        $listClass = DB::table('classes')
+                    ->join('courses','courses.id','=','classes.course_id')
+                    ->join('teachers','teachers.id','=','classes.teacher_id')
+                    ->join('classrooms','classrooms.id','=','classes.classroom_id')
+                    ->select(
+                        'classes.*',
+                        'classrooms.name as room_name',
+                        'teachers.name as teacher_name',
+                        'courses.name as course_name'
+                    )
+                    ->get();
+        $listClass = json_decode(json_encode($listClass),True);
         
-        // if($recordsPerPage==""){
-        //     $recordsPerPage =10;
-        // }
-        $classesOfList= Classes::getListClass();
+        for($i=0;$i<count($listClass);$i++){
+             $end_date = DB::table('timetables')
+            ->join('classes','classes.id','=','timetables.class_id')
+            ->where('classes.id',$listClass[$i]['id'])
+            ->value(DB::raw('max(timetables.date) as end_date')); 
+            $start_date = date("d-m-Y", strtotime($listClass[$i]['start_date']));
 
-        if($classesOfList->count()==0){
-            return response()->json(['code'=>0,'message'=>'Không tìm thấy lớp!'],200);
+            $end_date = date("d-m-Y", strtotime($end_date));
+
+            $time_end = date(' H:i:s',strtotime('+'.$listClass[$i]['duration'].'hour',strtotime($listClass[$i]['time_start'])));
+            $listClass[$i]['time_end']=$time_end;
+            $listClass[$i]['end_date']=$end_date;
+            $listClass[$i]['start_date']=$start_date;
         }
-        else{
-            return response()->json(['code'=>1,'data'=>$classesOfList],200);
-        }
+        return response()->json(['code'=>1,'data'=>$listClass],200);
+        // $classesOfList= Classes::getListClass();
+
+        // if($classesOfList->count()==0){
+        //     return response()->json(['code'=>0,'message'=>'Không tìm thấy lớp!'],200);
+        // }
+        // else{
+        //     return response()->json(['code'=>1,'data'=>$classesOfList],200);
+        // }
 
     }
     public function getListRegistrationClass(Request $request)
@@ -137,7 +159,7 @@ class ClassController extends Controller
                         'class_code'=>'required|unique:classes',
                         'name'      =>'required',
                         'teacher_id'=>'required|numeric',
-                        'time_start'=>'required',
+                        // 'time_start'=>'required',
                         'duration'  =>'required|numeric',
                         'class_size'=>'required|numeric',
                         'course_id' =>'required|numeric'
@@ -147,8 +169,8 @@ class ClassController extends Controller
                         'class_code.unique'    =>"Mã lớp học đã tồn tại!",
                         'name.required'        =>"Tên lớp học không được trống! ",
                         'teacher_id.required'  =>"Bạn chưa chọn giảng viên!",
-                        'time_start.required'  =>"Thời gian bắt đầu không được trống!",
-                        'time_start.date'      =>"Thời gian bắt đầu không đúng định dạng!",
+                        // 'time_start.required'  =>"Thời gian bắt đầu không được trống!",
+                        // 'time_start.date'      =>"Thời gian bắt đầu không đúng định dạng!",
                         'duration.required'    =>"Thời lượng không được trống!",
                         'duration.numeric'     =>"Thời lượng phải là kiểu số ",
                         'class_size.required'  =>"Sĩ số không được trống!",
@@ -162,10 +184,10 @@ class ClassController extends Controller
                 ->join('classrooms','classrooms.id','=','classes.classroom_id')
                 ->where('classroom_id',$classroom_id)
                 ->select('classes.start_date',DB::raw('max(timetables.date) as end_date'))
-                ->groupBy('classes.start_date')
+                ->groupBy('classes.id')
                 ->get();
         $end_date = json_decode(json_encode( $result), True);
-
+        // return $end_date;
         $get_gio_hoc = DB::table('timetables')
             ->join('classes', 'classes.id', '=', 'timetables.class_id')
             ->join('classrooms','classrooms.id','=','classes.classroom_id')
@@ -175,13 +197,16 @@ class ClassController extends Controller
             ->get();
 
         $gio_hoc = json_decode(json_encode($get_gio_hoc),True);
+        // return $gio_hoc;
         if($errors->fails() || $request->start_date<date('Y-m-d H:i:s')){
             $arrayErrors = $errors->errors()->all();
             $message = [ "code"=>0,"message" =>$arrayErrors];
             return response()->json($message,200);
         }else{
+            $start_date_new = $request->start_date;
             $start_date_class_new = $request->start_date;
             $time_start = $request->start_date;
+            $duration = $request->duration;
             $time_start_class_new = $request->time_start;
             $holiday = [];
             $items = Holiday::getListHoliday();
@@ -217,11 +242,15 @@ class ClassController extends Controller
                 }
             }
             $end_date_class_new = end($date);
+            // return $end_date_class_new;
+            // return $start_date_new;
+            // return $end_date;
             // return $end_date_class_new ;
+            // return $schedule;
             $fail = 0;
         for($i=0;$i<count($end_date);$i++)
         {
-            if( $start_date_class_new>$end_date[$i]['end_date']||$end_date[$i]['start_date']> $end_date_class_new){
+            if( $start_date_new>$end_date[$i]['end_date']||$end_date[$i]['start_date']> $end_date_class_new){
                 
             }else{
                 for($i=0;$i<count($gio_hoc);$i++){
@@ -229,12 +258,18 @@ class ClassController extends Controller
                         if($gio_hoc[$i]['week_days']!=$schedule[$j]){
                         }else{
                             $time_end1 = date(' H:i:s',strtotime('+'.$gio_hoc[$i]['duration'].'hour',strtotime($gio_hoc[$i]['time'])));
-                            $time_end2 = date('H:i:s',strtotime('+'.$schedule[$j].'hour',strtotime($time_start_class_new)));
+                            $time_end2 = date('H:i:s',strtotime('+'.$duration.'hour',strtotime($time_start_class_new)));
                             $time_start1 = $gio_hoc[$i]['time'];
                             $time_start2 = $time_start_class_new ;
                             if(strtotime($time_end2)<strtotime($time_start1) || strtotime($time_start2) >strtotime($time_end1)){    
                             }
                             else{
+                                $class_duplicate = DB::table('timetables')
+                                ->join('classes','classes.id','=','timetables.class_id')
+                                ->join('classrooms','classrooms.id','=','classes.classroom_id')
+                                ->where('classroom_id',$classroom_id)
+                                ->where('time_start',$time_start1)
+                                ->value('classes.name as class_name');
                                 $fail++;
                             }
                         }
@@ -243,7 +278,7 @@ class ClassController extends Controller
             }
         }
         if($fail!=0){
-            return response()->json(['code' => 0, 'message' => 'Phòng học đã có lớp vào khoảng thời gian đó,vui lòng chọn phòng khác!']);
+            return response()->json(['code' => 0, 'message' => 'Phòng học đã có lớp "'.$class_duplicate.'" vào khoảng thời gian đó']);
         }
         else{
             // return response()->json(['code'=>1,'message'=>"Tao lop di"],200);
@@ -468,6 +503,7 @@ class ClassController extends Controller
                             if(strtotime($time_end2)<strtotime($time_start1) || strtotime($time_start2) >strtotime($time_end1)){    
                             }
                             else{
+                                
                                 $fail++;
                             }
                         }
@@ -532,7 +568,25 @@ class ClassController extends Controller
             ->distinct('timetables.time', 'timetables.week_days','classes.duration')
             ->get();
         $time_lop_moi = json_decode(json_encode($themvao), True);
-
+        $course_id = DB::table('classes')
+                    ->where('classes.id',$class_id)
+                    ->value('course_id');
+        // return $course_id;
+        //Check trùng khóa học
+        $check_course = DB::table('classes')
+        ->join('courses','courses.id','=','classes.course_id')
+        ->join('student_classes','student_classes.class_id','=','classes.id')
+        ->where('student_id',$student_id)
+        ->select('course_id','courses.name','classes.name as class_name')
+        ->get();
+        $check_course = json_decode(json_encode($check_course), True);
+        for($i=0;$i<count($check_course);$i++){
+            if($check_course[$i]['course_id']==$course_id){
+                return response()->json(['code' => 0, 
+                'message' => 'Học viên đã tham gia lớp "'.$check_course[$i]['class_name']. ' "của khóa học " '.$check_course[$i]['name'].'" rồi!']);
+            }
+        }
+        // Hết check trùng khóa học
         $fail =0;
         for($i=0;$i<count($end_date);$i++){
             if($end_date_lop_moi[0]['start_date']>$end_date[$i]['end_date']||$end_date[$i]['start_date']>$end_date_lop_moi[0]['end_date']){
@@ -546,6 +600,11 @@ class ClassController extends Controller
                           $time_start2 = $time_lop_moi[$j]['time'];
                           if(strtotime($time_end2)<strtotime($time_start1) || strtotime($time_start2) >strtotime($time_end1)){
                           }else{
+                            $class_duplicate = DB::table('timetables')
+                            ->join('classes','classes.id','=','timetables.class_id')
+                            ->join('classrooms','classrooms.id','=','classes.classroom_id')
+                            ->where('time_start',$time_start1)
+                            ->value('classes.name as class_name');
                               $fail++;
                           }
                         }
@@ -555,9 +614,9 @@ class ClassController extends Controller
         }
 
         if ($fail != 0) {
-            return response()->json(['code' => 0, 'message' => 'Lịch học bị trùng hoặc Học viên đã có trong lớp']);
+            return response()->json(['code' => 0, 'message' => 'Lịch học bị trùng với lớp " '.$class_duplicate.'" sinh viên đã đăng kí']);
         }else{
-            $add_student = Classes::addStudentToClass1($data);
+            // $add_student = Classes::addStudentToClass1($data);
             return response()->json(['code' => 1, 'message' => 'Thêm thành công!']);
         }
     }

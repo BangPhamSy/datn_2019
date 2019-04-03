@@ -26,17 +26,21 @@
               <table id="list_class" class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                      <th data-field="id">STT</th>
-                      <th data-field="name">Tên Lớp </th>
-                      <th data-field="class_code">Mã lớp</th>
-                      <th data-field="teacher_name">Tên giảng viên</th>
-                      <th data-field="class_size">Sỉ số</th>
-                      <th data-field="start_date">Ngày bắt đầu</th>
-                      <th data-field="schedule">Lịch học</th>
-                      <th data-field="time_start">Thời gian học</th>
-                      <th data-field="room_name">Phòng học</th>
-                      <th data-field="status">Trạng thái</th>
-                      <th data-field="action">Action</th>
+                      <th>STT</th>
+                      <th>Tên Lớp </th>
+                      <th>Mã lớp</th>
+                      <th>Tên giảng viên</th>
+                      <th>Sỉ số</th>
+                      <th>Thời điểm</th>
+                      {{-- <th>Ngày bắt đầu</th>
+                      <th>Ngày kết thúc</th> --}}
+                      <th>Lịch học</th>
+                      <th>Thời gian học</th>
+                      {{-- <th>Bắt đầu</th>
+                      <th>Kết thúc</th> --}}
+                      <th>Phòng học</th>
+                      <th>Trạng thái</th>
+                      <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>     
