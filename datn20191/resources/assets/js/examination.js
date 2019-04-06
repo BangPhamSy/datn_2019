@@ -66,7 +66,8 @@ $(document).on('click','.show-list-exams',function(){
 			jQuery.datetimepicker.setLocale('vi');
 			$('#start_day').datetimepicker({
 				format:'Y-m-d H:i',
-				minDate: '-1970-01-1',
+				minDate:false,
+				// minDate: '-1970-01-1',
 			});
 			$.ajax({
 				dataType : 'json',
@@ -147,6 +148,7 @@ $(document).on('click','.show-list-exams',function(){
 	  var duration = $('#exam_duration').val();
 	  var note = $('#note').val();
 	  var class_id = $('#name-class').val();
+	//   console.log(class_id);
 	  if($('#form-add-exam').valid()){
 			$.ajax({
 			url :"api/create-exam",
@@ -154,6 +156,7 @@ $(document).on('click','.show-list-exams',function(){
 			data : {name: name,start_day: start_day,duration: duration,note: note,class_id: class_id},
 			dataType:"json",
 			success:function(response){ 
+				// console.log(response);
 					$("#model-add").modal("hide");
 					//$('#form-add-exam').dialog("close")
 					$('#list-exam').DataTable().ajax.reload();

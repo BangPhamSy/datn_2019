@@ -86,9 +86,11 @@
                     </a>
                   </li>
                   <li class="">
-                    <a href="{{ asset('holiday') }}">
+                    <a href="{{ asset('feedback') }}">
                       <i class="fa fa-comments" aria-hidden="true"></i>
                       <span>Phản hồi</span>
+                      <small class="label pull-right bg-red">3</small>
+                      {{-- <small class="label pull-right bg-green">new</small> --}}
                     </a>
                   </li>
             @elseif(Auth::User()->role_id==2)
@@ -109,12 +111,12 @@
                 </a>
               </li>
               <li class="">
-                <a href="{{asset('timetable_student')}}">
+                <a href="{{asset('achievement')}}">
                   <i class="fa fa-trophy" aria-hidden="true"></i><span> Xem thành tích học tập</span>
                 </a>
               </li>
               <li class="">
-                <a href="{{asset('timetable_student')}}">
+                <a href="{{asset('feedback')}}">
                   <i class="fa fa-envelope" aria-hidden="true"></i> <span> Ý kiến phản hồi</span>
                 </a>
               </li>

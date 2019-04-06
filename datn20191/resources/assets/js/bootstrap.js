@@ -25,6 +25,7 @@ require('./student.js');
 require('./registration_class.js');
 require('./timetable_student.js');
 // require('./rollcall.js');
+require('./achievement.js');
 require('./holiday.js');
 require('./course.js');
 require('./classes.js');
@@ -34,6 +35,7 @@ require('./staff.js');
 require('./teacher_class.js');
 require('./classroom.js');
 require('./revenue.js');
+require('./feedback.js');
 
 try {
     window.$ = window.jQuery = require('jquery');

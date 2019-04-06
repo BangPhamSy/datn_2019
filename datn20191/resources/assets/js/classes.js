@@ -430,8 +430,9 @@ $(function () {
     jQuery.datetimepicker.setLocale('vi');
     $('#start_date').datetimepicker({
         format: 'Y-m-d',
+        minDate: false,
         timepicker: false,
-        minDate: '-1970-01-1',
+        // minDate: '-1970-01-1',
     });
     $('#start_date').blur(function(){
         let a = $(this).val();

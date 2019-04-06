@@ -50,7 +50,8 @@ class ExaminationController extends Controller
             ]
         );
         $data = Examination::editExam($id);
-        if($errors->fails() || $data['start_day'] < date('Y-m-d H:i:s') ){
+        //|| $data['start_day'] < date('Y-m-d H:i:s')
+        if($errors->fails()  ){
                 $arrayErrors = $errors->errors();
                 $message = [ "code"=>0,"validate"=>$arrayErrors,'message'=>'Không thể xóa kì thi'];
                 return response()->json($message,200);
@@ -86,8 +87,8 @@ class ExaminationController extends Controller
 
         ]
     );
-
-    if($errors->fails()||$request->start_day < date('Y-m-d H:i:s')){
+    //|| $request->start_date<date('Y-m-d H:i:s')
+    if($errors->fails()){
         $arrayErrors = $errors->errors();
         $message = [ "code"=>0,"message"=>$arrayErrors];
         return response()->json($message,200);

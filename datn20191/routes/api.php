@@ -97,6 +97,12 @@ Route::post('update-point','PointExamController@updatePoint');
 //Achievement
 Route::get('/get-achievement-student','AchievementController@getAchievementStudent');
 
+//Feedback
+Route::post('create-feedback','FeedBackController@createFeedBack');
+Route::post('answer-feedback','FeedBackController@answerFeedBack');
+Route::get('list-feedback','FeedBackController@listFeedBack');
+Route::get('show-detail-feedback','FeedBackController@showDetailFeedBack');
+Route::get('show-new-notifications','FeedBackController@showNewNotifications');
 
 //Staff
 

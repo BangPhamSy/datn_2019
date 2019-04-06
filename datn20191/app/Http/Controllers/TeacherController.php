@@ -126,8 +126,9 @@ public function edit(Request $request)
         if (Teacher::find($id) == null){
             return response()->json(['code' => 0,'message' => 'khong ton tai hoc sinh nay'],200);
         }else{
-            $teacher = Teacher::edit1($id);
-            return response()->json(['code' => 1,'data' => $teacher],200);
+            $teacher = DB::table('teachers')->where('id',$id)->first();
+            // $teacher = Teacher::edit1($id);
+            return response()->json(['data' => $teacher]);
         }
     }
 }
@@ -149,6 +150,7 @@ public function update(Request $request)
         'mobile' => $request->mobile,
         'birthdate' => $request->birthdate,
         'certificate' => $request->certificate,
+        'gender'=>$request->gender,
         'updated_at' => date("Y-m-d"),
     );
     $dataTeacher = Teacher::update1($data,$id);

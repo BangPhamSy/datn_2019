@@ -28,21 +28,6 @@
 					<th>Action</th>
 				</tr>
 			</thead>
-			<tfoot>
-				<tr>
-					<th>STT</th>
-					<th>Tên giáo viên</th>
-					<th>Email</th>
-					<th>Địa chỉ</th>
-					<th>Số điện thoại</th>
-					<th>Ngày sinh</th>
-					<th>Giới tính</th>
-					<th>Kinh nghiệm(năm)</th>
-					<th>Chứng chỉ</th>
-					<th>Thông tin thêm</th>
-					<th>Action</th>
-				</tr>
-			</tfoot>
 		</table>
 	</div>
  <!-- Form editTeacher-->
@@ -82,7 +67,7 @@
 								<select class="form-control" name="experience" id="edit_teacher_experience">
 									<option value="1">1-3 năm</option>
 									<option value="2">3-5 năm</option>
-									<option value="2"> Trên 5 năm</option>
+									<option value="3"> Trên 5 năm</option>
 								</select>
 						</div>
 					  <div class="form-group">

@@ -6,7 +6,7 @@ $(function(){
     function getTimeEnd1(data, type, row) {
         var d = moment(data.class_time_start,'HH:mm:ss').add(data.class_duration,'hour').format('HH:mm:ss');
         return d;
-   }
+    }
 
     var timeTableStudent = $('#timeTableStudent').DataTable({
     	"columnDefs": [ {
@@ -29,7 +29,11 @@ $(function(){
             {data:"class_code",name:"class_code"},
             {data:"class_name",name:"class_name"},
             {data:"teacher_name",name:"teacher_name"},
-            {data:"class_start_date",name:"class_start_date"},
+            {
+                render:function(data ,type ,row){
+                    return row.class_start_date+"/"+row.class_end_date;
+                }
+            },
             { 
                 render:function(data, type, row) 
                 {

@@ -264,16 +264,18 @@ $(function(){
             url : "api/edit-teacher",
             data : {id : id},
             success : function(response){
+                // console.log(response.data);
+                // console.log(response.data.name);
                 $('#modal-edit-teacher').modal('show');
-                $('#edit_teacher_name').val(response['data'][0].name);
-                $('#edit_teacher_email').val(response['data'][0].email);
-                $('#edit_teacher_address').val(response['data'][0].address);
-                $('#edit_teacher_mobile').val(response['data'][0].mobile);
-                $('#edit_teacher_birthdate').val(response['data'][0].birthdate);
-                $('#edit_teacher_experience').val(response['data'][0].experience);
-                $('#edit_teacher_certificate').val(response['data'][0].certificate);
-                $('#edit_teacher_description').val(response['data'][0].description);
-                $('#edit_teacher_gender').val(response['data'][0].gender);
+                $('#edit_teacher_name').val(response['data'].name);
+                $('#edit_teacher_email').val(response['data'].email);
+                $('#edit_teacher_address').val(response['data'].address);
+                $('#edit_teacher_mobile').val(response['data'].mobile);
+                $('#edit_teacher_birthdate').val(response['data'].birthdate);
+                $('#edit_teacher_experience').val(response['data'].experience);
+                $('#edit_teacher_certificate').val(response['data'].certificate);
+                $('#edit_teacher_description').val(response['data'].description);
+                $('#edit_teacher_gender').val(response['data'].gender);
             },
             error : function(error){
                 toast.error('Có lỗi xảy ra');
@@ -295,7 +297,7 @@ $(function(){
         var description = $('#edit_teacher_description').val();
         var gender =       $('#edit_teacher_gender').val();
         var teacher_id = $('#get_edit_teacher_id').val();
-        
+        // console.log(experience);
         if(formEditTeacher.valid()){
             $.ajax({
                 method : "post",

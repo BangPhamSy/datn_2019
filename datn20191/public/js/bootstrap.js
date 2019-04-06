@@ -36572,6 +36572,75 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/assets/js/achievement.js":
+/*!********************************************!*\
+  !*** ./resources/assets/js/achievement.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var student_id = $('#get_id_student_123').val();
+  var tableShowAchievement = $('#table-show-achieve').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    paging: false,
+    searching: false,
+    info: false,
+    "order": [[1, 'asc']],
+    "bDestroy": true,
+    ajax: {
+      url: 'api/get-achievement-student',
+      data: {
+        student_id: student_id
+      }
+    },
+    columns: [{
+      data: null
+    }, {
+      data: 'class_code'
+    }, {
+      data: 'class_name'
+    }, {
+      data: 'days_absent'
+    }, {
+      render: function render(data, type, row) {
+        if (row.point_class) {
+          return row.point_class;
+        } else {
+          return '<span>Chưa thi</span>';
+        }
+      }
+    }, {
+      render: function render(data, type, row) {
+        switch (row.achieve) {
+          case 0:
+            return '<i title="Chưa qua" class="fa fa-times btn btn-danger" aria-hidden="true"></i>';
+
+          case 1:
+            return '<i title="Đã qua" class="fa fa-check btn btn-success" aria-hidden="true"></i>';
+
+          case 2:
+            return '<i title="Chưa thi" class="fa fa-question-circle btn btn-warning" aria-hidden="true"></i>';
+        }
+      }
+    }]
+  });
+  tableShowAchievement.on('order.dt search.dt', function () {
+    tableShowAchievement.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+});
+
+/***/ }),
+
 /***/ "./resources/assets/js/bootstrap.js":
 /*!******************************************!*\
   !*** ./resources/assets/js/bootstrap.js ***!
@@ -36609,6 +36678,8 @@ __webpack_require__(/*! ./registration_class.js */ "./resources/assets/js/regist
 __webpack_require__(/*! ./timetable_student.js */ "./resources/assets/js/timetable_student.js"); // require('./rollcall.js');
 
 
+__webpack_require__(/*! ./achievement.js */ "./resources/assets/js/achievement.js");
+
 __webpack_require__(/*! ./holiday.js */ "./resources/assets/js/holiday.js");
 
 __webpack_require__(/*! ./course.js */ "./resources/assets/js/course.js");
@@ -36626,6 +36697,8 @@ __webpack_require__(/*! ./teacher_class.js */ "./resources/assets/js/teacher_cla
 __webpack_require__(/*! ./classroom.js */ "./resources/assets/js/classroom.js");
 
 __webpack_require__(/*! ./revenue.js */ "./resources/assets/js/revenue.js");
+
+__webpack_require__(/*! ./feedback.js */ "./resources/assets/js/feedback.js");
 
 try {
   window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -37111,8 +37184,9 @@ $(function () {
   jQuery.datetimepicker.setLocale('vi');
   $('#start_date').datetimepicker({
     format: 'Y-m-d',
-    timepicker: false,
-    minDate: '-1970-01-1'
+    minDate: false,
+    timepicker: false // minDate: '-1970-01-1',
+
   });
   $('#start_date').blur(function () {
     var a = $(this).val();
@@ -38122,7 +38196,8 @@ $(document).on('click', '.button-add', function (e) {
   jQuery.datetimepicker.setLocale('vi');
   $('#start_day').datetimepicker({
     format: 'Y-m-d H:i',
-    minDate: '-1970-01-1'
+    minDate: false // minDate: '-1970-01-1',
+
   });
   $.ajax({
     dataType: 'json',
@@ -38194,7 +38269,7 @@ $('#add-exam').click(function (event) {
   var start_day = $('#start_day').val();
   var duration = $('#exam_duration').val();
   var note = $('#note').val();
-  var class_id = $('#name-class').val();
+  var class_id = $('#name-class').val(); //   console.log(class_id);
 
   if ($('#form-add-exam').valid()) {
     $.ajax({
@@ -38209,6 +38284,7 @@ $('#add-exam').click(function (event) {
       },
       dataType: "json",
       success: function success(response) {
+        // console.log(response);
         $("#model-add").modal("hide"); //$('#form-add-exam').dialog("close")
 
         $('#list-exam').DataTable().ajax.reload();
@@ -39000,6 +39076,155 @@ $(document).on('click', '.button-edit-exam', function (e) {
 
 /***/ }),
 
+/***/ "./resources/assets/js/feedback.js":
+/*!*****************************************!*\
+  !*** ./resources/assets/js/feedback.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var role_id = $('#get_role_id').val();
+  var user_id = $('#get_user_id').val();
+  var data;
+
+  if (role_id == 3) {
+    data = {
+      user_id: user_id
+    };
+  }
+
+  console.log(role_id);
+  var tableFeedBack = $('#list-feedback').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    ajax: {
+      url: 'api/list-feedback',
+      data: data
+    },
+    columns: [{
+      data: null
+    }, {
+      data: 'sender'
+    }, {
+      data: 'email'
+    }, {
+      data: 'time_send'
+    }, {
+      render: function render(data, type, row) {
+        if (row.status == 1) {
+          return '<button class="btn btn-success"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+        }
+
+        return '<button class="btn btn-danger"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi</button>';
+      }
+    }, {
+      // 'data': null,
+      render: function render(data, type, row) {
+        return '<button feedbackID=\"' + row.id + '\" title=\"Xem chi tiết\" ' + 'class=\"show-detail-feedback btn btn-primary\"><i class=\"fa fa-commenting\" ' + 'aria-hidden=\"true\"></i></button>';
+      }
+    }]
+  });
+  tableFeedBack.on('order.dt search.dt', function () {
+    tableFeedBack.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+  $('#button-create-new-feedback').click(function () {
+    $('#modal-create-new-feedback').modal('show');
+    $('.submit-new-feedback').click(function () {
+      var content = $('.content-new-feedback').val();
+      $.ajax({
+        method: 'post',
+        url: 'api/create-feedback',
+        data: {
+          content: content,
+          user_id: user_id
+        },
+        success: function success(response) {
+          $('.content-new-feedback').val(""); // $('#modal-create-new-feedback').modal('close');
+
+          toastr.success("Phản hồi đã được gửi đến ban quan trị để xem xét!");
+        }
+      });
+    });
+  });
+  $(document).on('click', '.show-detail-feedback', function () {
+    // $('#modal-create-new-feedback').modal('close');
+    $('#modal-show-detail-feedback').modal('show');
+    var feedback_id = $(this).attr('feedbackID'); // $('#get-feedback-id').val(feedback_id);
+
+    var tableDetailFeedBack = $('#list-detail-feedback').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      // "order": [[ 1, 'desc' ]],
+      paging: false,
+      "info": false,
+      "bDestroy": true,
+      "searching": false,
+      "order": [],
+      ajax: {
+        method: 'get',
+        url: 'api/show-detail-feedback',
+        data: {
+          feedback_id: feedback_id
+        }
+      },
+      columns: [{
+        data: null
+      }, {
+        render: function render(data, type, row) {
+          return '<strong>' + row.sender1 + ':</strong>';
+        }
+      }, {
+        data: 'content'
+      }, {
+        data: 'created_at'
+      }]
+    });
+    tableDetailFeedBack.on('order.dt search.dt', function () {
+      tableDetailFeedBack.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
+    $('.submit-feedback').click(function () {
+      var content = $('.content-feedback').val(); // var user_id = user_id;
+
+      $.ajax({
+        method: 'post',
+        url: 'api/answer-feedback',
+        data: {
+          id_feedback: feedback_id,
+          content: content,
+          user_id: user_id
+        },
+        success: function success(response) {
+          $('.content-feedback').val("");
+          tableDetailFeedBack.ajax.reload();
+          tableFeedBack.ajax.reload();
+        }
+      });
+    });
+  }); // $(document).on('click','.submit-feedback',function(){
+  //     
+  // })
+});
+
+/***/ }),
+
 /***/ "./resources/assets/js/holiday.js":
 /*!****************************************!*\
   !*** ./resources/assets/js/holiday.js ***!
@@ -39265,7 +39490,7 @@ $(function () {
           toastr.success("Đăng kí thành công!");
           tableRegistrationClass.ajax.reload();
         } else {
-          toastr.error('Lịch học bị trùng hoặc học sinh đã có trong lớp');
+          toastr.error(response.message);
         }
       }
     });
@@ -40825,16 +41050,18 @@ $(function () {
         id: id
       },
       success: function success(response) {
+        // console.log(response.data);
+        // console.log(response.data.name);
         $('#modal-edit-teacher').modal('show');
-        $('#edit_teacher_name').val(response['data'][0].name);
-        $('#edit_teacher_email').val(response['data'][0].email);
-        $('#edit_teacher_address').val(response['data'][0].address);
-        $('#edit_teacher_mobile').val(response['data'][0].mobile);
-        $('#edit_teacher_birthdate').val(response['data'][0].birthdate);
-        $('#edit_teacher_experience').val(response['data'][0].experience);
-        $('#edit_teacher_certificate').val(response['data'][0].certificate);
-        $('#edit_teacher_description').val(response['data'][0].description);
-        $('#edit_teacher_gender').val(response['data'][0].gender);
+        $('#edit_teacher_name').val(response['data'].name);
+        $('#edit_teacher_email').val(response['data'].email);
+        $('#edit_teacher_address').val(response['data'].address);
+        $('#edit_teacher_mobile').val(response['data'].mobile);
+        $('#edit_teacher_birthdate').val(response['data'].birthdate);
+        $('#edit_teacher_experience').val(response['data'].experience);
+        $('#edit_teacher_certificate').val(response['data'].certificate);
+        $('#edit_teacher_description').val(response['data'].description);
+        $('#edit_teacher_gender').val(response['data'].gender);
       },
       error: function error(_error2) {
         toast.error('Có lỗi xảy ra');
@@ -40852,7 +41079,7 @@ $(function () {
     var certificate = $('#edit_teacher_certificate').val();
     var description = $('#edit_teacher_description').val();
     var gender = $('#edit_teacher_gender').val();
-    var teacher_id = $('#get_edit_teacher_id').val();
+    var teacher_id = $('#get_edit_teacher_id').val(); // console.log(experience);
 
     if (formEditTeacher.valid()) {
       $.ajax({
@@ -41347,8 +41574,9 @@ $(function () {
       data: "teacher_name",
       name: "teacher_name"
     }, {
-      data: "class_start_date",
-      name: "class_start_date"
+      render: function render(data, type, row) {
+        return row.class_start_date + "/" + row.class_end_date;
+      }
     }, {
       render: function render(data, type, row) {
         var arr_date = row.class_schedule.split(",");

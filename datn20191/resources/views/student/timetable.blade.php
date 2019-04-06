@@ -17,7 +17,7 @@
                     <th>Mã lớp</th>
                     <th>Tên lớp</th>
                     <th>Giáo viên dạy</th>
-                    <th>Ngày bắt đầu</th>
+                    <th>Thời điểm</th>
                     <th>Lịch học</th>
                     <th>Phòng học</th>
                     <th>Bắt đầu từ</th>

@@ -115,11 +115,28 @@ class ClassController extends Controller
             'classes.class_code as class_code',
             'teachers.name as teacher_name',
             'classes.duration as class_duration',
-            'classrooms.name as room_name'
+            'classrooms.name as room_name',
+            'classes.id'
         )
         ->orderByRaw('classes.start_date ASC')
-        ->get();   
-        return response()->json(['code'=>1,'data'=>$tkb_student],200);
+        ->get(); 
+        $listClass = json_decode(json_encode($tkb_student),True);
+        for($i=0;$i<count($listClass);$i++){
+            $end_date = DB::table('timetables')
+           ->join('classes','classes.id','=','timetables.class_id')
+           ->where('classes.id',$listClass[$i]['id'])
+           ->value(DB::raw('max(timetables.date) as end_date')); 
+           $start_date = date("d-m-Y", strtotime($listClass[$i]['class_start_date']));
+
+           $end_date = date("d-m-Y", strtotime($end_date));
+
+           $time_end = date(' H:i:s',strtotime('+'.$listClass[$i]['class_duration'].'hour',strtotime($listClass[$i]['class_time_start'])));
+           $listClass[$i]['class_time_end']=$time_end;
+           $listClass[$i]['class_end_date']=$end_date;
+           $listClass[$i]['class_start_date']=$start_date;
+       }
+    //    return $listClass;
+        return response()->json(['code'=>1,'data'=>$listClass],200);
     }
     /**
      * Xóa lớp học.
@@ -198,7 +215,8 @@ class ClassController extends Controller
 
         $gio_hoc = json_decode(json_encode($get_gio_hoc),True);
         // return $gio_hoc;
-        if($errors->fails() || $request->start_date<date('Y-m-d H:i:s')){
+        //|| $request->start_date<date('Y-m-d H:i:s')
+        if($errors->fails()){
             $arrayErrors = $errors->errors()->all();
             $message = [ "code"=>0,"message" =>$arrayErrors];
             return response()->json($message,200);
@@ -616,7 +634,7 @@ class ClassController extends Controller
         if ($fail != 0) {
             return response()->json(['code' => 0, 'message' => 'Lịch học bị trùng với lớp " '.$class_duplicate.'" sinh viên đã đăng kí']);
         }else{
-            // $add_student = Classes::addStudentToClass1($data);
+            $add_student = Classes::addStudentToClass1($data);
             return response()->json(['code' => 1, 'message' => 'Thêm thành công!']);
         }
     }

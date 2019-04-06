@@ -103,6 +103,7 @@ public static function update1($data, $id){
         'mobile'        => $data['mobile'],
         'birthdate'     => $data['birthdate'],
         'certificate'   => $data['certificate'],
+        'gender'        => $data['gender'],
         // 'created_at' => $data['created_at'],
         'updated_at'    => $data['updated_at'],
     ]);

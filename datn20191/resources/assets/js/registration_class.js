@@ -111,7 +111,7 @@ $(function(){
                          toastr.success("Đăng kí thành công!");
                     tableRegistrationClass.ajax.reload();
                 }else{
-                	toastr.error('Lịch học bị trùng hoặc học sinh đã có trong lớp')
+                	toastr.error(response.message);
                 }
             }
         });

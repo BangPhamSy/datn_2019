@@ -47,10 +47,19 @@ Route::get('/classroom',function(){
 Route::get('timetable_student',function(){
     return view('student/timetable');
 });
+//Archievement
+Route::get('achievement',function(){
+    return view('achievement/achievement');
+});
 // exam
 Route::get('/exam', function(){
 		return view('examination/list_exam');
 });
+//FeedBack
+Route::get('/feedback', function(){
+    return view('feedback/feedback_system');
+});
+//
 Route::get('/checkDB', function (){
     dd(DB::connection()->getDatabaseName());
 });
