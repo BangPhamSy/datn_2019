@@ -117,3 +117,9 @@ Route::post('/add-teacher', 'TeacherController@store');
 Route::post('/edit-teacher', 'TeacherController@update');
 Route::get('/list-teachers', 'TeacherController@index');
 Route::post('/delete-teacher', 'TeacherController@deleteTeacher');
+
+//Training
+Route::get('get-result-training-course','TrainingController@getResultTrainingOfCourses');
+Route::get('get-result-training-class','TrainingController@getResultTrainingOfClasses');
+
+Route::get('test','TrainingController@getResultTrainingOfClasses');

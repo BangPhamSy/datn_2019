@@ -36696,6 +36696,8 @@ __webpack_require__(/*! ./teacher_class.js */ "./resources/assets/js/teacher_cla
 
 __webpack_require__(/*! ./classroom.js */ "./resources/assets/js/classroom.js");
 
+__webpack_require__(/*! ./training.js */ "./resources/assets/js/training.js");
+
 __webpack_require__(/*! ./revenue.js */ "./resources/assets/js/revenue.js");
 
 __webpack_require__(/*! ./feedback.js */ "./resources/assets/js/feedback.js");
@@ -39116,11 +39118,21 @@ $(function () {
       data: 'time_send'
     }, {
       render: function render(data, type, row) {
-        if (row.status == 1) {
-          return '<button class="btn btn-success"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+        if (role_id == 1) {
+          if (row.status == 1) {
+            return '<button class="btn btn-success"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+          } else if (row.status == 0) {
+            return '<button class="btn btn-primary"><i class="fa fa-envelope-o" aria-hidden="true"></i> Phản hồi mới</button>';
+          } else {
+            return '<button class="btn btn-danger"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Gửi đến</button>';
+          }
+        } else if (role_id == 3) {
+          if (row.status == 2) {
+            return '<button class="btn btn-success"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi đi</button>';
+          } else if (row.status == 1) {
+            return '<button class="btn btn-danger"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+          }
         }
-
-        return '<button class="btn btn-danger"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi</button>';
       }
     }, {
       // 'data': null,
@@ -39687,20 +39699,18 @@ $(function () {
     }).nodes().each(function (cell, i) {
       cell.innerHTML = i + 1;
     });
-  }).draw();
-  $(document).on('click', '.show-revenue', function () {
-    var course_id = $(this).attr('course_id');
-    $.ajax({
-      url: 'api/get-list-revenue',
-      data: {
-        course_id: course_id
-      },
-      success: function success(response) {
-        var currency = formatter.format(response);
-        toastr.info("Doanh thu của khóa học hiện tại là : " + currency);
-      }
-    });
-  });
+  }).draw(); // $(document).on('click','.show-revenue',function(){
+  //     var course_id = $(this).attr('course_id');
+  //     $.ajax({
+  //         url : 'api/get-list-revenue',
+  //         data:{course_id : course_id},
+  //         success: function(response){
+  //             var currency = formatter.format(response);
+  //             toastr.info("Doanh thu của khóa học hiện tại là : "+currency);
+  //         }
+  //     })
+  // });
+
   $(document).on('click', '.detail-revenue', function () {
     $('.table-list-course').addClass('hidden');
 
@@ -41636,6 +41646,109 @@ $(function () {
       cell.innerHTML = i + 1;
     });
   }).draw();
+});
+
+/***/ }),
+
+/***/ "./resources/assets/js/training.js":
+/*!*****************************************!*\
+  !*** ./resources/assets/js/training.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(function () {
+  var tableResultTrainingCourse = $('#show-list-result-course').DataTable({
+    "columnDefs": [{
+      "searchable": false,
+      "orderable": false,
+      "targets": 0
+    }],
+    "order": [[1, 'asc']],
+    "ajax": "api/get-result-training-course",
+    "bDestroy": true,
+    "columns": [{
+      "data": null
+    }, {
+      "data": "course_code"
+    }, {
+      "data": "course_name"
+    }, {
+      render: function render(data, type, row) {
+        return row.point_pass + "/" + row.total_student;
+      }
+    }, {
+      render: function render(data, type, row) {
+        var percentage = row.point_pass / row.total_student * 100;
+        return percentage + "%";
+      }
+    }, {
+      "data": function data(_data, type, full) {
+        return '<button course_id1="' + _data.course_id + '" type="button"   class="detail-result-training-class btn btn-warning"><i class="fa fa-asterisk" aria-hidden="true"></i></button>';
+      }
+    }]
+  });
+  tableResultTrainingCourse.on('order.dt search.dt', function () {
+    tableResultTrainingCourse.column(0, {
+      search: 'applied',
+      order: 'applied'
+    }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+  $(document).on('click', '.detail-result-training-class', function () {
+    $('.table-list-result-training-course').addClass('hidden');
+    $('.table-result-training-class').removeClass('hidden');
+    $('.back-result-course').removeClass('hidden');
+    var course_id = $(this).attr('course_id1');
+    var tableResultTrainingClass = $('#show-list-result-class').DataTable({
+      "columnDefs": [{
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      "order": [[1, 'asc']],
+      "searching": false,
+      "paging": false,
+      "info": false,
+      ajax: {
+        method: "get",
+        url: " api/get-result-training-class",
+        data: {
+          course_id: course_id
+        }
+      },
+      "bDestroy": true,
+      "columns": [// {"data":null},
+      {
+        "data": "class_code"
+      }, {
+        "data": "class_name"
+      }, {
+        render: function render(data, type, row) {
+          return row.point_pass + "/" + row.total_student;
+        }
+      }, {
+        render: function render(data, type, row) {
+          var percentage = row.point_pass / row.total_student * 100;
+          return percentage + "%";
+        }
+      }]
+    });
+    tableResultTrainingCourse.on('order.dt search.dt', function () {
+      tableResultTrainingCourse.column(0, {
+        search: 'applied',
+        order: 'applied'
+      }).nodes().each(function (cell, i) {
+        cell.innerHTML = i + 1;
+      });
+    }).draw();
+  });
+  $(document).on('click', '.back-result-course', function () {
+    $('.table-list-result-training-course').removeClass('hidden');
+    $('.table-result-training-class').addClass('hidden');
+    $('.back-result-course').addClass('hidden');
+  });
 });
 
 /***/ }),

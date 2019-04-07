@@ -59,7 +59,11 @@ Route::get('/exam', function(){
 Route::get('/feedback', function(){
     return view('feedback/feedback_system');
 });
-//
+//Training
+Route::get('/training', function(){
+    return view('training/training');
+});
+
 Route::get('/checkDB', function (){
     dd(DB::connection()->getDatabaseName());
 });

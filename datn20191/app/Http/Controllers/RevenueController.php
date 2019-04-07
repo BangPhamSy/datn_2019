@@ -12,7 +12,7 @@ class RevenueController extends Controller
         // $get_list_course = DB::table('courses')
         $get_class_of_course = DB::table('courses')
         ->join('classes','classes.course_id','=','courses.id')
-        ->where('classes.status',1)
+        ->where('classes.status','!=',0)
         ->where('course_id',$course_id)
         ->select(
             'courses.*','classes.name as class_name','classes.class_size',
@@ -35,7 +35,7 @@ class RevenueController extends Controller
         $class_id = $request->class_id;
         $get_class_of_course = DB::table('courses')
         ->join('classes','classes.course_id','=','courses.id')
-        ->where('classes.status',1)
+        ->where('classes.status','!=',0)
         ->where('course_id',$course_id)
         ->select(
             'courses.*','classes.name as class_name','classes.class_size',
@@ -68,7 +68,7 @@ class RevenueController extends Controller
             ->join('classes','classes.id','=','student_classes.class_id')
             ->join('courses','courses.id','=','classes.course_id')
             ->where('course_id',$course_id)
-            ->where('classes.status',1)
+            ->where('classes.status','!=',0)
             ->select('student_classes.student_id as student_id','classes.name')
             ->count();
             $list_course[$i]['students'] = $quantity_students;

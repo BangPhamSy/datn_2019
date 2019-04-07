@@ -34,8 +34,10 @@ require('./examination.js');
 require('./staff.js');
 require('./teacher_class.js');
 require('./classroom.js');
+require('./training.js');
 require('./revenue.js');
 require('./feedback.js');
+
 
 try {
     window.$ = window.jQuery = require('jquery');

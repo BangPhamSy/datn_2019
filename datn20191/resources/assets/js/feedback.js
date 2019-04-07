@@ -24,11 +24,27 @@ $(function(){
             { data: 'time_send'},
             {
                 render : function(data,type,row){
-                    if(row.status==1){
-                        return '<button class="btn btn-success"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
-                       
+                    if(role_id==1){
+                        if(row.status==1){
+                            return '<button class="btn btn-success"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+                           
+                        }else if(row.status==0){
+                            return '<button class="btn btn-primary"><i class="fa fa-envelope-o" aria-hidden="true"></i> Phản hồi mới</button>';
+                        }else{
+                            return '<button class="btn btn-danger"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Gửi đến</button>';
+                        }
+                    }else if(role_id==3){
+                        if(row.status==2){
+                            return '<button class="btn btn-success"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi đi</button>';
+                           
+                        }else if(row.status==1){
+                            return '<button class="btn btn-danger"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+                        }
                     }
-                    return '<button class="btn btn-danger"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi</button>';
+                   
+                    
+
+                    
                 }
             },
             {

@@ -53,17 +53,17 @@ $(function(){
             } );
     } ).draw();
 
-    $(document).on('click','.show-revenue',function(){
-        var course_id = $(this).attr('course_id');
-        $.ajax({
-            url : 'api/get-list-revenue',
-            data:{course_id : course_id},
-            success: function(response){
-                var currency = formatter.format(response);
-                toastr.info("Doanh thu của khóa học hiện tại là : "+currency);
-            }
-        })
-    });
+    // $(document).on('click','.show-revenue',function(){
+    //     var course_id = $(this).attr('course_id');
+    //     $.ajax({
+    //         url : 'api/get-list-revenue',
+    //         data:{course_id : course_id},
+    //         success: function(response){
+    //             var currency = formatter.format(response);
+    //             toastr.info("Doanh thu của khóa học hiện tại là : "+currency);
+    //         }
+    //     })
+    // });
     $(document).on('click','.detail-revenue',function(){
         $('.table-list-course').addClass('hidden');
         function totalFeeClass(data, type, row){

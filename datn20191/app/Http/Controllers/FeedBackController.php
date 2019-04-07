@@ -38,16 +38,28 @@ class FeedBackController extends Controller
         $created_at = date('Y-m-d H:i:s');
         $role_id = DB::table('users')->where('id',$user_id)->value('role_id');
         $this->createComment($id_feedback,$user_id,$content,$created_at);
-        $this->updateStatusFeedBack($role_id,$id_feedback);
+        $this->updateStatusFeedBack($role_id,$id_feedback,$created_at);
     }
-    public function updateStatusFeedBack($role_id,$id)
+    public function updateStatusFeedBack($role_id,$id,$updated_at)
     {
         if($role_id==1){
             $update_status_feedback = DB::table('feedbacks')
-            ->where('id',$id)->update(['status'=>1]);
+            ->where('id',$id)
+            ->update(
+                [
+                    'status'=>1,
+                    'feedbacks.updated_at'=>$updated_at
+                ]
+                
+            );
         }else{
             $update_status_feedback = DB::table('feedbacks')
-            ->where('id',$id)->update(['status'=>3]);
+            ->where('id',$id)->update(
+                [
+                    'status'=>2,
+                    'feedbacks.updated_at'=>$updated_at
+                ]
+            );
         }
        
     }

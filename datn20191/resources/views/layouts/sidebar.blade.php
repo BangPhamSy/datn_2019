@@ -15,23 +15,23 @@
           <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Danh mục</li>
             @if(Auth::User()->role_id==1)
-                  <li class="">
+                  {{-- <li class="">
                   <a href="{{asset('statistic')}}">
                       <i class="fa fa-dashboard"></i> <span>Thống kê</span>
                     </a>
-                  </li>
-                  <li class="treeview">
+                  </li> --}}
+                  {{-- <li class="treeview">
                     <a href="#">
                       <i class="fa fa-user" aria-hidden="true"></i>
                       <span>Quản lý nhân viên</span>
                       <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                       </span>
-                    </a>
-                    <ul class="treeview-menu">
+                    </a> --}}
+                    {{-- <ul class="treeview-menu">
                       <li><a href="{{asset('staff/list')}}"><i class="fa fa-circle-o"></i> Danh sách nhân viên</a></li>
                       <li><a href="{{asset('staff/add')}}"><i class="fa fa-circle-o"></i> Thêm nhân viên</a></li>
-                    </ul>
+                    </ul> --}}
                   </li>
                   <li class="">
                       <a href="{{ asset('revenue') }}">
@@ -68,9 +68,9 @@
                     </a>
                   </li>
                   <li class="">
-                    <a href="{{ asset('exam') }}">
+                    <a href="{{ asset('training') }}">
                       <i class="fa fa-trophy" aria-hidden="true"></i>
-                      <span>Quản lý kì thi</span>
+                      <span>Quản lý đào tạo</span>
                     </a>
                   </li>
                   <li class="">
@@ -89,7 +89,7 @@
                     <a href="{{ asset('feedback') }}">
                       <i class="fa fa-comments" aria-hidden="true"></i>
                       <span>Phản hồi</span>
-                      <small class="label pull-right bg-red">3</small>
+                      {{-- <small class="label pull-right bg-red">3</small> --}}
                       {{-- <small class="label pull-right bg-green">new</small> --}}
                     </a>
                   </li>

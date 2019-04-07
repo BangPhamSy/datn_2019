@@ -58,6 +58,7 @@ class UserController extends Controller
     		$email = $request->input('email');
     		$password = $request->input('password');
 
+
     		if( Auth::attempt(['email' => $email, 'password' =>$password])) {
 				$date = date('Y-m-d');
 				$end = DB::table('timetables')->join('classes','classes.id','=','timetables.class_id')
@@ -89,5 +90,37 @@ class UserController extends Controller
     public function logOut(){
         Auth::logout();
 	    return redirect()->route('login');
-    }
+	}
+	
+	public function test(Request $request){
+		// $date = date(' h:i:s d-m-Y ');
+		// return $date;
+		$role_id =$request->role_id;
+		$user_id = $request->user_id;
+		if($role_id==1){
+			$count_notifications = DB::table('feedbacks')
+			->join('users','users.id','=','feedbacks.user_id')
+			->join('comments','comments.feedback_id','=','feedbacks.id')
+			->where('status','!=',1)
+            ->select(
+                'users.name as sender',
+                'users.email',
+                'feedbacks.updated_at as time_send',
+                'feedbacks.id',
+                'feedbacks.status'
+            )
+            ->get();
+		}else{
+			$count_notifications = DB::table('feedbacks')
+			->where('status',1)
+			->where('feedbacks.user_id',$user_id)
+            ->select(
+                'feedbacks.updated_at as time_send',
+                'feedbacks.id',
+                'feedbacks.status'
+            )
+            ->get();
+		}
+		return $count_notifications;
+	}
 }
