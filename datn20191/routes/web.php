@@ -16,9 +16,9 @@
 //     'reset' => false
 //   ]);
 
-Route::get('/', function () {
-    return view('login');
-});
+// Route::get('/', function () {
+//     return view('master');
+// });
 Route::get('login','UserController@getLogin')->name('login');
 Route::get('logout','UserController@logOut');
 Route::post('login','UserController@postLogin');
@@ -26,6 +26,23 @@ Route::post('login','UserController@postLogin');
 //Revenue
 Route::get('/revenue',function(){
     return view('revenue/revenue');
+});
+Route::get('/','NotificationController@getListNoti');
+Route::get('/info_teacher','TeacherController@getListTeacher');
+Route::get('/intro',function(){
+    return view('intro');
+});
+
+Route::get('/class_register','ClassController@getListRegister');
+// Route::get('/home',function(){
+//     return view('home');
+// });
+// Route::get('/',function(){
+//     return view('home');
+// });
+//Notification
+Route::get('/notification',function(){
+    return view('notification/notification');
 });
 //Teacher_Class
 Route::get('/teacher_class',function(){

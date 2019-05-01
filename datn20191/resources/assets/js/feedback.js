@@ -5,6 +5,7 @@ $(function(){
     if(role_id==3){
         data={user_id:user_id}
     }
+    console.log(user_id);
     console.log(role_id);
     var tableFeedBack= $('#list-feedback').DataTable({
     	"columnDefs": [ {
@@ -39,6 +40,8 @@ $(function(){
                            
                         }else if(row.status==1){
                             return '<button class="btn btn-danger"><i class="fa fa-reply" aria-hidden="true"></i> Đã trả lời</button>';
+                        }else{
+                            return '<button class="btn btn-success"><i title="Đã gửi" class="fa fa-paper-plane" aria-hidden="true"></i> Đã gửi đi</button>';
                         }
                     }
                    

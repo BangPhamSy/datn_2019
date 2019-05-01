@@ -11,9 +11,10 @@
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-6 col-md-offset-3">
+			<div class="col-md-6 col-md-offset-3" style="margin-top:200px;">
+				
 				<form action="{{url('login')}}" method="POST" role="form">
-					<legend>Login</legend>
+					<legend style="color:blue;text-align: center;font-weight: bold">Đăng nhập hệ thống</legend>
 					@if($errors->has('errorlogin'))
 						<div class="alert alert-danger">
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -37,7 +38,9 @@
 				
 					
 					{!! csrf_field() !!}
-					<button type="submit" class="btn btn-primary">Đăng nhập</button>
+					<div align="center"><button type="submit" class="btn btn-primary">Đăng nhập</button></div>
+					<br/>
+					<div align="center"><a href={{asset('/')}} class="btn btn-success">Quay lại trang chủ</a></div>
 				</form>
 			</div>
 		</div>

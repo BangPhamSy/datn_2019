@@ -19,6 +19,13 @@ use Illuminate\Http\Request;
 //Login
 Route::post('register','UserController@createAccount');
 // Route::post('login','UserController@Login');
+
+//Notification
+Route::get('/get-list-notification','NotificationController@getListNotification');
+Route::post('/create-notification','NotificationController@createNotification');
+Route::get('/get-edit-notification','NotificationController@getEditNotification');
+Route::post('/edit-notification','NotificationController@editNotification');
+Route::post('/delete-notification','NotificationController@deleteNotication');
 // Exam
 Route::get('/get-list-exam','ExaminationController@index');
 Route::post('/create-exam','ExaminationController@createExam');
@@ -75,7 +82,7 @@ Route::post('/create-teacher','TeacherController@store');
 Route::post('/delete-teacher','TeacherController@deleteTeacher');
 Route::post('/update-teacher','TeacherController@update');
 Route::get('/edit-teacher','TeacherController@edit');
-Route::get('/test','ClassRoomController@getClassRoomByDate');
+Route::post('/test','ClassController@addStudentToClass');
 // Time table
 Route::get('/get-list-timetable','TimeTableController@index');
 Route::get('/edit-timetable','TimeTableController@edit');

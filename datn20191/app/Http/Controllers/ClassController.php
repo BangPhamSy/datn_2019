@@ -88,6 +88,23 @@ class ClassController extends Controller
         return response()->json(['code'=>1,'data'=>$listRegistrationClass],200);
     }
 
+    public function getListRegister()
+    {
+        $listRegistrationClass = DB::table('classes')
+                                ->join('teachers','teachers.id','=','classes.teacher_id')
+                                ->join('courses','courses.id','=','classes.course_id')
+                                ->join('classrooms','classrooms.id','=','classes.classroom_id')
+                                ->where('status',0)
+                                ->select(
+                                    'classes.*',
+                                    'teachers.name as teacher_name',
+                                    'classrooms.name as room_name',
+                                    'courses.*'
+                                )
+                                ->paginate(3);
+            return view('class_register', ['listClass'=>$listRegistrationClass]);
+    }
+
     public function getListClassOfStudent(Request $request)
     {
         $listClassOfStudent = DB::table('classes')
@@ -568,6 +585,7 @@ class ClassController extends Controller
             ->where('classes.id',$class_id)->groupBy('classes.start_date')->get();
 
         $end_date_lop_moi = json_decode(json_encode($lop_moi), True);
+        // return $end_date_lop_moi;
 
         $get = DB::table('students')
             ->join("student_classes", 'students.id', '=' , 'student_classes.student_id')
@@ -579,6 +597,7 @@ class ClassController extends Controller
             ->get();
 
         $gio_hoc = json_decode(json_encode($get), True);
+        // return $gio_hoc;
 
         $themvao = DB::table('timetables')->join('classes','classes.id','=','timetables.class_id')
             ->select('timetables.time','timetables.week_days','classes.duration')
@@ -586,24 +605,25 @@ class ClassController extends Controller
             ->distinct('timetables.time', 'timetables.week_days','classes.duration')
             ->get();
         $time_lop_moi = json_decode(json_encode($themvao), True);
-        $course_id = DB::table('classes')
-                    ->where('classes.id',$class_id)
-                    ->value('course_id');
+        // return $time_lop_moi;
+        // $course_id = DB::table('classes')
+        //             ->where('classes.id',$class_id)
+        //             ->value('course_id');
         // return $course_id;
         //Check trùng khóa học
-        $check_course = DB::table('classes')
-        ->join('courses','courses.id','=','classes.course_id')
-        ->join('student_classes','student_classes.class_id','=','classes.id')
-        ->where('student_id',$student_id)
-        ->select('course_id','courses.name','classes.name as class_name')
-        ->get();
-        $check_course = json_decode(json_encode($check_course), True);
-        for($i=0;$i<count($check_course);$i++){
-            if($check_course[$i]['course_id']==$course_id){
-                return response()->json(['code' => 0, 
-                'message' => 'Học viên đã tham gia lớp "'.$check_course[$i]['class_name']. ' "của khóa học " '.$check_course[$i]['name'].'" rồi!']);
-            }
-        }
+        // $check_course = DB::table('classes')
+        // ->join('courses','courses.id','=','classes.course_id')
+        // ->join('student_classes','student_classes.class_id','=','classes.id')
+        // ->where('student_id',$student_id)
+        // ->select('course_id','courses.name','classes.name as class_name')
+        // ->get();
+        // $check_course = json_decode(json_encode($check_course), True);
+        // for($i=0;$i<count($check_course);$i++){
+        //     if($check_course[$i]['course_id']==$course_id){
+        //         return response()->json(['code' => 0, 
+        //         'message' => 'Học viên đã tham gia lớp "'.$check_course[$i]['class_name']. ' "của khóa học " '.$check_course[$i]['name'].'" rồi!']);
+        //     }
+        // }
         // Hết check trùng khóa học
         $fail =0;
         for($i=0;$i<count($end_date);$i++){
@@ -622,6 +642,7 @@ class ClassController extends Controller
                             ->join('classes','classes.id','=','timetables.class_id')
                             ->join('classrooms','classrooms.id','=','classes.classroom_id')
                             ->where('time_start',$time_start1)
+                            ->where('week_days',$gio_hoc[$i]['week_days'])
                             ->value('classes.name as class_name');
                               $fail++;
                           }

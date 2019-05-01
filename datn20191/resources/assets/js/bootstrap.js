@@ -24,6 +24,7 @@ require('./student.js');
 // require('./timetable.js');
 require('./registration_class.js');
 require('./timetable_student.js');
+require('./notification.js');
 // require('./rollcall.js');
 require('./achievement.js');
 require('./holiday.js');

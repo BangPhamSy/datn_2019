@@ -33,12 +33,12 @@
                       <li><a href="{{asset('staff/add')}}"><i class="fa fa-circle-o"></i> Thêm nhân viên</a></li>
                     </ul> --}}
                   </li>
-                  <li class="">
+                 {{--  <li class="">
                       <a href="{{ asset('revenue') }}">
                       <i class="fa fa-money" aria-hidden="true"></i>
                       <span>Quản lý doanh thu</span>
                     </a>
-                  </li>
+                  </li> --}}
                   <li class="">
                     <a href="{{asset('teacher')}}">
                       <i class="fa fa-female" aria-hidden="true"></i>
@@ -70,7 +70,7 @@
                   <li class="">
                     <a href="{{ asset('training') }}">
                       <i class="fa fa-trophy" aria-hidden="true"></i>
-                      <span>Quản lý đào tạo</span>
+                      <span>Quản lý kết quả đào tạo</span>
                     </a>
                   </li>
                   <li class="">
@@ -88,7 +88,15 @@
                   <li class="">
                     <a href="{{ asset('feedback') }}">
                       <i class="fa fa-comments" aria-hidden="true"></i>
-                      <span>Phản hồi</span>
+                      <span>Quản lí phản hồi</span>
+                      {{-- <small class="label pull-right bg-red">3</small> --}}
+                      {{-- <small class="label pull-right bg-green">new</small> --}}
+                    </a>
+                  </li>
+                  <li class="">
+                    <a href="{{ asset('notification') }}">
+                      <i class="fa fa-bell-o" aria-hidden="true"></i>
+                      <span>Quản lí thông báo</span>
                       {{-- <small class="label pull-right bg-red">3</small> --}}
                       {{-- <small class="label pull-right bg-green">new</small> --}}
                     </a>

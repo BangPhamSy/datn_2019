@@ -32,9 +32,10 @@ public function index(Request $request)
  *
  * @return \Illuminate\Http\Response
  */
-public function create()
+public function getListTeacher()
 {
-    //
+    $listTeacher = DB::table('teachers')->paginate(3);
+    return view('info_teacher', ['listTeacher'=>$listTeacher]);
 }
 /**
  * Store a newly created resource in storage.
