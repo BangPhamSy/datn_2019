@@ -1,6 +1,9 @@
 $(document).on('click','.show-list-exams',function(){
 	var class_id = $(this).attr('class_id');
 	var teacher_id = $('#get_teacher_id').val(); 
+	if(teacher_id){
+		$('.add-exam').addClass('hide');     
+	}
 	$('.table-class').addClass('hidden');
 	$('#button-create-class').addClass('hidden');
 	$('.table-exam').removeClass('hidden');
@@ -140,7 +143,6 @@ $(document).on('click','.show-list-exams',function(){
 						})
 	});
 
-		//add exam      
 	$('#add-exam').click(function(event){
 	  event.preventDefault();
 	  var name  = $('#exam_name').val();

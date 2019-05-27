@@ -9,12 +9,12 @@
                 <div class="panel panel-success">
                     <div class=" title panel-heading panel-orange">Tên giảng viên:{{$lt->name}}</div>
                     <div class="panel-body">
-                        <div class=" created_time">Địa chỉ:{{$lt->address}}</div><br/>
-                        <div class="content_noti">Kinh nghiệm : {{$lt->experience}} năm</div>
+                        <div class=" created_time"><strong>Địa chỉ:</strong>{{$lt->address}}</div><br/>
+                        <div class="content_noti"><strong>Kinh nghiệm :</strong> {{$lt->experience}} năm</div>
                         <br/>
-                        <div class="content_noti">Tốt nghiệp: {{$lt->certificate}}</div>
+                        <div class="content_noti"><strong>Tốt nghiệp:</strong> {{$lt->certificate}}</div>
                         <br/>
-                        <div class="content_noti">Thông tin thêm: {{$lt->description}}</div>
+                        <div class="content_noti"><strong>Thông tin thêm:</strong> {{$lt->description}}</div>
                     </div>
                 </div>
             </div>

@@ -625,39 +625,41 @@ class ClassController extends Controller
         //     }
         // }
         // Hết check trùng khóa học
-        $fail =0;
-        for($i=0;$i<count($end_date);$i++){
-            if($end_date_lop_moi[0]['start_date']>$end_date[$i]['end_date']||$end_date[$i]['start_date']>$end_date_lop_moi[0]['end_date']){
-            }else{
-                for($i=0;$i<count($gio_hoc);$i++){
-                    for($j=0;$j<count($time_lop_moi);$j++){
-                        if($gio_hoc[$i]['week_days']==$time_lop_moi[$j]['week_days']){
-                          $time_end1 = date(' H:i:s',strtotime('+'.$gio_hoc[$i]['duration'].'hour',strtotime($gio_hoc[$i]['time'])));
-                          $time_end2 = date(' H:i:s',strtotime('+'.$time_lop_moi[$j]['duration'].'hour',strtotime($time_lop_moi[$j]['time'])));
-                          $time_start1 = $gio_hoc[$i]['time'];
-                          $time_start2 = $time_lop_moi[$j]['time'];
-                          if(strtotime($time_end2)<strtotime($time_start1) || strtotime($time_start2) >strtotime($time_end1)){
-                          }else{
-                            $class_duplicate = DB::table('timetables')
-                            ->join('classes','classes.id','=','timetables.class_id')
-                            ->join('classrooms','classrooms.id','=','classes.classroom_id')
-                            ->where('time_start',$time_start1)
-                            ->where('week_days',$gio_hoc[$i]['week_days'])
-                            ->value('classes.name as class_name');
-                              $fail++;
-                          }
-                        }
-                    }
-                }
-            }
-        }
+        // $fail =0;
+        // for($i=0;$i<count($end_date);$i++){
+        //     if($end_date_lop_moi[0]['start_date']>$end_date[$i]['end_date']||$end_date[$i]['start_date']>$end_date_lop_moi[0]['end_date']){
+        //     }else{
+        //         for($i=0;$i<count($gio_hoc);$i++){
+        //             for($j=0;$j<count($time_lop_moi);$j++){
+        //                 if($gio_hoc[$i]['week_days']==$time_lop_moi[$j]['week_days']){
+        //                   $time_end1 = date(' H:i:s',strtotime('+'.$gio_hoc[$i]['duration'].'hour',strtotime($gio_hoc[$i]['time'])));
+        //                   $time_end2 = date(' H:i:s',strtotime('+'.$time_lop_moi[$j]['duration'].'hour',strtotime($time_lop_moi[$j]['time'])));
+        //                   $time_start1 = $gio_hoc[$i]['time'];
+        //                   $time_start2 = $time_lop_moi[$j]['time'];
+        //                   if(strtotime($time_end2)<strtotime($time_start1) || strtotime($time_start2) >strtotime($time_end1)){
+        //                   }else{
+        //                     $class_duplicate = DB::table('timetables')
+        //                     ->join('classes','classes.id','=','timetables.class_id')
+        //                     ->join('classrooms','classrooms.id','=','classes.classroom_id')
+        //                     ->where('time_start',$time_start1)
+        //                     ->where('week_days',$gio_hoc[$i]['week_days'])
+        //                     ->value('classes.name as class_name');
+        //                       $fail++;
+        //                   }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        if ($fail != 0) {
-            return response()->json(['code' => 0, 'message' => 'Lịch học bị trùng với lớp " '.$class_duplicate.'" sinh viên đã đăng kí']);
-        }else{
-            $add_student = Classes::addStudentToClass1($data);
-            return response()->json(['code' => 1, 'message' => 'Thêm thành công!']);
-        }
+        // if ($fail != 0) {
+        //     return response()->json(['code' => 0, 'message' => 'Lịch học bị trùng với lớp " '.$class_duplicate.'" sinh viên đã đăng kí']);
+        // }else{
+        //     $add_student = Classes::addStudentToClass1($data);
+        //     return response()->json(['code' => 1, 'message' => 'Thêm thành công!']);
+        // }
+        $add_student = Classes::addStudentToClass1($data);
+        return response()->json(['code' => 1, 'message' => 'Thêm thành công!']);
     }
 
     /**

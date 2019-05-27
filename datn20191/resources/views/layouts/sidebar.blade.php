@@ -104,7 +104,7 @@
             @elseif(Auth::User()->role_id==2)
               <li class="">
                 <a href="{{ asset('class') }}">
-                  <i class="fa fa-dashboard"></i> <span>Danh sách các lớp</span>
+                  <i class="fa fa-dashboard"></i> <span>Các lớp giảng dạy</span>
                 </a>
               </li>
             @elseif(Auth::User()->role_id==3)

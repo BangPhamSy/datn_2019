@@ -38125,6 +38125,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 $(document).on('click', '.show-list-exams', function () {
   var class_id = $(this).attr('class_id');
   var teacher_id = $('#get_teacher_id').val();
+
+  if (teacher_id) {
+    $('.add-exam').addClass('hide');
+  }
+
   $('.table-class').addClass('hidden');
   $('#button-create-class').addClass('hidden');
   $('.table-exam').removeClass('hidden');
@@ -38265,8 +38270,7 @@ $(document).on('click', '.button-add', function (e) {
       element.closest(".form-group").children(0).prepend(error);
     } else error.insertAfter(element);
   }));
-}); //add exam      
-
+});
 $('#add-exam').click(function (event) {
   event.preventDefault();
   var name = $('#exam_name').val();
